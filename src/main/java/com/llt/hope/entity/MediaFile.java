@@ -16,11 +16,11 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@EntityListeners(AuditingEntityListener.class) // 👈 Cần thiết để @CreatedDate hoạt động
+@EntityListeners(AuditingEntityListener.class)
 public class MediaFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // 👈 Thêm generator cho String ID
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private String id;
 

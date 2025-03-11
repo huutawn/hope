@@ -17,7 +17,7 @@ import lombok.*;
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
@@ -30,19 +30,23 @@ public class Job {
     private String benefits;
     private String suitableForDisability;
 
-    @Enumerated(EnumType.STRING)
-    private JobType jobType;
+    @ManyToOne
+    @JoinColumn(name = "job_category_id", nullable = false)
+    private JobCategory jobCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private Boolean isSalaryNegotiable = false;
     private LocalDate applicationDeadline;
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
-    private Integer views = 0;
+    private Integer views;
 }
 
 enum JobType {
