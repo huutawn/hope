@@ -22,16 +22,13 @@ public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(410, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHORIZED_(411, "You do not has permission", HttpStatus.UNAUTHORIZED),
     USER_ALREADY_EXISTED(412, "User already exists", HttpStatus.CONFLICT),
-    COURSE_ALREADY_SIGNUP(413, "course already signup", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID(414, "Email is invalid", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(415, "Email already exists", HttpStatus.CONFLICT),
-    COURSE_NOT_FOUND(418, "Course not found", HttpStatus.NOT_FOUND),
-    LESSON_NOT_FOUND(422, "Course not found", HttpStatus.NOT_FOUND),
-    EXERCISE_NOT_FOUND(423, "Exercises not found", HttpStatus.NOT_FOUND),
-    EXERCISE_NOT_ENOUGH_QUESTIONS(424, "Not enough questions in exercise", HttpStatus.BAD_REQUEST),
-    EXERCISE_ANSWER_NOT_CORRECT(425, "Incorrect answer", HttpStatus.BAD_REQUEST),
-    QUESTION_NOT_FOUND(426, "Question not found", HttpStatus.NOT_FOUND),
-    ANSWER_OPTION_NOT_FOUND(427, "Answer option not found", HttpStatus.NOT_FOUND);
+    TITLE_INVALID(416, "Title is invalid", HttpStatus.BAD_REQUEST),
+    CONTENT_INVALID(417, "Content is invalid", HttpStatus.BAD_REQUEST),
+    UPLOAD_FILE_ERROR(418, "Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR),
+    REQUEST_INVALID(422, "Request is invalid", HttpStatus.BAD_REQUEST),
+    CATEGORY_NOT_FOUND(423, "Category not found", HttpStatus.BAD_REQUEST);
     int code;
     String message;
     HttpStatusCode httpStatusCode;

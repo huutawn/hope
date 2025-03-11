@@ -1,7 +1,5 @@
 package com.llt.hope.dto.request;
 
-import java.time.LocalDate;
-
 import jakarta.validation.constraints.Size;
 
 import lombok.AccessLevel;
@@ -21,8 +19,5 @@ public class UserCreationRequest {
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
 
-    String firstName;
-    String lastName;
-
-    LocalDate dob;
+    String phone;
 }

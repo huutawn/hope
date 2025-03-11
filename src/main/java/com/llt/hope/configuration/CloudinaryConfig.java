@@ -1,4 +1,4 @@
-package com.llt.hope.configuaration;
+package com.llt.hope.configuration;
 
 import java.util.HashMap;
 import java.util.Map;

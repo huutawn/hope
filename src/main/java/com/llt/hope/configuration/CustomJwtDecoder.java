@@ -1,4 +1,4 @@
-package com.llt.hope.configuaration;
+package com.llt.hope.configuration;
 
 import java.text.ParseException;
 import java.util.Objects;
