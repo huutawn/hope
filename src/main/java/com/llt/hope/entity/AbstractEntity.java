@@ -21,7 +21,6 @@ public class AbstractEntity<T> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     T id;
-
     @Column(name = "create_at")
     @CreationTimestamp
     LocalDateTime createdAt;

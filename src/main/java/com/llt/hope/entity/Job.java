@@ -31,7 +31,7 @@ public class Job {
     private String suitableForDisability;
 
     @ManyToOne
-    @JoinColumn(name = "job_category_id", nullable = false)
+    @JoinColumn(name = "job_category_id")
     private JobCategory jobCategory;
 
     @ManyToOne
@@ -49,10 +49,4 @@ public class Job {
     private Integer views;
 }
 
-enum JobType {
-    FULL_TIME,
-    PART_TIME,
-    CONTRACT,
-    FREELANCE,
-    REMOTE
-}
+

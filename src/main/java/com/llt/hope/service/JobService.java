@@ -2,6 +2,7 @@ package com.llt.hope.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.RecruitmentCreationRequest;
@@ -31,12 +32,13 @@ public class JobService {
     JobCategoryRepository jobCategoryRepository;
     JobMapper jobMapper;
 
+    @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var employer = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         JobCategory jobCategory = jobCategoryRepository
-                .findById(request.getCategoryId())
+                .findJobCategoryByName(request.getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         if (request.getTitle().isEmpty()) throw new AppException((ErrorCode.TITLE_INVALID));
         Job job = Job.builder()
@@ -57,4 +59,5 @@ public class JobService {
                 .build();
         return jobMapper.toJobResponse(jobRepository.save(job));
     }
+
 }
