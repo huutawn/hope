@@ -28,7 +28,8 @@ public enum ErrorCode {
     CONTENT_INVALID(417, "Content is invalid", HttpStatus.BAD_REQUEST),
     UPLOAD_FILE_ERROR(418, "Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR),
     REQUEST_INVALID(422, "Request is invalid", HttpStatus.BAD_REQUEST),
-    CATEGORY_NOT_FOUND(423, "Category not found", HttpStatus.BAD_REQUEST);
+    CATEGORY_NOT_FOUND(423, "Category not found", HttpStatus.BAD_REQUEST),
+    PROFILE_NOT_FOUND(424, "Profile not found", HttpStatus.BAD_REQUEST);
     int code;
     String message;
     HttpStatusCode httpStatusCode;

@@ -50,13 +50,6 @@ public class UserService {
         return userMapper.toUserResponse(repository.save(user));
     }
 
-    public UserResponse getMyInfo() {
-        var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-
-        User user = repository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return userMapper.toUserResponse(user);
-    }
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

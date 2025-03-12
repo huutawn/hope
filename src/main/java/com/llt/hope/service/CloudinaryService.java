@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -19,12 +20,6 @@ public class CloudinaryService {
     private final Cloudinary cloudinary;
 
     public MediaFile uploadFile(MultipartFile file, String relatedName, String relatedId) throws IOException {
-        // Xác định loại file dựa vào phần mở rộng
-        String originalFilename = file.getOriginalFilename();
-        assert originalFilename != null;
-        String extension = originalFilename
-                .substring(originalFilename.lastIndexOf('.') + 1)
-                .toLowerCase();
 
         // Định danh file trên Cloudinary (Ví dụ: lesson_1234_timestamp.mp4)
         String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
@@ -44,6 +39,7 @@ public class CloudinaryService {
         mediaFile.setUrl(url);
         mediaFile.setPublicId(publicId);
         mediaFile.setFileSize(fileSize);
+
 
         return mediaFile;
     }

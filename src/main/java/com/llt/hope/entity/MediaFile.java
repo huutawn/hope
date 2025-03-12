@@ -20,7 +20,6 @@ import lombok.*;
 public class MediaFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private String id;
 
@@ -35,5 +34,5 @@ public class MediaFile {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt=LocalDateTime.now();
 }
