@@ -18,9 +18,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AbstractEntity<T> {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     T id;
-
     @Column(name = "create_at")
     @CreationTimestamp
     LocalDateTime createdAt;

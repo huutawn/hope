@@ -1,0 +1,9 @@
+
+jwt:
+  signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"
+  valid-duration: 7200 #in hours
+  refreshable-duration: 72000 #in hours
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  secret-key: ${CLOUDINARY_API_SECRET}

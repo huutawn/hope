@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long profileId;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,24 +28,15 @@ public class Profile {
     private String disabilityDescription;
     private String address;
     private String city;
-    private String state;
-    private String postalCode;
     private String country = "Vietnam";
     private String phone;
-    private LocalDate dateOfBirth;
+    private LocalDate dob;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private String gender;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
-
     private String bio;
-    private String skills;
 }
 
-enum Gender {
-    MALE,
-    FEMALE,
-    OTHER
-}

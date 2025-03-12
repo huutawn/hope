@@ -46,7 +46,8 @@ public class AuthenticationService {
     InvalidTokenRepository invalidTokenRepository;
 
     @NonFinal
-    protected static final String SIGNER_KEY = "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/";
+    @Value("${jwt.signerKey}")
+    protected String SIGNER_KEY;
 
     @NonFinal
     @Value("${jwt.valid-duration}")

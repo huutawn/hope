@@ -19,12 +19,12 @@ public class EmployerProfile {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String companyName;
-    private String industry;
-    private String companySize;
-    private String companyDescription;
-    private String website;
-    private String logo;
+    private Boolean isVerified;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false) // Nhà tuyển dụng đã được xác minh chưa?
+    private Company company;
+
+    private String position;
     private String accessibilityFeatures;
-    private String businessRegistrationNumber;
 }

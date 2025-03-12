@@ -16,11 +16,10 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@EntityListeners(AuditingEntityListener.class) // 👈 Cần thiết để @CreatedDate hoạt động
+@EntityListeners(AuditingEntityListener.class)
 public class MediaFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // 👈 Thêm generator cho String ID
     @Column(updatable = false, nullable = false)
     private String id;
 
@@ -35,5 +34,5 @@ public class MediaFile {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt=LocalDateTime.now();
 }
