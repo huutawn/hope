@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.cloudinary.Cloudinary;
 
-import io.github.cdimascio.dotenv.Dotenv;
 
 @Configuration
 public class CloudinaryConfig {
@@ -24,7 +23,6 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        Dotenv dotenv = Dotenv.load(); // Load biến môi trường từ .env
 
         Map<String, String> config = new HashMap<>();
         config.put("cloud_name", cloudName);
