@@ -1,10 +1,9 @@
 package com.llt.hope.mapper;
 
-import com.llt.hope.dto.response.JobCategoryResponse;
-import com.llt.hope.dto.response.JobResponse;
-import com.llt.hope.entity.Job;
-import com.llt.hope.entity.JobCategory;
 import org.mapstruct.Mapper;
+
+import com.llt.hope.dto.response.JobCategoryResponse;
+import com.llt.hope.entity.JobCategory;
 
 @Mapper(componentModel = "spring")
 public interface JobCategoryMapper {

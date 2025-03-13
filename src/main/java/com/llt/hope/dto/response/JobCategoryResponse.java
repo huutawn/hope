@@ -1,9 +1,9 @@
 package com.llt.hope.dto.response;
 
+import java.time.LocalDateTime;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobCategoryResponse {
     Long id;
-    String  name;
+    String name;
     String description;
     LocalDateTime createdAt;
 }

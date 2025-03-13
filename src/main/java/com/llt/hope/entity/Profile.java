@@ -37,6 +37,6 @@ public class Profile {
     @ManyToOne
     @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
+
     private String bio;
 }
-

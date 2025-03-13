@@ -1,13 +1,13 @@
 package com.llt.hope.dto.response;
 
+import java.time.LocalDate;
+
 import com.llt.hope.entity.MediaFile;
-import jakarta.persistence.OneToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +28,4 @@ public class ProfileResponse {
     private MediaFile profilePicture;
 
     private String bio;
-
-
 }
