@@ -48,5 +48,3 @@ public class Job {
     private LocalDateTime updatedAt;
     private Integer views;
 }
-
-

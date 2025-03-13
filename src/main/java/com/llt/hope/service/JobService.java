@@ -59,5 +59,4 @@ public class JobService {
                 .build();
         return jobMapper.toJobResponse(jobRepository.save(job));
     }
-
 }

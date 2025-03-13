@@ -22,7 +22,6 @@ public class CloudinaryConfig {
     @Value("${CLOUDINARY_API_SECRET}")
     private String apiSecret;
 
-
     @Bean
     public Cloudinary cloudinary() {
         Dotenv dotenv = Dotenv.load(); // Load biến môi trường từ .env

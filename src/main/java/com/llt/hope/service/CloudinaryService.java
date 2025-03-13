@@ -1,7 +1,6 @@
 package com.llt.hope.service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -39,7 +38,6 @@ public class CloudinaryService {
         mediaFile.setUrl(url);
         mediaFile.setPublicId(publicId);
         mediaFile.setFileSize(fileSize);
-
 
         return mediaFile;
     }

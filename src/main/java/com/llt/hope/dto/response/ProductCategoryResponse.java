@@ -1,16 +1,17 @@
 package com.llt.hope.dto.response;
 
-import java.time.LocalDateTime;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobCategoryResponse {
+public class ProductCategoryResponse {
     Long id;
     String name;
     String description;
