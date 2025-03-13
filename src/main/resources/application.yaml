@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/hope
+    url: jdbc:mysql://root:LYwgZjDnNlTkNDBWgjHNopbtmlVIxICj@nozomi.proxy.rlwy.net:13291/railway
     username: root
-    password: root
+    password: LYwgZjDnNlTkNDBWgjHNopbtmlVIxICj
   jpa:
     hibernate:
       ddl-auto: update
