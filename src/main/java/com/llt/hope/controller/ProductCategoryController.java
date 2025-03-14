@@ -32,4 +32,5 @@ public class ProductCategoryController {
     public List<ProductCategory> getAllCategories() {
         return productCategoryService.getAllProductCategory();
     }
+
 }

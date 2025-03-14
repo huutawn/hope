@@ -30,7 +30,9 @@ public enum ErrorCode {
     REQUEST_INVALID(422, "Request is invalid", HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_FOUND(423, "Category not found", HttpStatus.BAD_REQUEST),
     PROFILE_NOT_FOUND(424, "Profile not found", HttpStatus.BAD_REQUEST),
-    CATEGORY_HAS_EXISTED(425, "Category has already existed", HttpStatus.CONFLICT);
+    CATEGORY_HAS_EXISTED(425, "Category has already existed", HttpStatus.CONFLICT),
+    PRODUCT_HAS_EXISTED(426,"Product has already existed",HttpStatus.CONFLICT),
+    PRODUCT_NOT_EXISTED(426,"Product not existed",HttpStatus.NOT_FOUND);
     int code;
     String message;
     HttpStatusCode httpStatusCode;

@@ -2,6 +2,7 @@ package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
 
+import com.llt.hope.entity.User;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,30 +19,31 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProductCreationRequest {
-    @NotBlank
-    @Size(max = 100)
-    String name;
+    public class ProductCreationRequest {
+        @NotBlank
+        @Size(max = 100)
+        String name;
+        @NotNull
+        String seller_id;
+        @NotNull
+        @DecimalMin("0.0")
+        BigDecimal price;
 
-    @NotNull
-    @DecimalMin("0.0")
-    BigDecimal price;
+        @NotBlank
+        String description;
 
-    @NotBlank
-    String description;
+        @NotNull
+        Long categoryId;
 
-    @NotNull
-    Long categoryId;
+        @NotNull
+        Long inventory;
 
-    @NotNull
-    Long inventory;
-
-    String creationProcess;
-    String materialsUsed;
-    String productionTime;
-    BigDecimal weight;
-    String dimensions;
-    Boolean isCustomizable;
-    Boolean isFeatured;
-    MultipartFile imageFile;
-}
+        String creationProcess;
+        String materialsUsed;
+        String productionTime;
+        BigDecimal weight;
+        String dimensions;
+        Boolean isCustomizable;
+        Boolean isFeatured;
+        MultipartFile imageFile;
+    }

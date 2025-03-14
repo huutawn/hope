@@ -1,5 +1,7 @@
 package com.llt.hope.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -16,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@JsonIgnoreProperties("productCategory")
 public class ProductCategory extends AbstractEntity<Long>{
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +30,6 @@ public class ProductCategory extends AbstractEntity<Long>{
 
     private String description;
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Product> products;
 }

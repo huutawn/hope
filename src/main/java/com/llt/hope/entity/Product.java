@@ -3,6 +3,8 @@ package com.llt.hope.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -17,46 +19,48 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "Products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@JsonIgnoreProperties("products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
-    private User seller;
+    User seller;
 
     @NotBlank
     @Size(max = 100)
-    private String name;
+    String name;
 
     @NotNull
     @DecimalMin("0.0")
-    private BigDecimal price;
+    BigDecimal price;
 
     @NotBlank
-    private String description;
+    String description;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private ProductCategory productCategory;
+    @JsonBackReference
+    ProductCategory productCategory;
 
-    private String creationProcess;
-    private String materialsUsed;
-    private String productionTime;
+    String creationProcess;
+    String materialsUsed;
+    String productionTime;
 
     @NotNull
     @Min(1)
-    private Integer inventory;
+    Integer inventory;
 
-    private BigDecimal weight;
-    private String dimensions;
-    private Boolean isCustomizable = false;
-    private Boolean isFeatured = false;
+    BigDecimal weight;
+    String dimensions;
+    Boolean isCustomizable = false;
+    Boolean isFeatured = false;
 
     @Column(updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+     LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt;
-    private String imageUrl;
+     LocalDateTime updatedAt;
+     String imageUrl;
 }
