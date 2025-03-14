@@ -1,12 +1,19 @@
 package com.llt.hope.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.RecruitmentCreationRequest;
 import com.llt.hope.dto.response.JobResponse;
+import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.entity.Job;
 import com.llt.hope.entity.JobCategory;
 import com.llt.hope.exception.AppException;
@@ -58,5 +65,22 @@ public class JobService {
                 .responsibilities(request.getResponsibilities())
                 .build();
         return jobMapper.toJobResponse(jobRepository.save(job));
+    }
+
+    public PageResponse<JobResponse> getAllJobRecruitments(Specification<Job> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Page<Job> jobs = jobRepository.findAll(spec, pageable);
+        List<JobResponse> jobResponses = jobs.getContent().stream()
+                .map(jobMapper::toJobResponse) // Chuyển từng Job thành JobResponse
+                .toList();
+        return PageResponse.<JobResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(jobs.getTotalElements())
+                .totalPages(jobs.getTotalPages())
+                .data(jobResponses)
+                .build();
     }
 }

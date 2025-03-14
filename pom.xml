@@ -76,7 +76,11 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.turkraft.springfilter</groupId>
+			<artifactId>jpa</artifactId>
+			<version>3.1.5</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.mysql</groupId>

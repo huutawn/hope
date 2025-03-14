@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.llt.hope.dto.request.ProfileCreationRequest;
 import com.llt.hope.dto.response.ProfileResponse;
@@ -31,16 +32,19 @@ public class ProfileService {
     MediaFileRepository mediaFileRepository;
 
     @PreAuthorize("isAuthenticated()")
+    @Transactional
     public ProfileResponse createMyProfile(ProfileCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        MediaFile mediaFile;
-        try {
-            mediaFile = cloudinaryService.uploadFile(request.getProfilePicture(), "profile", email);
-            mediaFile = mediaFileRepository.save(mediaFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        MediaFile mediaFile = null;
+        if (request.getProfilePicture() != null) {
+            try {
+                mediaFile = cloudinaryService.uploadFile(request.getProfilePicture(), "profile", email);
+                mediaFile = mediaFileRepository.save(mediaFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         Profile profile = Profile.builder()
                 .city(request.getCity())

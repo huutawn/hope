@@ -38,5 +38,9 @@ public class Profile {
     @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
 
+    @OneToOne
+    @JoinColumn(name = "company_id") // Nhà tuyển dụng đã được xác minh chưa?
+    private Company company;
+
     private String bio;
 }

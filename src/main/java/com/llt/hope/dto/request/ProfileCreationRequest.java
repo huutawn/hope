@@ -22,7 +22,6 @@ public class ProfileCreationRequest {
     private String city;
     private String phone;
     private LocalDate dob;
-
     private String gender;
 
     private MultipartFile profilePicture;

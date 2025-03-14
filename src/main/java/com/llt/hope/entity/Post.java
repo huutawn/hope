@@ -28,6 +28,10 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private MediaFile image;
+
     private boolean isPublished = true;
     private boolean isPinned = false;
 

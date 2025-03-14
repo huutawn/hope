@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.cloudinary.Cloudinary;
 
-
 @Configuration
 public class CloudinaryConfig {
     @Value("${CLOUDINARY_CLOUD_NAME}")

@@ -20,4 +20,6 @@ public class UserCreationRequest {
     String password;
 
     String phone;
+
+    String signBy;
 }
