@@ -46,6 +46,7 @@ public class ApplicationInitConfig {
                         .name(PredefindRole.ADMIN_ROLE)
                         .description("Admin role")
                         .build());
+
                 var roles = new HashSet<Role>();
                 roles.add(admin);
 
@@ -57,6 +58,13 @@ public class ApplicationInitConfig {
 
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin, please change the password");
+            }
+            if(roleRepository.findById(PredefindRole.EMPLOYER_ROLE).isEmpty()){
+                Role employer = roleRepository.save(Role.builder()
+                        .name(PredefindRole.EMPLOYER_ROLE)
+                        .description("Employee role")
+                        .build()
+                );
             }
         };
     }

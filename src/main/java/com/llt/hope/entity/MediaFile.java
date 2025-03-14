@@ -20,8 +20,8 @@ import lombok.*;
 public class MediaFile {
 
     @Id
-    @Column(updatable = false, nullable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String url;

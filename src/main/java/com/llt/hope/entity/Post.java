@@ -29,8 +29,7 @@ public class Post {
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
-    private MediaFile image;
+    private Set<MediaFile> images;
 
     private boolean isPublished = true;
     private boolean isPinned = false;

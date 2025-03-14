@@ -1,6 +1,7 @@
 package com.llt.hope.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +14,7 @@ import lombok.*;
 public class PostCreationRequest {
     private String title;
 
-    private MultipartFile image;
+    private List<MultipartFile> images;
     private String content;
 
     private boolean isPublished = true;

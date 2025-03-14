@@ -2,23 +2,20 @@ package com.llt.hope.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashSet;
 
+import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.entity.*;
+import com.llt.hope.repository.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.llt.hope.dto.request.CompanyCreationRequest;
 import com.llt.hope.dto.response.CompanyResponse;
-import com.llt.hope.entity.Company;
-import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.Profile;
-import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.CompanyMapper;
-import com.llt.hope.repository.CompanyRepository;
-import com.llt.hope.repository.MediaFileRepository;
-import com.llt.hope.repository.ProfileRepository;
-import com.llt.hope.repository.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -37,8 +34,10 @@ public class CompanyService {
     MediaFileRepository mediaFileRepository;
     CloudinaryService cloudinaryService;
     CompanyMapper companyMapper;
+    RoleRepository roleRepository;
 
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public CompanyResponse createCompany(CompanyCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -69,6 +68,14 @@ public class CompanyService {
                 .taxCode(request.getTaxCode())
                 .build();
         companyRepository.save(company);
+        profile.setCompany(company);
+        profileRepository.save(profile);
+        HashSet<Role> roles = new HashSet<>();
+
+        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
+        user.setProfile(profile);
+        user.setRoles(roles);
+        userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
     }
 }

@@ -23,7 +23,7 @@ public class PostController {
     PostService postService;
 
     @PostMapping
-    public ApiResponse<PostResponse> createRecruitment(@RequestBody PostCreationRequest request) {
+    public ApiResponse<PostResponse> createRecruitment(@ModelAttribute PostCreationRequest request) {
         return ApiResponse.<PostResponse>builder()
                 .result(postService.createPost(request))
                 .build();

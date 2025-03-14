@@ -19,7 +19,7 @@ public class CompanyController {
     CompanyService companyService;
 
     @PostMapping
-    public ApiResponse<CompanyResponse> createRecruitment(@RequestBody CompanyCreationRequest request) {
+    public ApiResponse<CompanyResponse> createRecruitment(@ModelAttribute CompanyCreationRequest request) {
         return ApiResponse.<CompanyResponse>builder()
                 .result(companyService.createCompany(request))
                 .build();

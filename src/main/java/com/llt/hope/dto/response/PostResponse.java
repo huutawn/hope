@@ -28,7 +28,7 @@ public class PostResponse {
 
     private String content;
 
-    private MediaFile image;
+    private Set<MediaFile> images;
     private boolean isPublished;
     private boolean isPinned;
 

@@ -34,7 +34,7 @@ public class Profile {
 
     private String gender;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
 
