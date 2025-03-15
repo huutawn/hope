@@ -57,6 +57,7 @@ public class CompanyService {
 
         Company company = Company.builder()
                 .createdAt(LocalDate.now())
+                .isActive(false)
                 .address(request.getAddress())
                 .industry(request.getIndustry())
                 .size(request.getSize())
@@ -77,5 +78,8 @@ public class CompanyService {
         user.setRoles(roles);
         userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
+    }
+    public CompanyResponse getAllCompanyNonActive(){
+
     }
 }

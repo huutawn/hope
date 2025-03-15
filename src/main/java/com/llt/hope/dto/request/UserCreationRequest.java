@@ -21,5 +21,5 @@ public class UserCreationRequest {
 
     String phone;
 
-    String signBy;
+
 }

@@ -34,6 +34,8 @@ public class Company {
 
     private String size; // Quy mô công ty (Small, Medium, Large)
 
+    private boolean isActive; //
+
     @OneToOne
     @JoinColumn(name = "file_id")
     private MediaFile logo; // Ảnh logo công ty (Lưu trên Cloudinary)

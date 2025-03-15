@@ -83,4 +83,8 @@ public class JobService {
                 .data(jobResponses)
                 .build();
     }
+
+    public void deleteJobByTime(){
+
+    }
 }
