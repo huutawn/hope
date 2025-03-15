@@ -2,6 +2,7 @@ package com.llt.hope.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,7 +48,6 @@ public class Product {
 
     String creationProcess;
     String materialsUsed;
-    String productionTime;
 
     @NotNull
     @Min(1)
@@ -55,12 +55,11 @@ public class Product {
 
     BigDecimal weight;
     String dimensions;
-    Boolean isCustomizable = false;
-    Boolean isFeatured = false;
 
     @Column(updatable = false)
      LocalDateTime createdAt = LocalDateTime.now();
 
      LocalDateTime updatedAt;
-     String imageUrl;
+     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+     Set<MediaFile> images;
 }

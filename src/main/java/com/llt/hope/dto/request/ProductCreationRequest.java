@@ -1,6 +1,7 @@
 package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.llt.hope.entity.User;
 import jakarta.validation.constraints.DecimalMin;
@@ -23,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
         @NotBlank
         @Size(max = 100)
         String name;
-        @NotNull
+        @NotBlank
         String seller_id;
         @NotNull
         @DecimalMin("0.0")
@@ -36,14 +37,11 @@ import org.springframework.web.multipart.MultipartFile;
         Long categoryId;
 
         @NotNull
-        Long inventory;
+        int inventory;
 
         String creationProcess;
         String materialsUsed;
-        String productionTime;
         BigDecimal weight;
         String dimensions;
-        Boolean isCustomizable;
-        Boolean isFeatured;
-        MultipartFile imageFile;
+        /*List<MultipartFile>*/ String imagesFile;
     }

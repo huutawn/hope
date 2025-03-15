@@ -33,6 +33,5 @@ public class ProductUpdateRequest {
     @NotNull
     private Long inventory;
 
-    private Boolean isFeatured;
     MultipartFile imageFile;
 }

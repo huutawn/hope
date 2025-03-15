@@ -4,12 +4,14 @@ package com.llt.hope.service;
 import com.llt.hope.dto.request.ProductCreationRequest;
 import com.llt.hope.dto.request.ProductUpdateRequest;
 import com.llt.hope.dto.response.ProductResponse;
+import com.llt.hope.entity.MediaFile;
 import com.llt.hope.entity.Product;
 import com.llt.hope.entity.ProductCategory;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
+import com.llt.hope.repository.MediaFileRepository;
 import com.llt.hope.repository.ProductCategoryRepository;
 import com.llt.hope.repository.ProductRepository;
 import com.llt.hope.repository.UserRepository;
@@ -19,8 +21,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,20 +38,48 @@ public class ProductService {
     ProductMapper productMapper;
     ProductCategoryRepository productCategoryRepository;
     UserRepository userRepository;
+    CloudinaryService cloudinaryService;
+    MediaFileRepository mediaFileRepository;
 
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
-        if (productRepository.existsByName(request.getName())) {
-            throw new AppException(ErrorCode.PRODUCT_HAS_EXISTED);
-        }
+
+        Set<MediaFile> mediaFiles=new HashSet<>();
+
 
         ProductCategory category = productCategoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findById(request.getSeller_id())
                 .orElseThrow(() -> new RuntimeException("Seller không tồn tại!"));
+        /*if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
+            try {
 
-        Product product = productMapper.toProduct(request);
+
+                for(MultipartFile file:request.getImagesFile()){
+                    MediaFile mediaFile = cloudinaryService.uploadFile(file,"product",seller.getEmail());
+                    mediaFileRepository.saveAndFlush(mediaFile);
+                    mediaFiles.add(mediaFile);
+                }
+
+            } catch (IOException e) {
+                throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
+            }
+        }*/
+        Product product =Product.builder()
+                .createdAt(LocalDateTime.now())
+                .seller(seller)
+                .name(request.getName())
+                .images(mediaFiles)
+                .price(request.getPrice())
+                .description(request.getDescription())
+                .productCategory(category)
+                .weight(request.getWeight())
+                .dimensions(request.getDimensions())
+                .creationProcess(request.getCreationProcess())
+                .materialsUsed(request.getMaterialsUsed())
+                .inventory(request.getInventory())
+                .build();
         product.setProductCategory(category);
         product.setSeller(seller);
 

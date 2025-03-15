@@ -2,7 +2,10 @@ package com.llt.hope.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.llt.hope.entity.MediaFile;
+import com.llt.hope.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,10 +20,8 @@ public class ProductResponse {
     BigDecimal price;
     String description;
     String category;
-    Long categoryId;
-    Long sellerId;
+    String seller_id;
     Long inventory;
-    Boolean isFeatured;
-    String imageUrl;
+    List<MediaFile> images;
     LocalDateTime createdAt;
 }

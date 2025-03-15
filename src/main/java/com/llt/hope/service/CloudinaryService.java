@@ -34,7 +34,6 @@ public class CloudinaryService {
 
         // Tạo bản ghi MediaFile
         MediaFile mediaFile = new MediaFile();
-        mediaFile.setId(fileName);
         mediaFile.setUrl(url);
         mediaFile.setPublicId(publicId);
         mediaFile.setFileSize(fileSize);

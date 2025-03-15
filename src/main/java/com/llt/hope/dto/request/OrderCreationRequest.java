@@ -29,7 +29,7 @@ public class OrderCreationRequest {
     private String shippingCity;
     private String shippingState;
     private String shippingPostalCode;
-    private String shippingCountry;
+    private String shippingCountry= "VietName";
 
     @NotBlank
     String paymentMethod;
