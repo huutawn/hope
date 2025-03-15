@@ -2,6 +2,7 @@ package com.llt.hope.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -20,6 +21,7 @@ public class Profile {
     private Long id;
 
     @OneToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

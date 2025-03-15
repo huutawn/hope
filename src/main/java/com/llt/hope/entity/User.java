@@ -3,6 +3,7 @@ package com.llt.hope.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -37,6 +38,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Profile profile;
 
 
