@@ -24,7 +24,7 @@ public class JobResponse {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDate applicationDeadline;
+    private LocalDateTime applicationDeadline;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private Integer views;

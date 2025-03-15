@@ -41,7 +41,7 @@ public class Job {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDate applicationDeadline;
+    private LocalDateTime applicationDeadline;
     private Boolean isActive;
 
     private LocalDateTime createdAt = LocalDateTime.now();

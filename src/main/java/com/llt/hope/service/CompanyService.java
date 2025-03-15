@@ -3,10 +3,18 @@ package com.llt.hope.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 
 import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.dto.response.JobResponse;
+import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.entity.*;
 import com.llt.hope.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +87,30 @@ public class CompanyService {
         userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
     }
-    public CompanyResponse getAllCompanyNonActive(){
+    public PageResponse<CompanyResponse> getAllCompanyNonActive(Specification<Company> spec, int page, int size){
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
+        Page<Company> companies = companyRepository.findCompanyByIsActive(false,pageable);
+        List<CompanyResponse> companyResponses = companies.getContent().stream()
+                .map(companyMapper::toCompanyResponse) // Chuyển từng Job thành JobResponse
+                .toList();
+        return PageResponse.<CompanyResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(companies.getTotalElements())
+                .totalPages(companies.getTotalPages())
+                .data(companyResponses)
+                .build();
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    public CompanyResponse activeCompany(long companyId){
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
+        if(company.isActive()){
+            throw new AppException(ErrorCode.COMPANY_ALREADY_ACTIVE);
+        }
+        company.setActive(true);
+        companyRepository.save(company);
+        return companyMapper.toCompanyResponse(company);
     }
 }

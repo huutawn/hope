@@ -71,4 +71,21 @@ public class ProfileService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
         return profileMapper.toProfileResponse(profile);
     }
+
+    public Profile createInitProfile(String email,String phone, String fullName){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        Profile profile = Profile.builder()
+               .city("")
+               .bio("")
+               .address("")
+               .dob(null)
+               .disabilityType("")
+               .disabilityDescription("")
+               .fullName(fullName)
+               .gender("")
+               .phone(phone)
+               .user(user)
+               .build();
+        return profileRepository.save(profile);
+    }
 }

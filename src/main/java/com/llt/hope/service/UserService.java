@@ -3,6 +3,7 @@ package com.llt.hope.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.llt.hope.entity.Profile;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,7 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+    ProfileService profileService;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (repository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
@@ -45,7 +47,9 @@ public class UserService {
         roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
-
+        repository.saveAndFlush(user);
+        Profile profile=profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
+        user.setProfile(profile);
         return userMapper.toUserResponse(repository.save(user));
     }
 

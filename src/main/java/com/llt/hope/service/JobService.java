@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,10 @@ public class JobService {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var employer = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if(!employer.getProfile().getCompany().isActive()){
+            throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
+        }
+
         JobCategory jobCategory = jobCategoryRepository
                 .findJobCategoryByName(request.getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -84,7 +90,11 @@ public class JobService {
                 .build();
     }
 
-    public void deleteJobByTime(){
-
-    }
+//    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 00:00 mỗi ngày
+//    @Transactional
+//    public void deleteExpiredJobs() {
+//        LocalDateTime now = LocalDateTime.now();
+//        int deletedCount = jobRepository.deleteByDeadlineBefore(now);
+//       log.info("đã xoá "+deletedCount+" số công ty");
+//    }
 }
