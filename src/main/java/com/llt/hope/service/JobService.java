@@ -90,11 +90,10 @@ public class JobService {
                 .build();
     }
 
-//    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 00:00 mỗi ngày
-//    @Transactional
-//    public void deleteExpiredJobs() {
-//        LocalDateTime now = LocalDateTime.now();
-//        int deletedCount = jobRepository.deleteByDeadlineBefore(now);
-//       log.info("đã xoá "+deletedCount+" số công ty");
-//    }
+    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 00:00 mỗi ngày
+    @Transactional
+    public void deleteExpiredJobs() {
+        LocalDateTime now = LocalDateTime.now();
+        jobRepository.deleteByDeadlineBefore(now);
+    }
 }

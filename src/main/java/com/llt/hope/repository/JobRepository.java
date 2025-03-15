@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
-//    @Modifying
-//    @Transactional
-//    @Query("DELETE FROM Job j WHERE j.deadline < :now")
-//    void deleteByDeadlineBefore(@Param("now") LocalDateTime now);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Job j WHERE j.applicationDeadline < :now")
+    void deleteByDeadlineBefore(@Param("now") LocalDateTime now);
 }
