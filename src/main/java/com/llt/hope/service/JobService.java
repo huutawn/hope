@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.llt.hope.dto.request.RecruitmentCreationRequest;
 import com.llt.hope.dto.response.JobResponse;
@@ -29,7 +30,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class JobService {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var employer = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        if(!employer.getProfile().getCompany().isActive()){
+        if (!employer.getProfile().getCompany().isActive()) {
             throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
         }
 

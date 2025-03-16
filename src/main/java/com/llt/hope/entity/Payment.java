@@ -31,6 +31,7 @@ public class Payment {
 
     @Column(updatable = false)
     private LocalDateTime paymentDate = LocalDateTime.now();
+
     public void setPaymentMethod(String paymentMethod) {
         if (!isValidPaymentMethod(paymentMethod)) {
             throw new IllegalArgumentException("Invalid payment method: " + paymentMethod);

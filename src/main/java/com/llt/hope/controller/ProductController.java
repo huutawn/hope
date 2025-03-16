@@ -1,20 +1,19 @@
 package com.llt.hope.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.llt.hope.dto.request.ProductCreationRequest;
 import com.llt.hope.dto.request.ProductUpdateRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.ProductResponse;
-import com.llt.hope.entity.MediaFile;
 import com.llt.hope.service.ProductService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/product")

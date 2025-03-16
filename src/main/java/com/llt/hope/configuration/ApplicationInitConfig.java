@@ -59,12 +59,11 @@ public class ApplicationInitConfig {
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin, please change the password");
             }
-            if(roleRepository.findById(PredefindRole.EMPLOYER_ROLE).isEmpty()){
+            if (roleRepository.findById(PredefindRole.EMPLOYER_ROLE).isEmpty()) {
                 Role employer = roleRepository.save(Role.builder()
                         .name(PredefindRole.EMPLOYER_ROLE)
                         .description("Employee role")
-                        .build()
-                );
+                        .build());
             }
         };
     }

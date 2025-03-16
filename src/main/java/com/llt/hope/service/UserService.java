@@ -3,7 +3,6 @@ package com.llt.hope.service;
 import java.util.HashSet;
 import java.util.List;
 
-import com.llt.hope.entity.Profile;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +12,7 @@ import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.UserCreationRequest;
 import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.UserResponse;
+import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
@@ -48,10 +48,11 @@ public class UserService {
 
         user.setRoles(roles);
         repository.saveAndFlush(user);
-        Profile profile=profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
+        Profile profile =
+                profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
         return userMapper.toUserResponse(repository.save(user));
-        //hjhjhjhj
+        // hjhjhjhj
     }
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {

@@ -30,11 +30,6 @@ public class ProfileService {
     CloudinaryService cloudinaryService;
     ProfileMapper profileMapper;
     MediaFileRepository mediaFileRepository;
-    ProfileRepository profileRepository;
-    UserRepository userRepository;
-    CloudinaryService cloudinaryService;
-    ProfileMapper profileMapper;
-    MediaFileRepository mediaFileRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -77,20 +72,20 @@ public class ProfileService {
         return profileMapper.toProfileResponse(profile);
     }
 
-    public Profile createInitProfile(String email,String phone, String fullName){
+    public Profile createInitProfile(String email, String phone, String fullName) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Profile profile = Profile.builder()
-               .city("")
-               .bio("")
-               .address("")
-               .dob(null)
-               .disabilityType("")
-               .disabilityDescription("")
-               .fullName(fullName)
-               .gender("")
-               .phone(phone)
-               .user(user)
-               .build();
+                .city("")
+                .bio("")
+                .address("")
+                .dob(null)
+                .disabilityType("")
+                .disabilityDescription("")
+                .fullName(fullName)
+                .gender("")
+                .phone(phone)
+                .user(user)
+                .build();
         return profileRepository.save(profile);
     }
 }
