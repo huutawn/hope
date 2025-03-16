@@ -1,9 +1,9 @@
 package com.llt.hope.mapper;
 
-import com.llt.hope.dto.response.ProductCategoryResponse;
-import com.llt.hope.entity.ProductCategory;
 import org.mapstruct.Mapper;
 
+import com.llt.hope.dto.response.ProductCategoryResponse;
+import com.llt.hope.entity.ProductCategory;
 
 @Mapper(componentModel = "spring")
 public interface ProductCategoryMapper {

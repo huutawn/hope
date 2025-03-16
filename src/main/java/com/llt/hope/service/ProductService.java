@@ -1,5 +1,16 @@
 package com.llt.hope.service;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.llt.hope.dto.request.ProductCreationRequest;
 import com.llt.hope.dto.request.ProductUpdateRequest;
@@ -15,20 +26,11 @@ import com.llt.hope.repository.MediaFileRepository;
 import com.llt.hope.repository.ProductCategoryRepository;
 import com.llt.hope.repository.ProductRepository;
 import com.llt.hope.repository.UserRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -47,20 +49,22 @@ public class ProductService {
 
         Set<MediaFile> mediaFiles = new HashSet<>();
 
-
-        ProductCategory category = productCategoryRepository.findById(request.getCategoryId())
+        ProductCategory category = productCategoryRepository
+                .findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        User seller = userRepository.findById(request.getSeller_id())
-                .orElseThrow(() -> new RuntimeException("Seller không tồn tại!"));
+        User seller = userRepository
+                .findById(request.getSeller_id())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
             try {
-                List<MediaFile> upLoadFiles=new ArrayList<>();
+                List<MediaFile> upLoadFiles = new ArrayList<>();
                 for (MultipartFile file : request.getImagesFile()) {
                     MediaFile mediaFile = cloudinaryService.uploadFile(file, "product", seller.getId());
 
                     mediaFiles.add(mediaFile);
-                }mediaFiles.addAll(mediaFileRepository.saveAll(upLoadFiles));
+                }
+                mediaFiles.addAll(mediaFileRepository.saveAll(upLoadFiles));
 
             } catch (IOException e) {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
@@ -80,7 +84,7 @@ public class ProductService {
                 .materialsUsed(request.getMaterialsUsed())
                 .inventory(request.getInventory())
                 .build();
-//        product.setProductCategory(category);
+        //        product.setProductCategory(category);
 
         product = productRepository.save(product);
         ProductResponse productResponse = ProductResponse.builder()
@@ -96,10 +100,12 @@ public class ProductService {
                 .build();
         return productResponse;
     }
+
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository
+                .findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         productMapper.updateProduct(product, request);
@@ -107,9 +113,12 @@ public class ProductService {
         return productMapper.toProductResponse(productRepository.save(product));
     }
 
-    public List<ProductResponse> getAllProduct(){
-        return productRepository.findAll().stream().map(productMapper::toProductResponse).toList();
+    public List<ProductResponse> getAllProduct() {
+        return productRepository.findAll().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
     }
+
     public void deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {
             throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);

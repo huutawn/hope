@@ -1,13 +1,12 @@
 package com.llt.hope.entity;
 
+import java.security.Timestamp;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.security.Timestamp;
 
 @Entity
 @Table(name = "CartItems")
@@ -37,4 +36,3 @@ public class CartItem {
     @Column(name = "added_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp addedAt;
 }
-

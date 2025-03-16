@@ -1,18 +1,18 @@
-//package com.llt.hope.mapper;
+// package com.llt.hope.mapper;
 //
 //
-//import com.llt.hope.dto.request.OrderCreationRequest;
-//import com.llt.hope.dto.request.OrderUpdateRequest;
-//import com.llt.hope.dto.response.OrderResponse;
-//import com.llt.hope.entity.Order;
-//import com.llt.hope.service.OrderService;
-//import org.mapstruct.Mapper;
-//import org.mapstruct.Mapping;
-//import org.mapstruct.MappingTarget;
-//import org.mapstruct.factory.Mappers;
+// import com.llt.hope.dto.request.OrderCreationRequest;
+// import com.llt.hope.dto.request.OrderUpdateRequest;
+// import com.llt.hope.dto.response.OrderResponse;
+// import com.llt.hope.entity.Order;
+// import com.llt.hope.service.OrderService;
+// import org.mapstruct.Mapper;
+// import org.mapstruct.Mapping;
+// import org.mapstruct.MappingTarget;
+// import org.mapstruct.factory.Mappers;
 //
-//@Mapper(componentModel = "spring")
-//public interface OrderMapper {
+// @Mapper(componentModel = "spring")
+// public interface OrderMapper {
 //        OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 //
 //        @Mapping(target = "orderId", ignore = true)

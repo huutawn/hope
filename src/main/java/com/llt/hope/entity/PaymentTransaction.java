@@ -1,14 +1,13 @@
 package com.llt.hope.entity;
 
+import java.math.BigDecimal;
+import java.security.Timestamp;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.math.BigDecimal;
-import java.security.Timestamp;
 
 @Entity
 @Table(name = "PaymentTransactions")
@@ -44,6 +43,7 @@ public class PaymentTransaction {
 
     @Column(name = "reference_number", length = 100)
     private String referenceNumber;
+
     public void setPaymentMethod(String paymentMethod) {
         if (!isValidPaymentMethod(paymentMethod)) {
             throw new IllegalArgumentException("Invalid payment method: " + paymentMethod);
@@ -58,6 +58,10 @@ public class PaymentTransaction {
                 || paymentMethod.equals("E_WALLET");
     }
 }
-enum TransactionStatus{
-    PENDING,COMPLETED,FAILED,REFUNDED
+
+enum TransactionStatus {
+    PENDING,
+    COMPLETED,
+    FAILED,
+    REFUNDED
 }
