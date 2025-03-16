@@ -32,8 +32,8 @@ public class ProductController {
                 .build();
     }
 
-    @PostMapping()
-    public ApiResponse<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<ProductResponse> createProduct(@ModelAttribute ProductCreationRequest request) {
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.createProduct(request))
                 .build();

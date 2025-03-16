@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class ProductService {
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
 
-        Set<MediaFile> mediaFiles=new HashSet<>();
+        Set<MediaFile> mediaFiles = new HashSet<>();
 
 
         ProductCategory category = productCategoryRepository.findById(request.getCategoryId())
@@ -52,21 +53,20 @@ public class ProductService {
 
         User seller = userRepository.findById(request.getSeller_id())
                 .orElseThrow(() -> new RuntimeException("Seller không tồn tại!"));
-        /*if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
+        if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
             try {
+                List<MediaFile> upLoadFiles=new ArrayList<>();
+                for (MultipartFile file : request.getImagesFile()) {
+                    MediaFile mediaFile = cloudinaryService.uploadFile(file, "product", seller.getId());
 
-
-                for(MultipartFile file:request.getImagesFile()){
-                    MediaFile mediaFile = cloudinaryService.uploadFile(file,"product",seller.getEmail());
-                    mediaFileRepository.saveAndFlush(mediaFile);
                     mediaFiles.add(mediaFile);
-                }
+                }mediaFiles.addAll(mediaFileRepository.saveAll(upLoadFiles));
 
             } catch (IOException e) {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
             }
-        }*/
-        Product product =Product.builder()
+        }
+        Product product = Product.builder()
                 .createdAt(LocalDateTime.now())
                 .seller(seller)
                 .name(request.getName())
@@ -80,10 +80,21 @@ public class ProductService {
                 .materialsUsed(request.getMaterialsUsed())
                 .inventory(request.getInventory())
                 .build();
-        product.setProductCategory(category);
-        product.setSeller(seller);
+//        product.setProductCategory(category);
 
-        return productMapper.toProductResponse(productRepository.save(product));
+        product = productRepository.save(product);
+        ProductResponse productResponse = ProductResponse.builder()
+                .id(product.getId())
+                .createdAt(product.getCreatedAt())
+                .seller(seller)
+                .name(product.getName())
+                .images(product.getImages())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .productCategory(category)
+                .inventory(product.getInventory())
+                .build();
+        return productResponse;
     }
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {

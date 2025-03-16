@@ -43,5 +43,5 @@ import org.springframework.web.multipart.MultipartFile;
         String materialsUsed;
         BigDecimal weight;
         String dimensions;
-        /*List<MultipartFile>*/ String imagesFile;
+        List<MultipartFile> imagesFile;
     }
