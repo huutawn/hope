@@ -56,7 +56,7 @@ public class ProductService {
         User seller = userRepository
                 .findById(request.getSeller_id())
                 .orElseThrow(() -> new RuntimeException("Seller không tồn tại!"));
-        /*if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
+        if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
         	try {
 
 
@@ -81,7 +81,7 @@ public class ProductService {
         	} catch (IOException e) {
         		throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
         	}
-        }*/
+        }
         Product product = Product.builder()
             } catch (IOException e) {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
