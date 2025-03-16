@@ -30,6 +30,11 @@ public class ProfileService {
     CloudinaryService cloudinaryService;
     ProfileMapper profileMapper;
     MediaFileRepository mediaFileRepository;
+    ProfileRepository profileRepository;
+    UserRepository userRepository;
+    CloudinaryService cloudinaryService;
+    ProfileMapper profileMapper;
+    MediaFileRepository mediaFileRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
