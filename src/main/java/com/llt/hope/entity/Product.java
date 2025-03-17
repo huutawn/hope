@@ -66,9 +66,4 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     Set<MediaFile> images;
-
-    LocalDateTime updatedAt;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<MediaFile> images;
 }

@@ -1,11 +1,14 @@
 package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -42,5 +45,5 @@ public class ProductCreationRequest {
     String materialsUsed;
     BigDecimal weight;
     String dimensions;
-    /*List<MultipartFile>*/ String imagesFile;
+    List<MultipartFile> imagesFile;
 }
