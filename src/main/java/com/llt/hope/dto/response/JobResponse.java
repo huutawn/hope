@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class JobResponse {
+    private Long id;
     private User employer;
     private String title;
     private String description;

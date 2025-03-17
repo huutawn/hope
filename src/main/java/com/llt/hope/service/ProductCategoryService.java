@@ -12,7 +12,7 @@ import com.llt.hope.entity.ProductCategory;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductCategoryMapper;
-import com.llt.hope.repository.ProductCategoryRepository;
+import com.llt.hope.repository.jpa.ProductCategoryRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

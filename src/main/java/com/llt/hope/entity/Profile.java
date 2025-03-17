@@ -41,7 +41,7 @@ public class Profile {
     @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id") // Nhà tuyển dụng đã được xác minh chưa?
     private Company company;
 

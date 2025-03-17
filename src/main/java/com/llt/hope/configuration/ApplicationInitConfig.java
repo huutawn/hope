@@ -10,8 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.entity.Role;
 import com.llt.hope.entity.User;
-import com.llt.hope.repository.RoleRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.RoleRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

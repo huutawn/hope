@@ -35,7 +35,8 @@ public enum ErrorCode {
     COMPANY_ALREADY_ACTIVE(427, "company is active", HttpStatus.CONFLICT),
     PRODUCT_HAS_EXISTED(426, "Product has already existed", HttpStatus.CONFLICT),
     COMPANY_IS_NOT_ACTIVE(426, "company is not active", HttpStatus.FORBIDDEN),
-    PRODUCT_NOT_EXISTED(426, "Product not existed", HttpStatus.NOT_FOUND);
+    PRODUCT_NOT_EXISTED(426, "Product not existed", HttpStatus.NOT_FOUND),
+    POST_NOT_EXISTED(426, "Post not found", HttpStatus.BAD_REQUEST);
     int code;
     String message;
     HttpStatusCode httpStatusCode;

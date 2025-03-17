@@ -18,8 +18,8 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.UserMapper;
-import com.llt.hope.repository.RoleRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.RoleRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

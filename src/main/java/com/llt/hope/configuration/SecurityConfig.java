@@ -32,7 +32,8 @@ public class SecurityConfig {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/swagger-ui.html",
-        "/job/getAll"
+        "/job/getAll",
+        "/post/getAll",
     };
 
     @Autowired

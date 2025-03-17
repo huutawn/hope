@@ -19,10 +19,10 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
-import com.llt.hope.repository.MediaFileRepository;
-import com.llt.hope.repository.ProductCategoryRepository;
-import com.llt.hope.repository.ProductRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.ProductCategoryRepository;
+import com.llt.hope.repository.jpa.ProductRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
