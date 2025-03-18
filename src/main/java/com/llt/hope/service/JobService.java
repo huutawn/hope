@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.llt.hope.document.elasticsearch.JobDocument;
-import com.llt.hope.mapper.JobDocumentMapper;
-import com.llt.hope.repository.elasticsearch.JobElasticsearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import com.llt.hope.document.elasticsearch.JobDocument;
 import com.llt.hope.dto.request.RecruitmentCreationRequest;
 import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
@@ -25,8 +22,9 @@ import com.llt.hope.entity.Job;
 import com.llt.hope.entity.JobCategory;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
+import com.llt.hope.mapper.JobDocumentMapper;
 import com.llt.hope.mapper.JobMapper;
-
+import com.llt.hope.repository.elasticsearch.JobElasticsearchRepository;
 import com.llt.hope.repository.jpa.JobCategoryRepository;
 import com.llt.hope.repository.jpa.JobRepository;
 import com.llt.hope.repository.jpa.UserRepository;

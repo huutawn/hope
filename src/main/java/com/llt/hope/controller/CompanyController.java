@@ -1,10 +1,10 @@
 package com.llt.hope.controller;
 
-import com.llt.hope.dto.response.ActiveCompanyResponse;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.CompanyCreationRequest;
+import com.llt.hope.dto.response.ActiveCompanyResponse;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.CompanyResponse;
 import com.llt.hope.dto.response.PageResponse;

@@ -3,8 +3,9 @@ package com.llt.hope.entity;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.*;
 
@@ -40,7 +41,7 @@ public class Company {
     @OneToOne
     @JoinColumn(name = "profile_id")
     @JsonBackReference
-    private Profile profile;//
+    private Profile profile; //
 
     @OneToOne
     @JoinColumn(name = "file_id")
@@ -55,5 +56,4 @@ public class Company {
 
     @Column(nullable = false)
     private LocalDate createdAt; // Ngày tạo công ty
-
 }
