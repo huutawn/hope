@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,6 +23,7 @@ public class Like {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "post_id", nullable = false)
     private Post post; // Bài đăng được thích
 

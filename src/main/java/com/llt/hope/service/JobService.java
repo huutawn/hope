@@ -1,5 +1,6 @@
 package com.llt.hope.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.llt.hope.document.elasticsearch.JobDocument;
 import com.llt.hope.dto.request.RecruitmentCreationRequest;
 import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
@@ -20,10 +22,13 @@ import com.llt.hope.entity.Job;
 import com.llt.hope.entity.JobCategory;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
+import com.llt.hope.mapper.JobDocumentMapper;
 import com.llt.hope.mapper.JobMapper;
-import com.llt.hope.repository.JobCategoryRepository;
-import com.llt.hope.repository.JobRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.elasticsearch.JobElasticsearchRepository;
+import com.llt.hope.repository.jpa.JobCategoryRepository;
+import com.llt.hope.repository.jpa.JobRepository;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.specification.JobSpecification;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -40,6 +45,8 @@ public class JobService {
     UserRepository userRepository;
     JobCategoryRepository jobCategoryRepository;
     JobMapper jobMapper;
+    JobDocumentMapper jobDocumentMapper;
+    JobElasticsearchRepository jobElasticsearchRepository;
 
     @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
@@ -70,7 +77,25 @@ public class JobService {
                 .suitableForDisability(request.getSuitableForDisability())
                 .responsibilities(request.getResponsibilities())
                 .build();
-        return jobMapper.toJobResponse(jobRepository.save(job));
+        Job savedJob = jobRepository.save(job);
+        JobDocument jobDocument = JobDocument.builder()
+                .id(savedJob.getId().toString())
+                .createdAt(LocalDateTime.now())
+                .jobCategory(jobCategory.getName())
+                .description(request.getDescription())
+                .employerId(employer.getId())
+                .title(request.getTitle())
+                .views(0)
+                .benefits(savedJob.getBenefits())
+                .responsibilities(savedJob.getResponsibilities())
+                .location(request.getLocation())
+                .salaryMax(request.getSalaryMax())
+                .salaryMin(request.getSalaryMin())
+                .requirements(request.getRequirements())
+                .suitableForDisability(request.getSuitableForDisability())
+                .build();
+        jobElasticsearchRepository.save(jobDocument);
+        return jobMapper.toJobResponse(savedJob);
     }
 
     public PageResponse<JobResponse> getAllJobRecruitments(Specification<Job> spec, int page, int size) {
@@ -84,6 +109,47 @@ public class JobService {
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)
                 .pageSize(pageable.getPageSize())
+                .totalElements(jobs.getTotalElements())
+                .totalPages(jobs.getTotalPages())
+                .data(jobResponses)
+                .build();
+    }
+
+    public PageResponse<JobResponse> searchJobs(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<JobDocument> jobDocuments =
+                jobElasticsearchRepository
+                        .findByTitleContainingOrDescriptionContainingOrRequirementsContainingOrResponsibilitiesContaining(
+                                keyword, keyword, keyword, keyword, pageable);
+        List<JobResponse> jobResponses = jobDocuments.getContent().stream()
+                .map(jobDocumentMapper::toJobResponse) // Chuyển từng Job thành JobResponse
+                .toList();
+        return PageResponse.<JobResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(jobDocuments.getTotalElements())
+                .totalPages(jobDocuments.getTotalPages())
+                .data(jobResponses)
+                .build();
+    }
+
+    public PageResponse<JobResponse> filterJobs(
+            String categoryName, String requirement, BigDecimal minSalary, BigDecimal maxSalary, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Specification<Job> spec = Specification.where(JobSpecification.hasCategory(categoryName))
+                .and(JobSpecification.hasRequirements(requirement))
+                .and(JobSpecification.salaryBetween(minSalary, maxSalary));
+
+        Page<Job> jobs = jobRepository.findAll(spec, pageable);
+        List<JobResponse> jobResponses =
+                jobs.getContent().stream().map(jobMapper::toJobResponse).toList();
+
+        return PageResponse.<JobResponse>builder()
+                .currentPage(page)
+                .pageSize(size)
                 .totalElements(jobs.getTotalElements())
                 .totalPages(jobs.getTotalPages())
                 .data(jobResponses)

@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 import jakarta.validation.Valid;
 
@@ -17,9 +18,9 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.SellerProfileMapper;
-import com.llt.hope.repository.RoleRepository;
-import com.llt.hope.repository.SellerProfileRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.RoleRepository;
+import com.llt.hope.repository.jpa.SellerProfileRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -52,14 +53,13 @@ public class SellerProfileService {
         sellerProfileRepository.findByUserId(user.getId()).ifPresent(profile -> {
             throw new AppException(ErrorCode.SELLER_PROFILE_ALREADY_EXISTS);
         });
+        HashSet<Role> roles = new HashSet<>();
 
-        Role sellerRole = roleRepository
-                .findRoleByName(PredefindRole.SELLER_ROLE)
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        roleRepository.findById(PredefindRole.SELLER_ROLE).ifPresent(roles::add);
 
         // Thêm role SELLER cho user
-        user.getRoles().add(sellerRole);
-        userRepository.save(user);
+        user.setRoles(roles);
+        userRepository.saveAndFlush(user);
 
         SellerProfile sellerProfile = SellerProfile.builder()
                 .user(user)

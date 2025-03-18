@@ -1,4 +1,4 @@
-package com.llt.hope.repository;
+package com.llt.hope.repository.jpa;
 
 import java.util.List;
 import java.util.Optional;

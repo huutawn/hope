@@ -8,7 +8,7 @@ import com.llt.hope.entity.JobCategory;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.JobCategoryMapper;
-import com.llt.hope.repository.JobCategoryRepository;
+import com.llt.hope.repository.jpa.JobCategoryRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

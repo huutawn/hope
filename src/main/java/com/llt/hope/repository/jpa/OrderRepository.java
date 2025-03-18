@@ -1,4 +1,4 @@
-package com.llt.hope.repository;
+package com.llt.hope.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

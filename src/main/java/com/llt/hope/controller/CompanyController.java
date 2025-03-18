@@ -1,11 +1,15 @@
 package com.llt.hope.controller;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.CompanyCreationRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.CompanyResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.entity.Company;
 import com.llt.hope.service.CompanyService;
+import com.turkraft.springfilter.boot.Filter;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,17 @@ public class CompanyController {
     public ApiResponse<CompanyResponse> createRecruitment(@ModelAttribute CompanyCreationRequest request) {
         return ApiResponse.<CompanyResponse>builder()
                 .result(companyService.createCompany(request))
+                .build();
+    }
+
+    @GetMapping("/non-active")
+    public ApiResponse<PageResponse> getAllCompanyNonActive(
+            @Filter Specification<Company> spec,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+
+        return ApiResponse.<PageResponse>builder()
+                .result(companyService.getAllCompanyNonActive(spec, page, size))
                 .build();
     }
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.CompanyMapper;
-import com.llt.hope.repository.*;
+import com.llt.hope.repository.jpa.*;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -67,6 +68,7 @@ public class CompanyService {
                 .isActive(false)
                 .address(request.getAddress())
                 .industry(request.getIndustry())
+                .isActive(false)
                 .size(request.getSize())
                 .name(request.getName())
                 .description(request.getDescription())
@@ -78,15 +80,12 @@ public class CompanyService {
         companyRepository.save(company);
         profile.setCompany(company);
         profileRepository.save(profile);
-        HashSet<Role> roles = new HashSet<>();
-
-        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
         user.setProfile(profile);
-        user.setRoles(roles);
         userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
     }
 
+    @PreAuthorize("hasRole('ADMIN")
     public PageResponse<CompanyResponse> getAllCompanyNonActive(Specification<Company> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -112,7 +111,18 @@ public class CompanyService {
             throw new AppException(ErrorCode.COMPANY_ALREADY_ACTIVE);
         }
         company.setActive(true);
-        companyRepository.save(company);
+        Profile profile = profileRepository
+                .findProfileByCompany(company)
+                .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
+        company = companyRepository.save(company);
+        profile.setCompany(company);
+        profileRepository.save(profile);
+        Set<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
+        User user = userRepository
+                .findUserByProfile(profile)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setRoles(roles);
         return companyMapper.toCompanyResponse(company);
     }
 }

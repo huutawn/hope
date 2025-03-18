@@ -10,9 +10,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  elasticsearch:
+    uris: https://6c3c28c1c31c4680b19026beafcc41ce.ap-southeast-1.aws.found.io:443
+    username: elastic
+    password: kxuXzAQgrnazZ4loL99pKImK
 
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"

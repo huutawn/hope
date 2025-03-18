@@ -26,9 +26,10 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.PostMapper;
-import com.llt.hope.repository.MediaFileRepository;
-import com.llt.hope.repository.PostRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.LikeRepository;
+import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.PostRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -46,6 +47,7 @@ public class PostService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
+    LikeRepository likeRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional

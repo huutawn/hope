@@ -2,7 +2,6 @@ package com.llt.hope.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +21,11 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
-import com.llt.hope.repository.MediaFileRepository;
-import com.llt.hope.repository.ProductCategoryRepository;
-import com.llt.hope.repository.ProductRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.ProductCategoryRepository;
+import com.llt.hope.repository.jpa.ProductRepository;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,28 +47,28 @@ public class ProductService {
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
 
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         Set<MediaFile> mediaFiles = new HashSet<>();
 
         ProductCategory category = productCategoryRepository
                 .findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        User seller = userRepository
-                .findById(request.getSeller_id())
-                .orElseThrow(() -> new RuntimeException("Seller không tồn tại!"));
-        if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
-        	try {
+        User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
+            try {
 
-        		for(MultipartFile file:request.getImagesFile()){
-        			MediaFile mediaFile = cloudinaryService.uploadFile(file,"product",seller.getEmail());
-        			mediaFileRepository.saveAndFlush(mediaFile);
-        			mediaFiles.add(mediaFile);
-        		}
-                mediaFiles.addAll(mediaFileRepository.saveAll(upLoadFiles));
-
-        	} catch (IOException e) {
-        		throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
-        	}
+                for (MultipartFile file : request.getImagesFile()) {
+                    MediaFile mediaFile = cloudinaryService.uploadFile(file, "product", seller.getEmail());
+                    mediaFileRepository.saveAndFlush(mediaFile);
+                    mediaFiles.add(mediaFile);
+                }
+            } catch (IOException e) {
+                throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
+            }
+        }
         Product product = Product.builder()
                 .createdAt(LocalDateTime.now())
                 .seller(seller)
@@ -83,7 +83,6 @@ public class ProductService {
                 .materialsUsed(request.getMaterialsUsed())
                 .inventory(request.getInventory())
                 .build();
-        //        product.setProductCategory(category);
 
         product = productRepository.save(product);
         ProductResponse productResponse = ProductResponse.builder()

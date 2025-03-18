@@ -1,32 +1,30 @@
-package com.llt.hope.dto.response;
+package com.llt.hope.dto.request;
 
 import java.time.LocalDate;
 
-import com.llt.hope.entity.MediaFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ProfileResponse {
-    private Long id;
+public class ProfileUpdateRequest {
     private String fullName;
     private String disabilityType;
     private String disabilityDescription;
     private String address;
     private String city;
-    private String country;
     private String phone;
     private LocalDate dob;
-
     private String gender;
 
-    private MediaFile profilePicture;
+    private MultipartFile profilePicture;
 
     private String bio;
 }

@@ -38,4 +38,8 @@ public class PostResponse {
     private Set<Comment> comments;
 
     private List<Like> likes;
+
+    private int likeCount;
+
+    private int commentCount;
 }
