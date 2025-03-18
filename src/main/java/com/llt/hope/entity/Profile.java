@@ -2,6 +2,7 @@ package com.llt.hope.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -42,7 +43,8 @@ public class Profile {
     private MediaFile profilePicture;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id") // Nhà tuyển dụng đã được xác minh chưa?
+
+    @JsonManagedReference
     private Company company;
 
     private String bio;

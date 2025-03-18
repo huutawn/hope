@@ -1,6 +1,7 @@
 package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.*;
@@ -22,6 +23,6 @@ public class RecruitmentCreationRequest {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
     private String categoryName;
 }

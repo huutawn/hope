@@ -3,6 +3,7 @@ package com.llt.hope.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -34,7 +35,12 @@ public class Company {
 
     private String size; // Quy mô công ty (Small, Medium, Large)
 
-    private boolean isActive; //
+    private boolean isActive;
+
+    @OneToOne
+    @JoinColumn(name = "profile_id")
+    @JsonBackReference
+    private Profile profile;//
 
     @OneToOne
     @JoinColumn(name = "file_id")
@@ -50,6 +56,4 @@ public class Company {
     @Column(nullable = false)
     private LocalDate createdAt; // Ngày tạo công ty
 
-    @Column(nullable = false)
-    private LocalDate updatedAt; // Ngày cập nhật gần nhất
 }

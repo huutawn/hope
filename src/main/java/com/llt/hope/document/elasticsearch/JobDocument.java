@@ -1,6 +1,7 @@
 package com.llt.hope.document.elasticsearch;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Id;
@@ -55,7 +56,7 @@ public class JobDocument {
     private String benefits;
 
     @Field(type = FieldType.Date)
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
 
     @Field(type = FieldType.Boolean)
     private Boolean isActive;

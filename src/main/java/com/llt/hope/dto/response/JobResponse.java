@@ -1,6 +1,7 @@
 package com.llt.hope.dto.response;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.llt.hope.entity.User;
@@ -24,7 +25,7 @@ public class JobResponse {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private Integer views;
