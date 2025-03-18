@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class SellerProfileCreationRequest {
     String phone;
-    String userId;
     String email;
     String storeName;
     String storeDescription;

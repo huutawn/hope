@@ -1,18 +1,12 @@
 package com.llt.hope.service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-
-import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.SellerProfileCreationRequest;
 import com.llt.hope.dto.response.SellerProfileResponse;
-import com.llt.hope.entity.Role;
 import com.llt.hope.entity.SellerProfile;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
@@ -39,27 +33,19 @@ public class SellerProfileService {
     RoleRepository roleRepository;
 
     @Transactional
-    public SellerProfileResponse createSeller(@Valid @RequestBody SellerProfileCreationRequest request) {
+    public SellerProfileResponse createSeller(SellerProfileCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         log.info("Authenticated user: {}", email);
 
-        User user = userRepository
-                .findById(request.getUserId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Kiểm tra xem user đã có hồ sơ seller chưa
         sellerProfileRepository.findByUserId(user.getId()).ifPresent(profile -> {
             throw new AppException(ErrorCode.SELLER_PROFILE_ALREADY_EXISTS);
         });
-        HashSet<Role> roles = new HashSet<>();
-
-        roleRepository.findById(PredefindRole.SELLER_ROLE).ifPresent(roles::add);
-
         // Thêm role SELLER cho user
-        user.setRoles(roles);
-        userRepository.saveAndFlush(user);
 
         SellerProfile sellerProfile = SellerProfile.builder()
                 .user(user)
