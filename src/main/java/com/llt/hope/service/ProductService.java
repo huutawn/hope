@@ -59,34 +59,16 @@ public class ProductService {
         if(!request.getImagesFile().isEmpty()||request.getImagesFile()!=null){
         	try {
 
-
         		for(MultipartFile file:request.getImagesFile()){
         			MediaFile mediaFile = cloudinaryService.uploadFile(file,"product",seller.getEmail());
         			mediaFileRepository.saveAndFlush(mediaFile);
         			mediaFiles.add(mediaFile);
         		}
-        User seller = userRepository
-                .findById(request.getSeller_id())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
-            try {
-                List<MediaFile> upLoadFiles = new ArrayList<>();
-                for (MultipartFile file : request.getImagesFile()) {
-                    MediaFile mediaFile = cloudinaryService.uploadFile(file, "product", seller.getId());
-
-                    mediaFiles.add(mediaFile);
-                }
                 mediaFiles.addAll(mediaFileRepository.saveAll(upLoadFiles));
 
         	} catch (IOException e) {
         		throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
         	}
-        }
-        Product product = Product.builder()
-            } catch (IOException e) {
-                throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
-            }
-        }
         Product product = Product.builder()
                 .createdAt(LocalDateTime.now())
                 .seller(seller)

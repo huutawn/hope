@@ -62,7 +62,8 @@ public class Product {
     @Column(updatable = false)
     LocalDateTime createdAt = LocalDateTime.now();
 
-    LocalDateTime updatedAt;
+    @Column(updatable = false)
+    LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     Set<MediaFile> images;
@@ -71,4 +72,7 @@ public class Product {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     Set<MediaFile> images;
+
+    @OneToOne
+    SellerProfile sellerProfile;
 }
