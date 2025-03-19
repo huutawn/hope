@@ -30,7 +30,7 @@ public class CartItemController {
     public ApiResponse<CartItemResponse> createCartItem(
             @Valid @RequestBody CartItemCreationRequest request, Authentication authentication) {
         return ApiResponse.<CartItemResponse>builder()
-                .result(cartItemService.createCartItem(request, authentication))
+                .result(cartItemService.addCartItem(request, authentication))
                 .build();
     }
 }

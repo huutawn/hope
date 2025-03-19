@@ -20,7 +20,7 @@ public interface OrderMapper {
 
     @Mapping(target = "orderDate", ignore = true)
     @Mapping(target = "buyer", ignore = true)
-    void updateOrder(OrderUpdateRequest request, @MappingTarget Order order);
+    void updateOrder(@MappingTarget Order order,OrderUpdateRequest request);
 
 
 }

@@ -41,7 +41,8 @@ public enum ErrorCode {
     SELLER_PROFILE_ALREADY_EXISTS(433, "", HttpStatus.CONFLICT),
     USER_NOT_ACTIVE(434,"" , HttpStatus.MULTI_STATUS),
     ORDER_HAS_EXISTED(435," " ,HttpStatus.CONFLICT )
-    , ORDER_NOT_EXISTED(436, " ",HttpStatus.NOT_FOUND );
+    , ORDER_NOT_EXISTED(436, " ",HttpStatus.NOT_FOUND )
+    , CARTITEM_NOT_EXISTED(437,"" ,HttpStatus.NOT_FOUND );
     int code;
     String message;
     HttpStatusCode httpStatusCode;

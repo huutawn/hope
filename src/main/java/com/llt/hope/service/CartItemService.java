@@ -2,8 +2,14 @@ package com.llt.hope.service;
 
 
 import com.llt.hope.dto.request.CartItemCreationRequest;
+import com.llt.hope.dto.request.CartItemUpdateRequest;
+import com.llt.hope.dto.request.ProductUpdateRequest;
 import com.llt.hope.dto.response.CartItemResponse;
+import com.llt.hope.dto.response.OrderItemResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.dto.response.ProductResponse;
 import com.llt.hope.entity.CartItem;
+import com.llt.hope.entity.OrderItem;
 import com.llt.hope.entity.Product;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
@@ -16,6 +22,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -23,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +46,7 @@ public class CartItemService {
     ProductRepository productRepository;
     CartItemMapper cartItemMapper;
 
-    public CartItemResponse createCartItem(CartItemCreationRequest request, Authentication authentication){
+    public CartItemResponse addCartItem(CartItemCreationRequest request, Authentication authentication){
         String email = authentication.getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -66,5 +78,31 @@ public class CartItemService {
                 .quantity(cartItem.getQuantity())
                 .build();
         return cartItemResponse;
+    }
+    public PageResponse<CartItemResponse> getAllCartItem(Specification<OrderItem> spec, int page, int size){
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<CartItem> items = cartItemRepository.findAll(pageable);
+        List<CartItemResponse> cartItemResponses =
+                items.getContent().stream().map(cartItemMapper::toCartItemResponse).toList();
+        return PageResponse.<CartItemResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(items.getTotalElements())
+                .totalPages(items.getTotalPages())
+                .data(cartItemResponses)
+                .build();
+    }
+    public void deleteCartItem(Long cartItemId) {
+        if (!cartItemRepository.existsById(cartItemId)) {
+            throw new AppException(ErrorCode.CARTITEM_NOT_EXISTED);
+        }
+        productRepository.deleteById(cartItemId);
+    }
+    public CartItemResponse updateCart(Long id, CartItemUpdateRequest request) {
+        CartItem cartItem = cartItemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CARTITEM_NOT_EXISTED));
+        cartItemMapper.updateCart(cartItem, request);
+
+        return cartItemMapper.toCartItemResponse(cartItemRepository.save(cartItem));
     }
 }

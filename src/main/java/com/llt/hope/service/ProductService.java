@@ -6,18 +6,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.llt.hope.dto.request.UserUpdateRequest;
+import com.llt.hope.dto.response.OrderItemResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.dto.response.UserResponse;
+import com.llt.hope.entity.*;
 import jakarta.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.llt.hope.dto.request.ProductCreationRequest;
 import com.llt.hope.dto.request.ProductUpdateRequest;
 import com.llt.hope.dto.response.ProductResponse;
-import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.Product;
-import com.llt.hope.entity.ProductCategory;
-import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
@@ -99,22 +105,24 @@ public class ProductService {
         return productResponse;
     }
 
-    @Transactional
-    public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
-
-        Product product = productRepository
-                .findById(productId)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-
-        productMapper.updateProduct(product, request);
-
-        return productMapper.toProductResponse(productRepository.save(product));
-    }
-
-    public List<ProductResponse> getAllProduct() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toProductResponse)
-                .toList();
+//    public List<ProductResponse> getAllProduct() {
+//        return productRepository.findAll().stream()
+//                .map(productMapper::toProductResponse)
+//                .toList();
+//    }
+    public PageResponse<ProductResponse> getAllProduct(Specification<Product> spec, int page, int size){
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Product> products = productRepository.findAll(pageable);
+        List<ProductResponse> productResponses =
+                products.getContent().stream().map(productMapper::toProductResponse).toList();
+        return PageResponse.<ProductResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(products.getTotalElements())
+                .totalPages(products.getTotalPages())
+                .data(productResponses)
+                .build();
     }
     public ProductResponse getProduct(Long id) {
         return productMapper.toProductResponse(
@@ -126,5 +134,11 @@ public class ProductService {
             throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
         }
         productRepository.deleteById(productId);
+    }
+    public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        productMapper.updateProduct(product, request);
+
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 }
