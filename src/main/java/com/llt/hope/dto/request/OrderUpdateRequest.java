@@ -1,15 +1,17 @@
 package com.llt.hope.dto.request;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.math.BigDecimal;
 
-@Getter
-@Setter
+import lombok.*;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class OrderUpdateRequest {
-    String status;
+    private String status;
+    private BigDecimal totalAmount;
+    private String paymentMethod;
+    private String paymentStatus;
+    private String notes;
 }

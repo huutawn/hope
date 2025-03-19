@@ -1,7 +1,9 @@
+/*
 package com.llt.hope.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -20,8 +22,9 @@ public class SellerProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @OneToOne
+    @JsonBackReference
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     String phone;
@@ -35,3 +38,4 @@ public class SellerProfile {
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now();
 }
+*/

@@ -1,7 +1,14 @@
+/*
 package com.llt.hope.service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.dto.response.UserResponse;
+import com.llt.hope.entity.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +47,16 @@ public class SellerProfileService {
         log.info("Authenticated user: {}", email);
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
         // Kiểm tra xem user đã có hồ sơ seller chưa
         sellerProfileRepository.findByUserId(user.getId()).ifPresent(profile -> {
             throw new AppException(ErrorCode.SELLER_PROFILE_ALREADY_EXISTS);
         });
         // Thêm role SELLER cho user
-
+        HashSet<Role> roles = new HashSet<>();
+        if (!user.getRoles().contains(roles)) {
+            roleRepository.findById(PredefindRole.SELLER_ROLE).ifPresent(roles::add);
+            userRepository.save(user);
+        }
         SellerProfile sellerProfile = SellerProfile.builder()
                 .user(user)
                 .phone(request.getPhone())
@@ -61,4 +71,22 @@ public class SellerProfileService {
         SellerProfile savedProfile = sellerProfileRepository.save(sellerProfile);
         return sellerProfileMapper.toSellerPRofileResponse(savedProfile);
     }
+    */
+/*public UserResponse getUserInfo(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .roles(roles)
+                .build();
+    }*//*
+
+
 }
+*/

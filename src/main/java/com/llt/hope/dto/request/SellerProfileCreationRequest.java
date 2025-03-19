@@ -1,7 +1,6 @@
+/*
 package com.llt.hope.dto.request;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -11,8 +10,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class SellerProfileCreationRequest {
-    String phone;
-    String email;
-    String storeName;
-    String storeDescription;
+	String phone;
+	String email;
+	String storeName;
+	String storeDescription;
 }
+*/

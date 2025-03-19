@@ -1,5 +1,6 @@
 package com.llt.hope.exception;
 
+import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
@@ -37,7 +38,10 @@ public enum ErrorCode {
     COMPANY_IS_NOT_ACTIVE(430, "company is not active", HttpStatus.FORBIDDEN),
     PRODUCT_NOT_EXISTED(431, "Product not existed", HttpStatus.NOT_FOUND),
     POST_NOT_EXISTED(432, "Post not found", HttpStatus.BAD_REQUEST),
-    SELLER_PROFILE_ALREADY_EXISTS(433, "", HttpStatus.CONFLICT);
+    SELLER_PROFILE_ALREADY_EXISTS(433, "", HttpStatus.CONFLICT),
+    USER_NOT_ACTIVE(434,"" , HttpStatus.MULTI_STATUS),
+    ORDER_HAS_EXISTED(435," " ,HttpStatus.CONFLICT )
+    , ORDER_NOT_EXISTED(436, " ",HttpStatus.NOT_FOUND );
     int code;
     String message;
     HttpStatusCode httpStatusCode;

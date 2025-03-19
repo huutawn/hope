@@ -7,6 +7,8 @@ import jakarta.validation.constraints.*;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "OrderItems")
@@ -19,10 +21,11 @@ import lombok.experimental.FieldDefaults;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer itemId;
+    private Long itemId;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
     @ManyToOne
@@ -30,7 +33,7 @@ public class OrderItem {
     private Product product;
 
     @Min(1)
-    private Integer quantity;
+    private int quantity;
 
     @NotNull
     private BigDecimal price;

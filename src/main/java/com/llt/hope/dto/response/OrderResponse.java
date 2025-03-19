@@ -3,21 +3,21 @@ package com.llt.hope.dto.response;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.llt.hope.entity.User;
+
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class OrderResponse {
-    Long id;
-    String buyer;
-    LocalDateTime orderDate;
-    BigDecimal totalAmount;
-    String shippingAddress;
-    String status;
-    String paymentMethod;
-    String paymentStatus;
+    private Long orderId;
+    private User buyerId;
+    private LocalDateTime orderDate;
+    private String status;
+    private BigDecimal totalAmount;
+    private String paymentMethod;
+    private String paymentStatus;
+    private String notes;
 }

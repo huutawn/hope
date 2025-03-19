@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 
@@ -41,11 +42,14 @@ public class ProductCategoryService {
     @Transactional
     public void deleteCategoryById(Long id) {
         if (!productCategoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("ProductCategory with ID " + id + " does not exist.");
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
         productCategoryRepository.deleteById(id);
     }
-
+    public ProductCategory getCategory( Long id){
+        return productCategoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
     public List<ProductCategory> getAllProductCategory() {
         return productCategoryRepository.findAll();
     }

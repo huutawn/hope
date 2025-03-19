@@ -2,35 +2,21 @@ package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class OrderCreationRequest {
+    private String buyerId;
 
-    @NotNull
-    private Long buyerId;
-
-    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false, message = "Tổng tiền phải lớn hơn 0")
     private BigDecimal totalAmount;
 
-    @NotBlank
-    private String shippingAddress;
+    private String paymentMethod;
 
-    private String shippingCity;
-    private String shippingState;
-    private String shippingPostalCode;
-    private String shippingCountry = "VietName";
-
-    @NotBlank
-    String paymentMethod;
+    private String notes;
 }

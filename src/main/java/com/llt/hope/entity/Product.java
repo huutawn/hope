@@ -33,7 +33,6 @@ public class Product {
     @JsonIgnore
     User seller;
 
-    @NotBlank
     @Size(max = 100)
     String name;
 

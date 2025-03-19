@@ -19,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer paymentId;
+    private Long paymentId;
 
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false)

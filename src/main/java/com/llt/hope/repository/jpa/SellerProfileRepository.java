@@ -1,3 +1,4 @@
+/*
 package com.llt.hope.repository.jpa;
 
 import java.util.List;
@@ -10,9 +11,9 @@ import com.llt.hope.entity.SellerProfile;
 
 @Repository
 public interface SellerProfileRepository extends JpaRepository<SellerProfile, Long> {
-    Boolean existsByEmail(String email);
 
     List<SellerProfile> findByActiveFalse();
 
     Optional<SellerProfile> findByUserId(String seller_id);
 }
+*/

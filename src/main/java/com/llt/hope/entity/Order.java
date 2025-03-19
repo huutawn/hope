@@ -20,40 +20,28 @@ import lombok.experimental.FieldDefaults;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    Long Id;
 
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
-    private User buyer;
+     User buyer;
 
     @Column(updatable = false)
-    private LocalDateTime orderDate = LocalDateTime.now();
+     LocalDateTime orderDate = LocalDateTime.now();
 
     @NotBlank
     String status = "PENDING";
 
     @NotNull
-    private BigDecimal totalAmount;
-
-    private BigDecimal shippingFee = BigDecimal.ZERO;
-    private BigDecimal taxAmount = BigDecimal.ZERO;
-    private BigDecimal grandTotal;
+     BigDecimal totalAmount;
 
     @NotBlank
-    private String shippingAddress;
-
-    private String shippingCity;
-    private String shippingState;
-    private String shippingPostalCode;
-    private String shippingCountry = "Vietnam";
+     String paymentMethod;
 
     @NotBlank
-    private String paymentMethod;
+     String paymentStatus = "PENDING";
 
-    @NotBlank
-    private String paymentStatus = "PENDING";
-
-    private String notes;
+     String notes;
 
     public void setStatus(String status) {
         if (!isValidStatus(status)) {

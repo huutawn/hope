@@ -32,4 +32,17 @@ public class ProductCategoryController {
     public List<ProductCategory> getAllCategories() {
         return productCategoryService.getAllProductCategory();
     }
+
+    @GetMapping("/{categoryId}")
+    public ProductCategory getCategories(@PathVariable Long categoryId) {
+        return productCategoryService.getCategory(categoryId);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ApiResponse<String> deleteCategory(@PathVariable Long categoryId) {
+        productCategoryService.deleteCategoryById(categoryId);
+        return ApiResponse.<String>builder()
+                .result("Product deleted successfully")
+                .build();
+    }
 }

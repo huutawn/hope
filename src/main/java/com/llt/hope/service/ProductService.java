@@ -116,6 +116,10 @@ public class ProductService {
                 .map(productMapper::toProductResponse)
                 .toList();
     }
+    public ProductResponse getProduct(Long id) {
+        return productMapper.toProductResponse(
+                productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED)));
+    }
 
     public void deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {

@@ -1,6 +1,7 @@
 package com.llt.hope.entity;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -20,7 +21,7 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_item_id")
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -31,8 +32,8 @@ public class CartItem {
     private Product product;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 1")
-    private Integer quantity;
+    private Long quantity;
 
-    @Column(name = "added_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp addedAt;
+    @Column(name = "added_at")
+    private LocalDateTime addedAt;
 }
