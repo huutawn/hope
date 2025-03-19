@@ -1,6 +1,7 @@
 package com.llt.hope.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -40,7 +41,7 @@ public class Job {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
     private Boolean isActive;
 
     private LocalDateTime createdAt = LocalDateTime.now();

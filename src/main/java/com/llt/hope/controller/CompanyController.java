@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.CompanyCreationRequest;
+import com.llt.hope.dto.response.ActiveCompanyResponse;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.CompanyResponse;
 import com.llt.hope.dto.response.PageResponse;
@@ -37,6 +38,13 @@ public class CompanyController {
 
         return ApiResponse.<PageResponse>builder()
                 .result(companyService.getAllCompanyNonActive(spec, page, size))
+                .build();
+    }
+
+    @PatchMapping("/{companyId}")
+    public ApiResponse<ActiveCompanyResponse> activeCompany(@PathVariable long companyId) {
+        return ApiResponse.<ActiveCompanyResponse>builder()
+                .result(companyService.activeCompany(companyId))
                 .build();
     }
 }

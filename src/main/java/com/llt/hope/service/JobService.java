@@ -53,6 +53,7 @@ public class JobService {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var employer = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        log.info(employer.getProfile().getCountry());
         if (!employer.getProfile().getCompany().isActive()) {
             throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
         }

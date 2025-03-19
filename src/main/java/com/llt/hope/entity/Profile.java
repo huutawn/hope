@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -42,7 +43,7 @@ public class Profile {
     private MediaFile profilePicture;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id") // Nhà tuyển dụng đã được xác minh chưa?
+    @JsonManagedReference
     private Company company;
 
     private String bio;
