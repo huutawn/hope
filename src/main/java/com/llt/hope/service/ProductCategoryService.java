@@ -2,9 +2,6 @@ package com.llt.hope.service;
 
 import java.util.List;
 
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.jpa.UserRepository;
-import com.llt.hope.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,10 +10,13 @@ import org.springframework.stereotype.Service;
 import com.llt.hope.dto.request.ProductCategoryCreationRequest;
 import com.llt.hope.dto.response.ProductCategoryResponse;
 import com.llt.hope.entity.ProductCategory;
+import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductCategoryMapper;
 import com.llt.hope.repository.jpa.ProductCategoryRepository;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ public class ProductCategoryService {
                 .build();
         return productCategoryMapper.toProductCategoryResponse(productCategoryRepository.save(productCategory));
     }
-        //gigig
+    // gigig
     @Transactional
     public void deleteCategoryById(Long id) {
         if (!productCategoryRepository.existsById(id)) {

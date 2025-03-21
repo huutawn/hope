@@ -6,12 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.llt.hope.dto.request.AuthenticationRequest;
-import com.llt.hope.dto.request.UserUpdateRequest;
-import com.llt.hope.dto.response.OrderItemResponse;
-import com.llt.hope.dto.response.PageResponse;
-import com.llt.hope.dto.response.UserResponse;
-import com.llt.hope.entity.*;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -26,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.llt.hope.dto.request.ProductCreationRequest;
 import com.llt.hope.dto.request.ProductUpdateRequest;
+import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.ProductResponse;
+import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
@@ -53,7 +49,6 @@ public class ProductService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
-
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -110,17 +105,18 @@ public class ProductService {
         return productResponse;
     }
 
-//    public List<ProductResponse> getAllProduct() {
-//        return productRepository.findAll().stream()
-//                .map(productMapper::toProductResponse)
-//                .toList();
-//    }
-    public PageResponse<ProductResponse> getAllProduct(Specification<Product> spec, int page, int size){
+    //    public List<ProductResponse> getAllProduct() {
+    //        return productRepository.findAll().stream()
+    //                .map(productMapper::toProductResponse)
+    //                .toList();
+    //    }
+    public PageResponse<ProductResponse> getAllProduct(Specification<Product> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Product> products = productRepository.findAll(pageable);
-        List<ProductResponse> productResponses =
-                products.getContent().stream().map(productMapper::toProductResponse).toList();
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
         return PageResponse.<ProductResponse>builder()
                 .currentPage(page)
                 .pageSize(pageable.getPageSize())
@@ -141,8 +137,10 @@ public class ProductService {
         }
         productRepository.deleteById(productId);
     }
+
     public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Product product =
+                productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         productMapper.updateProduct(product, request);
 
         return productMapper.toProductResponse(productRepository.save(product));

@@ -38,7 +38,6 @@ public class ProductCreationRequest {
     @NotNull
     int inventory;
 
-
     BigDecimal weight;
     String dimensions;
     List<MultipartFile> imagesFile;

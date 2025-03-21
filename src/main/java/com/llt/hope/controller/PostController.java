@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostController {
@@ -61,7 +61,7 @@ public class PostController {
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
         return ApiResponse.<PageResponse<PostResponse>>builder()
-                .result(postService.getAllPost(spec, page, size))
+                .result(postService.getAllCurrentPosts(spec, page, size))
                 .build();
     }
 

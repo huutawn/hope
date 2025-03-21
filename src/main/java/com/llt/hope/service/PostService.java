@@ -116,7 +116,6 @@ public class PostService {
                 .build();
     }
 
-    @PreAuthorize("isAuthenticated()")
     public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -133,6 +132,7 @@ public class PostService {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ActivePostResponse activePost(long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         post.setActive(true);

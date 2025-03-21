@@ -72,7 +72,6 @@ public class CompanyService {
                 .isActive(false)
                 .address(request.getAddress())
                 .industry(request.getIndustry())
-                .isActive(false)
                 .size(request.getSize())
                 .name(request.getName())
                 .email(request.getEmail())
@@ -84,9 +83,7 @@ public class CompanyService {
                 .build();
         companyRepository.save(company);
         profile.setCompany(company);
-        log.info("profile: " + profile.getId());
         profile = profileRepository.save(profile);
-        log.info("profile: " + profile.getId() + " part2");
         user.setProfile(profile);
         userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
@@ -133,7 +130,7 @@ public class CompanyService {
         profile1.setCompany(company1);
         profileRepository.save(profile1);
         Set<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
+        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
         User user = userRepository
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

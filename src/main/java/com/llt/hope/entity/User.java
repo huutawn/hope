@@ -41,8 +41,6 @@ public class User {
     @JsonManagedReference
     private Profile profile;
 
-
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Seller seller;
