@@ -42,7 +42,7 @@ public class ProductCategoryController {
     public ApiResponse<String> deleteCategory(@PathVariable Long categoryId) {
         productCategoryService.deleteCategoryById(categoryId);
         return ApiResponse.<String>builder()
-                .result("Product deleted successfully")
+                .result("Category deleted successfully")
                 .build();
     }
 }

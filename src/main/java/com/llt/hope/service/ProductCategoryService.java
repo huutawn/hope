@@ -2,8 +2,12 @@ package com.llt.hope.service;
 
 import java.util.List;
 
+import com.llt.hope.entity.User;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.ProductCategoryCreationRequest;
@@ -27,8 +31,13 @@ public class ProductCategoryService {
 
     ProductCategoryRepository productCategoryRepository;
     ProductCategoryMapper productCategoryMapper;
+    UserRepository userRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductCategoryResponse createProductCategory(ProductCategoryCreationRequest request) {
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (productCategoryRepository.existsProductCategoryByName(request.getName()))
             throw new AppException(ErrorCode.CATEGORY_HAS_EXISTED);
         ProductCategory productCategory = ProductCategory.builder()
@@ -37,7 +46,7 @@ public class ProductCategoryService {
                 .build();
         return productCategoryMapper.toProductCategoryResponse(productCategoryRepository.save(productCategory));
     }
-
+        //gigig
     @Transactional
     public void deleteCategoryById(Long id) {
         if (!productCategoryRepository.existsById(id)) {

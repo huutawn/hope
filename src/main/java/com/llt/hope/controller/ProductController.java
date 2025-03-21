@@ -2,7 +2,15 @@ package com.llt.hope.controller;
 
 import java.util.List;
 
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.entity.Post;
+import com.llt.hope.entity.Product;
+import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
+import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.ProductCreationRequest;
@@ -25,24 +33,29 @@ public class ProductController {
 
     ProductService productService;
 
-    @GetMapping
-    public ApiResponse<List<ProductResponse>> getAllProducts() {
-        return ApiResponse.<List<ProductResponse>>builder()
-                .result(productService.getAllProduct())
+    @GetMapping("/getAll")
+    public ApiResponse<PageResponse<ProductResponse>> getAllProducts(
+            @Filter Specification<Product> spec,
+
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
+        return ApiResponse.<PageResponse<ProductResponse>>builder()
+                .result(productService.getAllProduct(spec, page, size))
                 .build();
     }
 
     @GetMapping("/{productId}")
-    public ApiResponse<List<ProductResponse>> getProducts() {
-        return ApiResponse.<List<ProductResponse>>builder()
-                .result(productService.getAllProduct())
+    public ApiResponse<ProductResponse>getProducts(@PathVariable Long id) {
+        return ApiResponse.<ProductResponse>builder()
+                .result(productService.getProduct(id))
                 .build();
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<ProductResponse> createProduct(@ModelAttribute ProductCreationRequest request) {
+    public ApiResponse<ProductResponse> createProduct(@ModelAttribute ProductCreationRequest request, Authentication authentication) {
         return ApiResponse.<ProductResponse>builder()
-                .result(productService.createProduct(request))
+                .result(productService.createProduct(request, authentication ))
                 .build();
     }
 

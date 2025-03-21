@@ -1,7 +1,26 @@
 package com.llt.hope.service;
 
-import java.math.BigDecimal;
-import java.util.List;
+
+import com.llt.hope.dto.request.OrderItemCreationRequest;
+import com.llt.hope.dto.request.OrderUpdateRequest;
+import com.llt.hope.dto.response.OrderItemResponse;
+import com.llt.hope.dto.response.OrderResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.dto.response.PostResponse;
+import com.llt.hope.entity.*;
+import com.llt.hope.exception.AppException;
+import com.llt.hope.exception.ErrorCode;
+import com.llt.hope.mapper.ItemMapper;
+import com.llt.hope.repository.jpa.OrderItemRepository;
+import com.llt.hope.repository.jpa.OrderRepository;
+import com.llt.hope.repository.jpa.ProductRepository;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
+import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,23 +29,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.llt.hope.dto.request.OrderItemCreationRequest;
-import com.llt.hope.dto.response.OrderItemResponse;
-import com.llt.hope.dto.response.PageResponse;
-import com.llt.hope.entity.Order;
-import com.llt.hope.entity.OrderItem;
-import com.llt.hope.entity.Product;
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
-import com.llt.hope.mapper.ItemMapper;
-import com.llt.hope.repository.jpa.OrderItemRepository;
-import com.llt.hope.repository.jpa.OrderRepository;
-import com.llt.hope.repository.jpa.ProductRepository;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +41,15 @@ public class OrderItemService {
     OrderRepository orderRepository;
     ProductRepository productRepository;
     ItemMapper orderItemMapper;
+    UserRepository userRepository;
 
-    public OrderItemResponse createItem(OrderItemCreationRequest request) {
-        Order order = orderRepository
-                .findById(request.getOrderId())
+    public OrderItemResponse createItem(OrderItemCreationRequest request){
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
-        Product product = productRepository
-                .findById(request.getProductId())
+        Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         OrderItem orderItem = OrderItem.builder()
@@ -62,12 +68,12 @@ public class OrderItemService {
                 .quantity(orderItem.getQuantity())
                 .subtotal(orderItem.getSubtotal())
                 .build();
-        //        updateOrderTotal(order);
+//        updateOrderTotal(order);
 
         return orderItemResponse;
     }
 
-    public PageResponse<OrderItemResponse> getAllOrderItem(Specification<OrderItem> spec, int page, int size) {
+    public PageResponse<OrderItemResponse> getAllOrderItem(Specification<OrderItem> spec, int page, int size){
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<OrderItem> items = orderItemRepository.findAll(pageable);
@@ -81,22 +87,38 @@ public class OrderItemService {
                 .data(orderItemResponses)
                 .build();
     }
+    public OrderItemResponse getOrderItem(Long id){
+        return orderItemMapper.toItemResponse(
+                orderItemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_ITEM_NOT_EXISTED)));
+    }
+
+    public void deleteOrderItems(Long Id) {
+        if (!orderItemRepository.existsById(Id)) {
+            throw new AppException(ErrorCode.ORDER_ITEM_NOT_EXISTED);
+        }
+        orderItemRepository.deleteById(Id);
+    }
+
+
+
+
+
 
     /*@Transactional
     public void updateOrderTotal(Order orderId) {
-    	Order order = orderRepository.findById(orderId.getId())
-    			.orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
+        Order order = orderRepository.findById(orderId.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
 
-    	List<OrderItem> orderItems = orderItemRepository.findByOrder(order.getId());
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(order.getId());
 
-    	BigDecimal totalAmount = BigDecimal.ZERO;
-    	for (OrderItem item : orderItems) {
-    		totalAmount = totalAmount.add(item.getSubtotal());
-    	}
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (OrderItem item : orderItems) {
+            totalAmount = totalAmount.add(item.getSubtotal());
+        }
 
-    	order.setTotalAmount(totalAmount);
+        order.setTotalAmount(totalAmount);
 
-    	orderRepository.save(order);
+        orderRepository.save(order);
     }*/
 
 }

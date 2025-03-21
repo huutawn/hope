@@ -1,24 +1,37 @@
 package com.llt.hope.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
-import org.springframework.stereotype.Service;
-
+import com.llt.hope.dto.request.CartItemUpdateRequest;
 import com.llt.hope.dto.request.OrderCreationRequest;
-import com.llt.hope.dto.response.OrderResponse;
+import com.llt.hope.dto.request.OrderUpdateRequest;
+import com.llt.hope.dto.response.*;
+import com.llt.hope.entity.CartItem;
 import com.llt.hope.entity.Order;
+import com.llt.hope.entity.OrderItem;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.OrderMapper;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.UserRepository;
-
+import com.llt.hope.utils.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Or;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.DoubleStream.builder;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +39,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderService {
 
+
     OrderRepository orderRepository;
     UserRepository userRepository;
     OrderMapper orderMapper;
 
-    public OrderResponse createOrder(OrderCreationRequest request) {
-        User buyer = userRepository
-                .findById(request.getBuyerId())
+    public OrderResponse createOrder(OrderCreationRequest request){
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User buyer = userRepository.findById(request.getBuyerId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HAS_EXISTED));
         Order order = Order.builder()
                 .buyer(buyer)
@@ -58,32 +74,36 @@ public class OrderService {
         return orderResponse;
     }
 
-    public List<OrderResponse> getAllOrder() {
-        return orderRepository.findAll().stream()
-                .map(order -> {
-                    OrderResponse response = new OrderResponse();
-                    response.setOrderId(order.getId());
-                    response.setBuyerId(order.getBuyer());
-                    response.setOrderDate(LocalDateTime.now());
-                    response.setStatus(order.getStatus());
-                    response.setTotalAmount(order.getTotalAmount());
-                    response.setPaymentMethod(order.getPaymentMethod());
-                    response.setPaymentStatus(order.getPaymentStatus());
-                    response.setNotes(order.getNotes());
-                    return response;
-                })
-                .toList();
+    public PageResponse<OrderResponse> getAllOrder(Specification<Order> spec, int page, int size){
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Order> orders = orderRepository.findAll(pageable);
+        List<OrderResponse> orderResponses =
+                orders.getContent().stream().map(orderMapper::toOrderResponse).toList();
+        return PageResponse.<OrderResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(orders.getTotalElements())
+                .totalPages(orders.getTotalPages())
+                .data(orderResponses)
+                .build();
     }
 
-    public OrderResponse getOrder(Long id) {
+    public OrderResponse getOrder(Long id){
         return orderMapper.toOrderResponse(
                 orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED)));
     }
 
-    public void deleteProduct(Long orderId) {
+    public void deleteOrder(Long orderId) {
         if (!orderRepository.existsById(orderId)) {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(ErrorCode.ORDER_NOT_EXISTED);
         }
         orderRepository.deleteById(orderId);
+    }
+    public OrderResponse updateOrder(Long id, OrderUpdateRequest request) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
+        orderMapper.updateOrder(order, request);
+
+        return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 }

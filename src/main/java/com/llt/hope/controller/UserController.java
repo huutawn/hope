@@ -32,7 +32,6 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
-
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
