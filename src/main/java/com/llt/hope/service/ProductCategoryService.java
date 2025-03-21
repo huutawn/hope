@@ -47,7 +47,7 @@ public class ProductCategoryService {
                 .build();
         return productCategoryMapper.toProductCategoryResponse(productCategoryRepository.save(productCategory));
     }
-
+        //gigig
     @Transactional
     public void deleteCategoryById(Long id) {
         if (!productCategoryRepository.existsById(id)) {
