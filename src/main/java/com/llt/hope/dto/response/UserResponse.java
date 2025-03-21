@@ -6,6 +6,7 @@ import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
 
 //import com.llt.hope.entity.SellerProfile;
+import com.llt.hope.entity.Seller;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,6 +20,6 @@ public class UserResponse {
     String email;
     String phone;
     Profile profile;
-/*    SellerProfile sellerProfile;*/
+    Seller seller;
     Set<Role> roles;
 }

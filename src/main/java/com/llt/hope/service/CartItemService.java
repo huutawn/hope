@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@PreAuthorize("isAuthenticated()")
 public class CartItemService {
     CartItemRepository cartItemRepository;
     UserRepository userRepository;
@@ -49,7 +51,7 @@ public class CartItemService {
     public CartItemResponse addCartItem(CartItemCreationRequest request, Authentication authentication){
         String email = authentication.getName();
         User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED_));
 
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
@@ -79,7 +81,7 @@ public class CartItemService {
                 .build();
         return cartItemResponse;
     }
-    public PageResponse<CartItemResponse> getAllCartItem(Specification<OrderItem> spec, int page, int size){
+    public PageResponse<CartItemResponse> getAllCartItem(Specification<CartItem> spec, int page, int size){
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<CartItem> items = cartItemRepository.findAll(pageable);
@@ -92,6 +94,10 @@ public class CartItemService {
                 .totalPages(items.getTotalPages())
                 .data(cartItemResponses)
                 .build();
+    }
+    public CartItemResponse getCart(Long id) {
+        return cartItemMapper.toCartItemResponse(
+                cartItemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED)));
     }
     public void deleteCartItem(Long cartItemId) {
         if (!cartItemRepository.existsById(cartItemId)) {

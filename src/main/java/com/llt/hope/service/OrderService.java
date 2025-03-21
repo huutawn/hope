@@ -14,6 +14,7 @@ import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.OrderMapper;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -44,6 +45,9 @@ public class OrderService {
     OrderMapper orderMapper;
 
     public OrderResponse createOrder(OrderCreationRequest request){
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User buyer = userRepository.findById(request.getBuyerId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HAS_EXISTED));
         Order order = Order.builder()
@@ -69,22 +73,6 @@ public class OrderService {
 
         return orderResponse;
     }
-    public List<OrderResponse> getAllOrder() {
-        return orderRepository.findAll().stream()
-                .map(order -> {
-                    OrderResponse response = new OrderResponse();
-                    response.setOrderId(order.getId());
-                    response.setBuyerId(order.getBuyer());
-                    response.setOrderDate(LocalDateTime.now());
-                    response.setStatus(order.getStatus());
-                    response.setTotalAmount(order.getTotalAmount());
-                    response.setPaymentMethod(order.getPaymentMethod());
-                    response.setPaymentStatus(order.getPaymentStatus());
-                    response.setNotes(order.getNotes());
-                    return response;
-                })
-                .toList();
-    }
 
     public PageResponse<OrderResponse> getAllOrder(Specification<Order> spec, int page, int size){
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
@@ -106,9 +94,9 @@ public class OrderService {
                 orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED)));
     }
 
-    public void deleteProduct(Long orderId) {
+    public void deleteOrder(Long orderId) {
         if (!orderRepository.existsById(orderId)) {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(ErrorCode.ORDER_NOT_EXISTED);
         }
         orderRepository.deleteById(orderId);
     }

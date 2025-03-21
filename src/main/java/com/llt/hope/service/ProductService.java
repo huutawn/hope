@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.llt.hope.dto.request.AuthenticationRequest;
 import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.OrderItemResponse;
 import com.llt.hope.dto.response.PageResponse;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@PreAuthorize("hasRole('SELLER')")
 public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
@@ -50,11 +54,14 @@ public class ProductService {
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
 
+
+    @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ProductResponse createProduct(ProductCreationRequest request) {
+    public ProductResponse createProduct(ProductCreationRequest request, Authentication authentication) {
 
         String email =
-                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Set<MediaFile> mediaFiles = new HashSet<>();
 
@@ -85,8 +92,6 @@ public class ProductService {
                 .productCategory(category)
                 .weight(request.getWeight())
                 .dimensions(request.getDimensions())
-                .creationProcess(request.getCreationProcess())
-                .materialsUsed(request.getMaterialsUsed())
                 .inventory(request.getInventory())
                 .build();
 

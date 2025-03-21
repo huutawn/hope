@@ -38,11 +38,15 @@ public enum ErrorCode {
     COMPANY_IS_NOT_ACTIVE(430, "company is not active", HttpStatus.FORBIDDEN),
     PRODUCT_NOT_EXISTED(431, "Product not existed", HttpStatus.NOT_FOUND),
     POST_NOT_EXISTED(432, "Post not found", HttpStatus.BAD_REQUEST),
-    SELLER_PROFILE_ALREADY_EXISTS(433, "", HttpStatus.CONFLICT),
-    USER_NOT_ACTIVE(434,"" , HttpStatus.MULTI_STATUS),
-    ORDER_HAS_EXISTED(435," " ,HttpStatus.CONFLICT )
-    , ORDER_NOT_EXISTED(436, " ",HttpStatus.NOT_FOUND )
-    , CARTITEM_NOT_EXISTED(437,"" ,HttpStatus.NOT_FOUND );
+    SELLER_PROFILE_ALREADY_EXISTS(433, "Seller Profile already existed", HttpStatus.CONFLICT),
+    USER_NOT_ACTIVE(434," user non active" , HttpStatus.MULTI_STATUS),
+    ORDER_HAS_EXISTED(435," order has existed" ,HttpStatus.CONFLICT ),
+    ORDER_NOT_EXISTED(436, "order not existed ",HttpStatus.NOT_FOUND ),
+    CARTITEM_NOT_EXISTED(437,"cart not existed" ,HttpStatus.NOT_FOUND ),
+    SELLER_PROFILE_NOT_EXISTS(438,"Seller Profile not existed" ,HttpStatus.NOT_FOUND ),
+    ROLE_NOT_FOUND(439,"" ,HttpStatus.NOT_FOUND ),
+    ORDER_ITEM_NOT_EXISTED(440,"" ,HttpStatus.NOT_FOUND ),
+    SELLER_PROFILE_ALREADY_ACTIVE(441,"" ,HttpStatus.BAD_REQUEST );
     int code;
     String message;
     HttpStatusCode httpStatusCode;

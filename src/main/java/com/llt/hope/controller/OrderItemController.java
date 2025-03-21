@@ -1,9 +1,14 @@
 package com.llt.hope.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.llt.hope.dto.request.OrderUpdateRequest;
+import com.llt.hope.dto.response.OrderResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.entity.Order;
+import com.llt.hope.entity.OrderItem;
+import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.OrderItemCreationRequest;
 import com.llt.hope.dto.response.ApiResponse;
@@ -29,4 +34,31 @@ public class OrderItemController {
                 .result(orderItemService.createItem(request))
                 .build();
     }
+    @GetMapping("/getAllOrderItems")
+    public ApiResponse<PageResponse<OrderItemResponse>> getAllOrderItem(
+            @Filter Specification<OrderItem> spec,
+
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size
+    ) {
+        return ApiResponse.<PageResponse<OrderItemResponse>>builder()
+                .result(orderItemService.getAllOrderItem(spec,page,size))
+                .build();
+    }
+    @GetMapping("/{id}")
+    public ApiResponse<OrderItemResponse> getOrderItems(Long id){
+        return ApiResponse.<OrderItemResponse>builder()
+                .result(orderItemService.getOrderItem(id))
+                .build();
+    }
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deleteOrderItems(@PathVariable Long id) {
+        orderItemService.deleteOrderItems(id);
+        return ApiResponse.<String>builder()
+                .result("Order deleted successfully")
+                .build();
+    }
+
+
 }

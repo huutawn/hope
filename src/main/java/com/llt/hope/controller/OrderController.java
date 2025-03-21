@@ -2,6 +2,15 @@ package com.llt.hope.controller;
 
 import java.util.List;
 
+import com.llt.hope.dto.request.CartItemUpdateRequest;
+import com.llt.hope.dto.request.OrderUpdateRequest;
+import com.llt.hope.dto.response.CartItemResponse;
+import com.llt.hope.dto.response.PageResponse;
+import com.llt.hope.entity.Order;
+import com.llt.hope.entity.Product;
+import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.OrderCreationRequest;
@@ -29,10 +38,36 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping
-    public ApiResponse<List<OrderResponse>> getAllOrders() {
-        return ApiResponse.<List<OrderResponse>>builder()
-                .result(orderService.getAllOrder())
+    @GetMapping("/getAllOrder")
+    public ApiResponse<PageResponse<OrderResponse>> getAllOrders(
+            @Filter Specification<Order> spec,
+
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size
+    ) {
+        return ApiResponse.<PageResponse<OrderResponse>>builder()
+                .result(orderService.getAllOrder(spec,page,size))
                 .build();
     }
+    @GetMapping("/{id}")
+    public ApiResponse<OrderResponse> getOrders(Long id){
+        return ApiResponse.<OrderResponse>builder()
+            .result(orderService.getOrder(id))
+            .build();}
+
+    @PatchMapping("/{id}")
+    ApiResponse<OrderResponse> updateOrder(@PathVariable Long id, @RequestBody @Valid OrderUpdateRequest request) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.updateOrder(id, request))
+                .build();
+    }
+    @DeleteMapping("/{id}")
+        public ApiResponse<String> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        return ApiResponse.<String>builder()
+                .result("Order deleted successfully")
+                .build();
+    }
+
 }

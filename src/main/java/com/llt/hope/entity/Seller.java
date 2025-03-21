@@ -1,4 +1,3 @@
-/*
 package com.llt.hope.entity;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SellerProfile {
+public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,13 +28,16 @@ public class SellerProfile {
 
     String phone;
     String email;
-    private String storeName;
-    private String storeDescription;
+    String storeName;
+    String storeDescription;
 
-    @Column(nullable = false)
-    Boolean active = false;
+    @OneToOne
+    @JoinColumn(name = "profile_id")
+    @JsonBackReference
+    private Profile profile;
+
+    boolean isActive;
 
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now();
 }
-*/

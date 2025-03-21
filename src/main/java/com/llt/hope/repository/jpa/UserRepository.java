@@ -2,6 +2,7 @@ package com.llt.hope.repository.jpa;
 
 import java.util.Optional;
 
+import com.llt.hope.entity.Seller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findUserByProfile(Profile profile);
+
+    Optional<User> findUserBySellerProfile(Seller seller);
 }

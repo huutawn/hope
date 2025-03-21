@@ -25,9 +25,6 @@ public class ProductCreationRequest {
     @Size(max = 100)
     String name;
 
-    @NotBlank
-    String seller_id;
-
     @NotNull
     @DecimalMin("0.0")
     BigDecimal price;
@@ -41,8 +38,7 @@ public class ProductCreationRequest {
     @NotNull
     int inventory;
 
-    String creationProcess;
-    String materialsUsed;
+
     BigDecimal weight;
     String dimensions;
     List<MultipartFile> imagesFile;

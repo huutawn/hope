@@ -2,19 +2,20 @@ package com.llt.hope.service;
 
 
 import com.llt.hope.dto.request.OrderItemCreationRequest;
+import com.llt.hope.dto.request.OrderUpdateRequest;
 import com.llt.hope.dto.response.OrderItemResponse;
+import com.llt.hope.dto.response.OrderResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
-import com.llt.hope.entity.Order;
-import com.llt.hope.entity.OrderItem;
-import com.llt.hope.entity.Post;
-import com.llt.hope.entity.Product;
+import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ItemMapper;
 import com.llt.hope.repository.jpa.OrderItemRepository;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
+import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,12 @@ public class OrderItemService {
     OrderRepository orderRepository;
     ProductRepository productRepository;
     ItemMapper orderItemMapper;
+    UserRepository userRepository;
 
     public OrderItemResponse createItem(OrderItemCreationRequest request){
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
         Product product = productRepository.findById(request.getProductId())
@@ -82,6 +87,18 @@ public class OrderItemService {
                 .data(orderItemResponses)
                 .build();
     }
+    public OrderItemResponse getOrderItem(Long id){
+        return orderItemMapper.toItemResponse(
+                orderItemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_ITEM_NOT_EXISTED)));
+    }
+
+    public void deleteOrderItems(Long Id) {
+        if (!orderItemRepository.existsById(Id)) {
+            throw new AppException(ErrorCode.ORDER_ITEM_NOT_EXISTED);
+        }
+        orderItemRepository.deleteById(Id);
+    }
+
 
 
 
