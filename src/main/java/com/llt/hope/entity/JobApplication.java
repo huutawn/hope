@@ -27,17 +27,8 @@ public class JobApplication {
     @JoinColumn(name = "user_id", nullable = false)
     User applicant;
 
-    @Enumerated(EnumType.STRING)
-    private ApplicationStatus status;
+    private String status;
 
     @Column(name = "appliedAt")
     LocalDateTime appliedAt;
-}
-
-enum ApplicationStatus {
-    PENDING,
-    REVIEWING,
-    INTERVIEWED,
-    HIRED,
-    REJECTED
 }

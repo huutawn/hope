@@ -1,5 +1,10 @@
 package com.llt.hope.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.CartItemCreationRequest;
 import com.llt.hope.dto.response.CartItemResponse;
@@ -12,17 +17,11 @@ import com.llt.hope.mapper.CartItemMapper;
 import com.llt.hope.repository.jpa.CartItemRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.security.Timestamp;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -34,16 +33,17 @@ public class CartItemService {
     ProductRepository productRepository;
     CartItemMapper cartItemMapper;
 
-    public CartItemResponse createCartItem(CartItemCreationRequest request, Authentication authentication){
+    public CartItemResponse createCartItem(CartItemCreationRequest request, Authentication authentication) {
         String email = authentication.getName();
-        User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User currentUser =
+                userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        Product product = productRepository.findById(request.getProductId())
+        Product product = productRepository
+                .findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        CartItem cartItem = cartItemRepository.findByUserAndProduct(currentUser, product)
-                .orElse(null);
+        CartItem cartItem =
+                cartItemRepository.findByUserAndProduct(currentUser, product).orElse(null);
 
         if (cartItem != null) {
             cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());

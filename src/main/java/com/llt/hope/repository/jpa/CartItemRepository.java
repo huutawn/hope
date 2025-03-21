@@ -1,13 +1,13 @@
 package com.llt.hope.repository.jpa;
 
-import com.llt.hope.entity.CartItem;
-import com.llt.hope.entity.Product;
-import com.llt.hope.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
+import com.llt.hope.entity.CartItem;
+import com.llt.hope.entity.Product;
+import com.llt.hope.entity.User;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {

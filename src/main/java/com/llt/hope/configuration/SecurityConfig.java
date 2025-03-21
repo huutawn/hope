@@ -34,6 +34,11 @@ public class SecurityConfig {
         "/swagger-ui.html",
         "/job/getAll",
         "/post/getAll",
+        "/job/filter",
+        "/job/search",
+        "/",
+        "/index.html",
+        "/api/public/**"
     };
 
     @Autowired

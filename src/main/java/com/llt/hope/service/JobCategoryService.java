@@ -1,5 +1,8 @@
 package com.llt.hope.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.JobCategoryCreationRequest;
@@ -31,5 +34,13 @@ public class JobCategoryService {
                 .description(request.getDescription())
                 .build();
         return jobCategoryMapper.toJobCategoryResponse(jobCategoryRepository.save(jobCategory));
+    }
+
+    public List<JobCategoryResponse> getAllJobCategory() {
+        List<JobCategoryResponse> jobs = new ArrayList<JobCategoryResponse>();
+        for (JobCategory jobCategory : jobCategoryRepository.findAll()) {
+            jobs.add(jobCategoryMapper.toJobCategoryResponse(jobCategory));
+        }
+        return jobs;
     }
 }

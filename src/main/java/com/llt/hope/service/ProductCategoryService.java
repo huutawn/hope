@@ -1,7 +1,6 @@
 package com.llt.hope.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 
@@ -46,10 +45,11 @@ public class ProductCategoryService {
         }
         productCategoryRepository.deleteById(id);
     }
-    public ProductCategory getCategory( Long id){
-        return productCategoryRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+
+    public ProductCategory getCategory(Long id) {
+        return productCategoryRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
     }
+
     public List<ProductCategory> getAllProductCategory() {
         return productCategoryRepository.findAll();
     }

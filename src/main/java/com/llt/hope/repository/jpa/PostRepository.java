@@ -12,4 +12,6 @@ import com.llt.hope.entity.User;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
     Page<Post> findPostByUser(User user, Pageable pageable);
+
+    Page<Post> findPostByIsActive(boolean isActive, Pageable pageable);
 }

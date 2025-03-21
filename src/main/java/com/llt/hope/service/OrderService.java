@@ -1,10 +1,12 @@
 package com.llt.hope.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.OrderCreationRequest;
 import com.llt.hope.dto.response.OrderResponse;
-import com.llt.hope.dto.response.PageResponse;
-import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.entity.Order;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
@@ -12,18 +14,11 @@ import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.OrderMapper;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.stream.DoubleStream.builder;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +26,13 @@ import static java.util.stream.DoubleStream.builder;
 @Slf4j
 public class OrderService {
 
-
     OrderRepository orderRepository;
     UserRepository userRepository;
     OrderMapper orderMapper;
 
-    public OrderResponse createOrder(OrderCreationRequest request){
-        User buyer = userRepository.findById(request.getBuyerId())
+    public OrderResponse createOrder(OrderCreationRequest request) {
+        User buyer = userRepository
+                .findById(request.getBuyerId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HAS_EXISTED));
         Order order = Order.builder()
                 .buyer(buyer)
@@ -62,6 +57,7 @@ public class OrderService {
 
         return orderResponse;
     }
+
     public List<OrderResponse> getAllOrder() {
         return orderRepository.findAll().stream()
                 .map(order -> {
@@ -79,10 +75,11 @@ public class OrderService {
                 .toList();
     }
 
-    public OrderResponse getOrder(Long id){
+    public OrderResponse getOrder(Long id) {
         return orderMapper.toOrderResponse(
                 orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED)));
     }
+
     public void deleteProduct(Long orderId) {
         if (!orderRepository.existsById(orderId)) {
             throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);

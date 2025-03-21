@@ -75,6 +75,7 @@ public class CompanyService {
                 .isActive(false)
                 .size(request.getSize())
                 .name(request.getName())
+                .email(request.getEmail())
                 .description(request.getDescription())
                 .logo(mediaFile)
                 .phoneNumber(request.getPhoneNumber())
@@ -143,5 +144,11 @@ public class CompanyService {
                 .name(company1.getName())
                 .build();
         return activeCompanyResponse;
+    }
+
+    public void deleteCompany(Long companyId) {
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        companyRepository.delete(company.get());
     }
 }

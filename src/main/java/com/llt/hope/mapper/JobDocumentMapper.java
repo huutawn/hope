@@ -4,9 +4,14 @@ import org.springframework.stereotype.Component;
 
 import com.llt.hope.document.elasticsearch.JobDocument;
 import com.llt.hope.dto.response.JobResponse;
+import com.llt.hope.repository.jpa.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JobDocumentMapper {
+    private final UserRepository userRepository;
 
     public JobResponse toJobResponse(JobDocument jobDocument) {
         if (jobDocument == null) {
@@ -16,6 +21,11 @@ public class JobDocumentMapper {
         return JobResponse.builder()
                 .id(Long.parseLong(jobDocument.getId()))
                 .title(jobDocument.getTitle())
+                .company(userRepository
+                        .findById(jobDocument.getEmployerId())
+                        .get()
+                        .getProfile()
+                        .getCompany())
                 .description(jobDocument.getDescription())
                 .requirements(jobDocument.getRequirements())
                 .responsibilities(jobDocument.getResponsibilities())

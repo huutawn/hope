@@ -23,6 +23,7 @@ import com.llt.hope.entity.JobCategory;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.JobDocumentMapper;
+import com.llt.hope.mapper.JobHandlerMapper;
 import com.llt.hope.mapper.JobMapper;
 import com.llt.hope.repository.elasticsearch.JobElasticsearchRepository;
 import com.llt.hope.repository.jpa.JobCategoryRepository;
@@ -47,6 +48,7 @@ public class JobService {
     JobMapper jobMapper;
     JobDocumentMapper jobDocumentMapper;
     JobElasticsearchRepository jobElasticsearchRepository;
+    JobHandlerMapper jobHandlerMapper;
 
     @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
@@ -105,7 +107,7 @@ public class JobService {
 
         Page<Job> jobs = jobRepository.findAll(spec, pageable);
         List<JobResponse> jobResponses = jobs.getContent().stream()
-                .map(jobMapper::toJobResponse) // Chuyển từng Job thành JobResponse
+                .map(jobHandlerMapper::toJobResponse) // Chuyển từng Job thành JobResponse
                 .toList();
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)
@@ -146,7 +148,7 @@ public class JobService {
 
         Page<Job> jobs = jobRepository.findAll(spec, pageable);
         List<JobResponse> jobResponses =
-                jobs.getContent().stream().map(jobMapper::toJobResponse).toList();
+                jobs.getContent().stream().map(jobHandlerMapper::toJobResponse).toList();
 
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)

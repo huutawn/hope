@@ -1,6 +1,5 @@
 package com.llt.hope.entity;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;

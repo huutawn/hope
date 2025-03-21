@@ -34,6 +34,7 @@ public class PostResponse {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean isActive;
 
     private Set<Comment> comments;
 
