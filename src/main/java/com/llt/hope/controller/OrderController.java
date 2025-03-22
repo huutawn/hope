@@ -51,11 +51,12 @@ public class OrderController {
                 .build();
     }
 
-    @PatchMapping("/{id}")
-    ApiResponse<OrderResponse> updateOrder(@PathVariable Long id, @RequestBody @Valid OrderUpdateRequest request) {
-        return ApiResponse.<OrderResponse>builder()
-                .result(orderService.updateOrder(id, request))
-                .build();
+    @PatchMapping("/{id}") // SAU KHI THANH TOÁN THÀNH CÔNG NÕ
+    public ApiResponse<OrderResponse> updateOrder(
+            @PathVariable Long id, @RequestBody @Valid OrderUpdateRequest request) {
+        OrderResponse updatedOrder = orderService.updateOrderStatus(id, request);
+
+        return ApiResponse.<OrderResponse>builder().result(updatedOrder).build();
     }
 
     @DeleteMapping("/{id}")

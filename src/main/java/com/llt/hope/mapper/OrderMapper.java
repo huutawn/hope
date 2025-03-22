@@ -13,14 +13,14 @@ import com.llt.hope.entity.User;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    @Mapping(target = "orderDate", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "paymentStatus", constant = "PENDING")
     Order toOrder(OrderCreationRequest request, User buyer);
 
     OrderResponse toOrderResponse(Order order);
 
-    @Mapping(target = "orderDate", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "buyer", ignore = true)
     void updateOrder(@MappingTarget Order order, OrderUpdateRequest request);
 }

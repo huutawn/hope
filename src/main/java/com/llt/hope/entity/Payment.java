@@ -18,4 +18,8 @@ public class Payment extends AbstractEntity<Long> {
     private String transactionId;
     private Double amount;
     private String status;
+
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 }

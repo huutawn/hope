@@ -3,6 +3,8 @@ package com.llt.hope.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +49,7 @@ public class OrderService {
         Order order = Order.builder()
                 .buyer(buyer)
                 .totalAmount(request.getTotalAmount())
-                .orderDate(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .paymentMethod(request.getPaymentMethod())
                 .status("PENDING")
                 .paymentStatus("PENDING")
@@ -57,7 +59,7 @@ public class OrderService {
         OrderResponse orderResponse = OrderResponse.builder()
                 .orderId(order.getId())
                 .buyerId(buyer)
-                .orderDate(order.getOrderDate())
+                .createdAt(LocalDateTime.now())
                 .totalAmount(order.getTotalAmount())
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
@@ -95,10 +97,34 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    public OrderResponse updateOrder(Long id, OrderUpdateRequest request) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
-        orderMapper.updateOrder(order, request);
+    @Transactional
+    public OrderResponse updateOrderStatus(Long id, OrderUpdateRequest request) {
+        Order order = orderRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
 
-        return orderMapper.toOrderResponse(orderRepository.save(order));
+        // Cập nhật trạng thái
+        if (request.getStatus() != null) {
+            order.setStatus(request.getStatus());
+        }
+        if (request.getPaymentStatus() != null) {
+            order.setPaymentStatus(request.getPaymentStatus());
+        }
+
+        orderRepository.save(order);
+        return orderMapper.toOrderResponse(order); // Convert Order -> OrderResponse
+    }
+
+    @Transactional
+    public void updateOrderAfterPayment(Long orderId) {
+        Order order = orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
+
+        // Cập nhật trạng thái đơn hàng
+        order.setPaymentStatus("PAID");
+        order.setStatus("DELIVERED"); // Hoặc PROCESSING, tùy vào quy trình của bạn
+
+        orderRepository.save(order); // Lưu thay đổi vào database
     }
 }

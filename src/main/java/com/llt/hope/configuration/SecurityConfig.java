@@ -42,7 +42,8 @@ public class SecurityConfig {
         "/api/users/reset-password",
         "/api/email",
         "/api/index.html",
-        "/api/api/public/**"
+        "/api/api/public/**",
+        "/api/payment/vn-pay-callback"
     };
 
     @Autowired
