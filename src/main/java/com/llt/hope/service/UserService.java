@@ -1,16 +1,21 @@
 package com.llt.hope.service;
 
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
+import com.llt.hope.dto.request.*;
+import com.llt.hope.dto.response.ChangePasswordResponse;
+import com.llt.hope.dto.response.VerifiOTPResponse;
+import jakarta.mail.MessagingException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.constant.PredefindRole;
-import com.llt.hope.dto.request.UserCreationRequest;
-import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
@@ -25,6 +30,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +42,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     ProfileService profileService;
+    EmailService emailService;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (repository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
@@ -81,5 +88,81 @@ public class UserService {
     public UserResponse getUser(String id) {
         return userMapper.toUserResponse(
                 repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    }
+
+    private static String generateOtp(){
+
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for(int i = 0; i < 6 ; i++){
+            otp.append(random.nextInt(10));
+        }
+        return otp.toString();
+
+    }
+
+    @Transactional
+    public void sendOtpForgotPassword(ForgotPasswordRequest request)
+            throws MessagingException, UnsupportedEncodingException {
+        log.info(request.getEmail());
+
+        User user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        String otp = generateOtp();
+        LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(30);
+
+        user.setOtp(otp);
+        user.setOtpExpiryDate(expiryDate);
+
+        String subject = "Your OTP Code";
+        String content = String.format(
+                "<p>Hello,</p>" +
+                        "<p>We received a request to reset your password. Use the following OTP to reset it:</p>" +
+                        "<h2>%s</h2>" +
+                        "<p>If you did not request this, please ignore this email.</p>" +
+                        "<p>Best regards,<br/>Your Company</p>",
+                otp
+        );
+        emailService.sendEmail(subject, content, List.of(user.getEmail()));
+    }
+    @Transactional
+    public void resetPassword(PasswordCreationRequest request){
+        User user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (user.getOtp() == null || !user.getOtp().equals(request.getOtp())) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        }
+
+        if (user.getOtpExpiryDate() == null || user.getOtpExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setOtp(null);
+        user.setOtpExpiryDate(null);
+        repository.save(user);
+    }
+
+    public VerifiOTPResponse verifyOtp(VerifiOtpRequest request){
+        User user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if(user.getOtp() == null || ! user.getOtp().equals(request.getOtp())){
+            return VerifiOTPResponse.builder()
+                    .valid(false)
+                    .build();
+        }
+
+        if(user.getOtpExpiryDate() == null || user.getOtpExpiryDate().isBefore(LocalDateTime.now())){
+            return VerifiOTPResponse.builder()
+                    .valid(false)
+                    .build();
+        }
+
+        return VerifiOTPResponse.builder()
+                .valid(true)
+                .build();
     }
 }

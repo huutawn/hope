@@ -37,6 +37,10 @@ public class SecurityConfig {
         "/api/job/filter",
         "/api/job/search",
         "/api/",
+            "/api/users/send-otp",
+            "/api/users/verify-otp",
+            "/api/users/reset-password",
+            "/api/email",
         "/api/index.html",
         "/api/api/public/**"
     };
@@ -51,6 +55,7 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest()
                 .authenticated());
+
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(customJwtDecoder)

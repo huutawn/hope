@@ -95,9 +95,7 @@ public class SellerService {
                 .data(sellerResponses)
                 .build();
 
-        log.info("Seller profile created for user: {}. Seller role assigned (pending activation).", user.getEmail());
 
-        return sellerProfileResponse;
     }
 
 

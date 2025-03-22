@@ -4,8 +4,22 @@ server:
 
 spring:
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/hope}
+    url: jdbc:mysql://localhost:3306/hope
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root

@@ -1,14 +1,19 @@
 package com.llt.hope.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import com.llt.hope.dto.request.*;
+import com.llt.hope.dto.response.VerifiOTPResponse;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.llt.hope.dto.request.UserCreationRequest;
-import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.service.UserService;
@@ -63,4 +68,38 @@ public class UserController {
                 .result(userService.updateUser(userId, request))
                 .build();
     }
+
+
+    @PostMapping("/send-otp")
+    ApiResponse<Void> sendOtpForgotPassword(@RequestBody ForgotPasswordRequest request)
+            throws MessagingException, UnsupportedEncodingException {
+
+        userService.sendOtpForgotPassword(request);
+
+        return ApiResponse.<Void>builder()
+                .code(1000)
+                .message("Send Otp Successfully")
+                .build();
+    }
+    @PostMapping("/verify-otp")
+    public ApiResponse<VerifiOTPResponse> verifyOtp(@RequestBody VerifiOtpRequest request) {
+        var result = userService.verifyOtp(request);
+
+        return ApiResponse.<VerifiOTPResponse>builder()
+                .code(1000)
+                .message("Verify Otp Successfully")
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/reset-password")
+    ApiResponse<?> resetPassword(@RequestBody @Valid PasswordCreationRequest request ){
+        userService.resetPassword(request);
+
+        return ApiResponse.<Void>builder()
+                .code(1000)
+                .message("Reset Password Successfully")
+                .build();
+    }
+
 }
