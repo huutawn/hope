@@ -41,6 +41,5 @@ public class User {
     @JsonManagedReference
     private Profile profile;
 
-
     private boolean accepted;
 }

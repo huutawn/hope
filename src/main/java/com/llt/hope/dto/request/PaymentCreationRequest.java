@@ -1,9 +1,9 @@
 package com.llt.hope.dto.request;
 
+import java.io.Serializable;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.io.Serializable;
 
 @Getter
 @Setter

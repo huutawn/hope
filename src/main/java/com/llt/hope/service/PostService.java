@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.llt.hope.dto.request.PostCreationRequest;
+import com.llt.hope.dto.response.ActivePostResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.entity.MediaFile;
@@ -74,6 +75,7 @@ public class PostService {
         Post post = Post.builder()
                 .createdAt(LocalDateTime.now())
                 .title(request.getTitle())
+                .isActive(false)
                 .images(mediaFiles) // Đảm bảo mediaFiles được gán vào Post
                 .content(request.getContent())
                 .isPublished(request.isPublished())
@@ -88,6 +90,7 @@ public class PostService {
                 .title(post.getTitle())
                 .images(post.getImages())
                 .content(post.getContent())
+                .isActive(post.isActive())
                 .isPublished(post.isPublished())
                 .isPinned(post.isPinned())
                 .createdAt(post.getCreatedAt())
@@ -96,11 +99,11 @@ public class PostService {
         return postResponse;
     }
 
-    @PreAuthorize("isAuthenticated()")
-    public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public PageResponse<PostResponse> getAllPostNotActive(Specification<Post> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findPostByIsActive(false, pageable);
         List<PostResponse> postResponses =
                 posts.getContent().stream().map(postMapper::toPostResponse).toList();
 
@@ -113,7 +116,33 @@ public class PostService {
                 .build();
     }
 
-    @PreAuthorize("isAuthenticated()")
+    public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Post> posts = postRepository.findPostByIsActive(true, pageable);
+        List<PostResponse> postResponses =
+                posts.getContent().stream().map(postMapper::toPostResponse).toList();
+
+        return PageResponse.<PostResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public ActivePostResponse activePost(long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
+        post.setActive(true);
+        post = postRepository.save(post);
+        return ActivePostResponse.builder()
+                .id(post.getId())
+                .isActive(post.isActive())
+                .build();
+    }
+
     public PageResponse<PostResponse> getAllCurrentPosts(Specification<Post> specm, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -131,5 +160,9 @@ public class PostService {
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
                 .build();
+    }
+
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
     }
 }

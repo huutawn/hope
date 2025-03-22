@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 
 @Entity
@@ -35,6 +37,7 @@ public class Job {
     private JobCategory jobCategory;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "company_id")
     private Company company;
 

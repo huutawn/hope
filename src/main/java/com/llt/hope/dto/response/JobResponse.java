@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.llt.hope.entity.User;
+import com.llt.hope.entity.Company;
 
 import lombok.*;
 
@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 public class JobResponse {
     private Long id;
-    private User employer;
+    private Company company;
     private String title;
     private String description;
     private String requirements;

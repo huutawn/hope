@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.*;
 
@@ -50,6 +51,7 @@ public class Company {
     private String taxCode; // Mã số thuế (nếu có)
 
     @OneToMany(mappedBy = "company")
+    @JsonManagedReference
     private List<Job> jobs; // Danh sách việc làm công ty đã đăng
 
     // Danh sách nhà tuyển dụng thuộc công ty này

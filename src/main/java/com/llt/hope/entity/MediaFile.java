@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.*;
 
 @Entity
-@Table(name = "media_files") // 👈 Đổi tên bảng để tránh lỗi
+@Table(name = "media_files")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

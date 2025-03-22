@@ -72,9 +72,9 @@ public class CompanyService {
                 .isActive(false)
                 .address(request.getAddress())
                 .industry(request.getIndustry())
-                .isActive(false)
                 .size(request.getSize())
                 .name(request.getName())
+                .email(request.getEmail())
                 .description(request.getDescription())
                 .logo(mediaFile)
                 .phoneNumber(request.getPhoneNumber())
@@ -83,9 +83,7 @@ public class CompanyService {
                 .build();
         companyRepository.save(company);
         profile.setCompany(company);
-        log.info("profile: " + profile.getId());
         profile = profileRepository.save(profile);
-        log.info("profile: " + profile.getId() + " part2");
         user.setProfile(profile);
         userRepository.save(user);
         return companyMapper.toCompanyResponse(company);
@@ -143,5 +141,11 @@ public class CompanyService {
                 .name(company1.getName())
                 .build();
         return activeCompanyResponse;
+    }
+
+    public void deleteCompany(Long companyId) {
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        companyRepository.delete(company.get());
     }
 }

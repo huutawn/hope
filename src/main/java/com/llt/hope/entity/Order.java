@@ -27,21 +27,21 @@ public class Order {
     User buyer;
 
     @Column(updatable = false)
-     LocalDateTime orderDate = LocalDateTime.now();
+    LocalDateTime orderDate = LocalDateTime.now();
 
     @NotBlank
     String status = "PENDING";
 
     @NotNull
-     BigDecimal totalAmount;
+    BigDecimal totalAmount;
 
     @NotBlank
-     String paymentMethod;
+    String paymentMethod;
 
     @NotBlank
-     String paymentStatus = "PENDING";
+    String paymentStatus = "PENDING";
 
-     String notes;
+    String notes;
 
     public void setStatus(String status) {
         if (!isValidStatus(status)) {

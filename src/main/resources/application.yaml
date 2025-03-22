@@ -1,9 +1,11 @@
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: native
 
 spring:
+
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/hope}
+    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/hope}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root
@@ -12,7 +14,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
   elasticsearch:
     uris: https://6c3c28c1c31c4680b19026beafcc41ce.ap-southeast-1.aws.found.io:443
     username: elastic
@@ -26,6 +27,7 @@ cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   secret-key: ${CLOUDINARY_API_SECRET}
+
 
 
 vnpay:

@@ -5,10 +5,11 @@ import java.math.BigDecimal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "OrderItems")

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import com.llt.hope.dto.request.ProfileUpdateRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.ProfileResponse;
+import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.service.ProfileService;
 
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/profile")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
@@ -28,8 +29,8 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ApiResponse<ProfileResponse> getMyProfile() {
-        return ApiResponse.<ProfileResponse>builder()
+    public ApiResponse<UserResponse> getMyProfile() {
+        return ApiResponse.<UserResponse>builder()
                 .result(profileService.getMyProfile())
                 .build();
     }

@@ -36,6 +36,8 @@ public class Post {
     private boolean isPublished = true;
     private boolean isPinned = false;
 
+    private boolean isActive;
+
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 

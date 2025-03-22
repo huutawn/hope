@@ -1,18 +1,19 @@
 package com.llt.hope.controller;
 
-import com.llt.hope.configuration.vnpayConfig;
-import com.llt.hope.dto.request.PaymentCreationRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.llt.hope.configuration.vnpayConfig;
+import com.llt.hope.dto.request.PaymentCreationRequest;
 
 @RestController
 @RequestMapping("/api/vnpay")
@@ -21,8 +22,7 @@ public class VnPayController {
     @GetMapping("/create-payment")
     public ResponseEntity<?> createPayment() throws UnsupportedEncodingException {
 
-
-        long amount = 1000000*100;
+        long amount = 1000000 * 100;
 
         String vnp_TxnRef = vnpayConfig.getRandomNumber(8);
         // String vnp_IpAddr = vnpayConfig.getIpAddress(req);
@@ -39,7 +39,7 @@ public class VnPayController {
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_Locale", "vn");
-//        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl);
+        //        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -50,8 +50,7 @@ public class VnPayController {
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
-
-        //Thực hiện mã hóa chuỗi thông tin
+        // Thực hiện mã hóa chuỗi thông tin
         List<String> fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
@@ -61,11 +60,11 @@ public class VnPayController {
             String fieldName = (String) itr.next();
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
+                // Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
                 hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
-// And
+                // And
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
                 query.append('=');
                 query.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
@@ -75,7 +74,7 @@ public class VnPayController {
                 }
             }
         }
-        //Gán thông tin vào đường dẫn url
+        // Gán thông tin vào đường dẫn url
         String queryUrl = query.toString();
         String vnp_SecureHash = vnpayConfig.hmacSHA512(vnpayConfig.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;

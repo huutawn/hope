@@ -2,8 +2,9 @@ package com.llt.hope.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +32,6 @@ public class Seller {
     String storeName;
     String storeDescription;
 
-
     @OneToOne
     @JoinColumn(name = "profile_id")
     @JsonBackReference
@@ -41,5 +41,4 @@ public class Seller {
 
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now();
-
 }

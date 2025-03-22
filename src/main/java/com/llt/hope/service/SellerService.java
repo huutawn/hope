@@ -7,6 +7,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.SellerCreationRequest;
 import com.llt.hope.dto.response.ActiveCompanyResponse;
@@ -24,14 +33,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,10 @@ public class SellerService {
                 .totalPages(sellers.getTotalPages())
                 .data(sellerResponses)
                 .build();
+
+        log.info("Seller profile created for user: {}. Seller role assigned (pending activation).", user.getEmail());
+
+        return sellerProfileResponse;
     }
 
 
@@ -134,14 +139,13 @@ public class SellerService {
         return activeCompanyResponse;
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<SellerResponse> getAllSellerProfiles(boolean isActive, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        Specification<Seller> spec = (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("isActive"), isActive);
+        Specification<Seller> spec =
+                (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("active"), isActive);
 
         Page<Seller> sellerProfiles = sellerRepository.findAll(spec, pageable);
         List<SellerResponse> sellerProfileResponses = sellerProfiles.getContent().stream()
