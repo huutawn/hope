@@ -1,7 +1,5 @@
 package com.llt.hope.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
