@@ -1,5 +1,6 @@
 package com.llt.hope.controller;
 
+import com.llt.hope.dto.response.UserResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.ProfileUpdateRequest;
@@ -28,8 +29,9 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ApiResponse<ProfileResponse> getMyProfile() {
-        return ApiResponse.<ProfileResponse>builder()
+    public ApiResponse<UserResponse> getMyProfile() {
+        return ApiResponse.
+                <UserResponse>builder()
                 .result(profileService.getMyProfile())
                 .build();
     }

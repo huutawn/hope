@@ -2,6 +2,8 @@ package com.llt.hope.service;
 
 import java.io.IOException;
 
+import com.llt.hope.dto.response.UserResponse;
+import com.llt.hope.mapper.UserMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,7 @@ public class ProfileService {
     CloudinaryService cloudinaryService;
     ProfileMapper profileMapper;
     MediaFileRepository mediaFileRepository;
+    UserMapper userMapper;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -67,14 +70,14 @@ public class ProfileService {
     }
 
     @PreAuthorize("isAuthenticated()")
-    public ProfileResponse getMyProfile() {
+    public UserResponse getMyProfile() {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Profile profile = profileRepository
                 .findProfileByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
-        return profileMapper.toProfileResponse(profile);
+        return userMapper.toUserResponse(user);
     }
 
     public Profile createInitProfile(String email, String phone, String fullName) {
