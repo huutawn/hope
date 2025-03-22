@@ -2,6 +2,8 @@ package com.llt.hope.configuration;
 
 import java.util.HashSet;
 
+import com.llt.hope.entity.Profile;
+import com.llt.hope.repository.jpa.ProfileRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +36,7 @@ public class ApplicationInitConfig {
     static final String ADMIN_PASSWORD = "admin";
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, ProfileRepository profileRepository) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -50,12 +52,25 @@ public class ApplicationInitConfig {
                 var roles = new HashSet<Role>();
                 roles.add(admin);
 
+
+
+
+
                 User user = User.builder()
                         .email("admin")
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
                         .roles(roles)
                         .build();
 
+                userRepository.save(user);
+
+                Profile profile =Profile.builder()
+                        .user(user)
+                        .fullName("ADMIN")
+                        .build();
+                profileRepository.save(profile);
+
+                user.setProfile(profile);
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin, please change the password");
             }
