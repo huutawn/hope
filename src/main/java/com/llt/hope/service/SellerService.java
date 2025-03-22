@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.SellerCreationRequest;
 import com.llt.hope.dto.response.ActiveCompanyResponse;
-import com.llt.hope.dto.response.CompanyResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.SellerResponse;
 import com.llt.hope.entity.*;
@@ -94,12 +93,7 @@ public class SellerService {
                 .totalPages(sellers.getTotalPages())
                 .data(sellerResponses)
                 .build();
-
-        log.info("Seller profile created for user: {}. Seller role assigned (pending activation).", user.getEmail());
-
-        return sellerProfileResponse;
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
@@ -160,6 +154,7 @@ public class SellerService {
                 .data(sellerProfileResponses)
                 .build();
     }
+
     @Transactional
     public void deleteSellerProfile(Long id) {
         if (!sellerRepository.existsById(id)) {

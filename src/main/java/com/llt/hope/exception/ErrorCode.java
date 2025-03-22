@@ -38,17 +38,6 @@ public enum ErrorCode {
     PRODUCT_NOT_EXISTED(431, "Product not existed", HttpStatus.NOT_FOUND),
     POST_NOT_EXISTED(432, "Post not found", HttpStatus.BAD_REQUEST),
     SELLER_PROFILE_ALREADY_EXISTS(433, "Seller Profile already existed", HttpStatus.CONFLICT),
-<<<<<<< HEAD
-    USER_NOT_ACTIVE(434," user non active" , HttpStatus.MULTI_STATUS),
-    ORDER_HAS_EXISTED(435," order has existed" ,HttpStatus.CONFLICT ),
-    ORDER_NOT_EXISTED(436, "order not existed ",HttpStatus.NOT_FOUND ),
-    CARTITEM_NOT_EXISTED(437,"cart not existed" ,HttpStatus.NOT_FOUND ),
-    SELLER_PROFILE_NOT_EXISTS(438,"Seller Profile not existed" ,HttpStatus.NOT_FOUND ),
-    ROLE_NOT_FOUND(439,"" ,HttpStatus.NOT_FOUND ),
-    ORDER_ITEM_NOT_EXISTED(440,"" ,HttpStatus.NOT_FOUND ),
-    SELLER_PROFILE_ALREADY_ACTIVE(441,"" ,HttpStatus.BAD_REQUEST ),
-    SELLER_NOT_FOUND(442,"" ,HttpStatus.NOT_FOUND );
-=======
     USER_NOT_ACTIVE(434, " user non active", HttpStatus.MULTI_STATUS),
     ORDER_HAS_EXISTED(435, " order has existed", HttpStatus.CONFLICT),
     ORDER_NOT_EXISTED(436, "order not existed ", HttpStatus.NOT_FOUND),
@@ -58,7 +47,6 @@ public enum ErrorCode {
     ORDER_ITEM_NOT_EXISTED(440, "", HttpStatus.NOT_FOUND),
     SELLER_PROFILE_ALREADY_ACTIVE(441, "", HttpStatus.BAD_REQUEST),
     JOB_NOT_FOUND(442, "job not found", HttpStatus.NOT_FOUND);
->>>>>>> 357fe16844a7354ff369168fd56a01d7192983f7
     int code;
     String message;
     HttpStatusCode httpStatusCode;
