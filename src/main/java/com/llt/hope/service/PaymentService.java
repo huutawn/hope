@@ -1,18 +1,22 @@
 package com.llt.hope.service;
 
+import java.util.*;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import com.llt.hope.configuration.VNPayConfig;
 import com.llt.hope.dto.response.PaymentResponse;
 import com.llt.hope.utils.VNPayUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.*;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final VNPayConfig vnPayConfig;
+
     public PaymentResponse createVnPayPayment(HttpServletRequest request) {
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
         String bankCode = request.getParameter("bankCode");
@@ -22,7 +26,7 @@ public class PaymentService {
             vnpParamsMap.put("vnp_BankCode", bankCode);
         }
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
@@ -31,6 +35,7 @@ public class PaymentService {
         return PaymentResponse.builder()
                 .code("ok")
                 .message("success")
-                .paymentUrl(paymentUrl).build();
+                .paymentUrl(paymentUrl)
+                .build();
     }
 }

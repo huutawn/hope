@@ -38,6 +38,10 @@ public enum ErrorCode {
     PRODUCT_NOT_EXISTED(431, "Product not existed", HttpStatus.NOT_FOUND),
     POST_NOT_EXISTED(432, "Post not found", HttpStatus.BAD_REQUEST),
     SELLER_PROFILE_ALREADY_EXISTS(433, "Seller Profile already existed", HttpStatus.CONFLICT),
+    COMPANY_HAS_EXISTED(434, "Company has already existed", HttpStatus.CONFLICT),
+    USER_HAS_EXISTED(435, "User has already existed", HttpStatus.CONFLICT),
+    PRODUCT_NOT_FOUND(436, "Product not found", HttpStatus.NOT_FOUND),
+    CART_NOT_FOUND(437, "Cart not found", HttpStatus.NOT_FOUND),
     USER_NOT_ACTIVE(434, " user non active", HttpStatus.MULTI_STATUS),
     ORDER_HAS_EXISTED(435, " order has existed", HttpStatus.CONFLICT),
     ORDER_NOT_EXISTED(436, "order not existed ", HttpStatus.NOT_FOUND),
@@ -46,7 +50,10 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(439, "", HttpStatus.NOT_FOUND),
     ORDER_ITEM_NOT_EXISTED(440, "", HttpStatus.NOT_FOUND),
     SELLER_PROFILE_ALREADY_ACTIVE(441, "", HttpStatus.BAD_REQUEST),
-    JOB_NOT_FOUND(442, "job not found", HttpStatus.NOT_FOUND);
+    JOB_NOT_FOUND(442, "job not found", HttpStatus.NOT_FOUND),
+    INVALID_OTP(443, "", HttpStatus.BAD_REQUEST),
+    INVALID_EMAIL(444, "invalid email", HttpStatus.BAD_REQUEST);
+
     int code;
     String message;
     HttpStatusCode httpStatusCode;

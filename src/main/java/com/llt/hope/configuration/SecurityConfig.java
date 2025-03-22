@@ -37,6 +37,10 @@ public class SecurityConfig {
         "/api/job/filter",
         "/api/job/search",
         "/api/",
+        "/api/users/send-otp",
+        "/api/users/verify-otp",
+        "/api/users/reset-password",
+        "/api/email",
         "/api/index.html",
         "/api/api/public/**"
     };

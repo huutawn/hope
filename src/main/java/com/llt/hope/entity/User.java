@@ -1,5 +1,6 @@
 package com.llt.hope.entity;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +33,12 @@ public class User {
     private String password;
 
     private String phone;
+
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_expiry_date")
+    private LocalDateTime otpExpiryDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")

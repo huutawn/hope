@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
 import com.llt.hope.entity.User;
+import com.llt.hope.repository.jpa.ProfileRepository;
 import com.llt.hope.repository.jpa.RoleRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 
@@ -34,7 +36,8 @@ public class ApplicationInitConfig {
     static final String ADMIN_PASSWORD = "admin";
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(
+            UserRepository userRepository, RoleRepository roleRepository, ProfileRepository profileRepository) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -56,6 +59,12 @@ public class ApplicationInitConfig {
                         .roles(roles)
                         .build();
 
+                userRepository.save(user);
+
+                Profile profile = Profile.builder().user(user).fullName("ADMIN").build();
+                profileRepository.save(profile);
+
+                user.setProfile(profile);
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin, please change the password");
             }
