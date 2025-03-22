@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.SellerCreationRequest;
 import com.llt.hope.dto.response.ActiveCompanyResponse;
+import com.llt.hope.dto.response.CompanyResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.SellerResponse;
 import com.llt.hope.entity.*;
@@ -48,12 +49,9 @@ public class SellerService {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
-        // Kiểm tra xem user đã có hồ sơ seller chưa
-        if (sellerRepository.findByUserId(user.getId()).isPresent()) {
-            throw new AppException(ErrorCode.SELLER_PROFILE_ALREADY_EXISTS);
-        }
-
+        Profile profile = profileRepository
+                .findProfileByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
         // Tạo SellerProfile (non-active)
         Seller seller = Seller.builder()
                 .user(user)
@@ -68,31 +66,41 @@ public class SellerService {
 
         seller = sellerRepository.save(seller);
 
-        user.setSeller(seller);
+        sellerRepository.save(seller);
+        profile.setSeller(seller);
+        log.info("profile: " + profile.getId());
+        profile = profileRepository.save(profile);
+        log.info("profile: " + profile.getId() + " part2");
+        user.setProfile(profile);
         userRepository.save(user);
 
-        SellerResponse sellerProfileResponse = SellerResponse.builder()
-                .id(seller.getId())
-                .email(seller.getEmail())
-                .phone(seller.getPhone())
-                .storeName(seller.getStoreName())
-                .storeDescription(seller.getStoreDescription())
-                .createdAt(seller.getCreatedAt())
-                .updatedAt(seller.getUpdatedAt())
-                .isActive(seller.isActive())
-                .build();
-
-        log.info("Seller profile created for user: {}. Seller role assigned (pending activation).", user.getEmail());
-
-
-        return sellerProfileResponse;
+        return sellerMapper.toSellerProfileResponse(seller);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    public PageResponse<SellerResponse> getAllSellerNonActive(Specification<Seller> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Page<Seller> sellers = sellerRepository.findSellerByIsActive(false, pageable);
+        List<SellerResponse> sellerResponses = sellers.getContent().stream()
+                .map(sellerMapper::toSellerProfileResponse)
+                .toList();
+        return PageResponse.<SellerResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(sellers.getTotalElements())
+                .totalPages(sellers.getTotalPages())
+                .data(sellerResponses)
+                .build();
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public ActiveCompanyResponse activeSeller(long Id) {
-        log.info("seller id: " + Id);
-        Optional<Seller> seller = sellerRepository.findById(Id);
+    public ActiveCompanyResponse activeSeller(long sellerId) {
+        log.info("seller id: " + sellerId);
+        Optional<Seller> seller = sellerRepository.findById(sellerId);
         Seller seller1 = seller.get();
         if (seller1.isActive()) {
             throw new AppException(ErrorCode.SELLER_PROFILE_ALREADY_ACTIVE);
@@ -107,6 +115,7 @@ public class SellerService {
         } else {
             throw new AppException(ErrorCode.PROFILE_NOT_FOUND);
         }
+
         seller1 = sellerRepository.save(seller1);
         profile1.setSeller(seller1);
         profileRepository.save(profile1);
@@ -116,6 +125,7 @@ public class SellerService {
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setRoles(roles);
+        userRepository.save(user);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(seller1.getId())
                 .isActive(seller1.isActive())
@@ -123,13 +133,15 @@ public class SellerService {
                 .build();
         return activeCompanyResponse;
     }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<SellerResponse> getAllSellerProfiles(boolean isActive, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Specification<Seller> spec = (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("active"), isActive);
+                criteriaBuilder.equal(root.get("isActive"), isActive);
 
         Page<Seller> sellerProfiles = sellerRepository.findAll(spec, pageable);
         List<SellerResponse> sellerProfileResponses = sellerProfiles.getContent().stream()
@@ -144,7 +156,7 @@ public class SellerService {
                 .data(sellerProfileResponses)
                 .build();
     }
-
+    @Transactional
     public void deleteSellerProfile(Long id) {
         if (!sellerRepository.existsById(id)) {
             throw new AppException(ErrorCode.SELLER_PROFILE_NOT_EXISTS);

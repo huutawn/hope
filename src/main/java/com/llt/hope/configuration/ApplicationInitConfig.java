@@ -65,6 +65,12 @@ public class ApplicationInitConfig {
                         .description("Employee role")
                         .build());
             }
+            if (roleRepository.findById(PredefindRole.SELLER_ROLE).isEmpty()) {
+                Role employer = roleRepository.save(Role.builder()
+                        .name(PredefindRole.SELLER_ROLE)
+                        .description("Selller role")
+                        .build());
+            }
         };
     }
 }

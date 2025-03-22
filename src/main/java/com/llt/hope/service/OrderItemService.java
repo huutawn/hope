@@ -99,26 +99,4 @@ public class OrderItemService {
         orderItemRepository.deleteById(Id);
     }
 
-
-
-
-
-
-    /*@Transactional
-    public void updateOrderTotal(Order orderId) {
-        Order order = orderRepository.findById(orderId.getId())
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
-
-        List<OrderItem> orderItems = orderItemRepository.findByOrder(order.getId());
-
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        for (OrderItem item : orderItems) {
-            totalAmount = totalAmount.add(item.getSubtotal());
-        }
-
-        order.setTotalAmount(totalAmount);
-
-        orderRepository.save(order);
-    }*/
-
 }

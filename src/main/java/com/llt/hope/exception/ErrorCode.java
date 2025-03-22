@@ -46,7 +46,8 @@ public enum ErrorCode {
     SELLER_PROFILE_NOT_EXISTS(438,"Seller Profile not existed" ,HttpStatus.NOT_FOUND ),
     ROLE_NOT_FOUND(439,"" ,HttpStatus.NOT_FOUND ),
     ORDER_ITEM_NOT_EXISTED(440,"" ,HttpStatus.NOT_FOUND ),
-    SELLER_PROFILE_ALREADY_ACTIVE(441,"" ,HttpStatus.BAD_REQUEST );
+    SELLER_PROFILE_ALREADY_ACTIVE(441,"" ,HttpStatus.BAD_REQUEST ),
+    SELLER_NOT_FOUND(442,"" ,HttpStatus.NOT_FOUND );
     int code;
     String message;
     HttpStatusCode httpStatusCode;

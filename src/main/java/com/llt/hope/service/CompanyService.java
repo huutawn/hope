@@ -132,7 +132,7 @@ public class CompanyService {
         profile1.setCompany(company1);
         profileRepository.save(profile1);
         Set<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
+        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
         User user = userRepository
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

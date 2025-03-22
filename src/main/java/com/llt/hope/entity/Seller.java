@@ -31,6 +31,7 @@ public class Seller {
     String storeName;
     String storeDescription;
 
+
     @OneToOne
     @JoinColumn(name = "profile_id")
     @JsonBackReference
@@ -40,4 +41,5 @@ public class Seller {
 
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now();
+
 }

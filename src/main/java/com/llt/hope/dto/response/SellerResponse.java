@@ -1,6 +1,7 @@
 package com.llt.hope.dto.response;
 
 
+import com.llt.hope.entity.Profile;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,8 @@ public class SellerResponse {
 	String email;
 	String storeName;
 	String storeDescription;
-	Boolean isActive;
+	boolean isActive;
+	Profile profile;
 	LocalDateTime createdAt;
 	LocalDateTime updatedAt;
 }

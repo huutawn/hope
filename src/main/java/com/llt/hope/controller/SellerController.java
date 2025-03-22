@@ -41,7 +41,7 @@ public class SellerController {
             @RequestParam(value = "size", required = false, defaultValue = "10") int size
     ){
         return ApiResponse.<PageResponse<SellerResponse>>builder()
-                .result(sellerService.getAllSellerProfiles(false,page,size))
+                .result(sellerService.getAllSellerNonActive(spec,page,size))
                 .build();
     }
 	@GetMapping("/active")
@@ -57,8 +57,8 @@ public class SellerController {
 				.build();
 	}
 	@DeleteMapping("/{sellerId}")
-	public ApiResponse<String> deleteSellerProfile(@PathVariable Long Id) {
-		sellerService.deleteSellerProfile(Id);
+	public ApiResponse<String> deleteSellerProfile(@PathVariable Long sellerId) {
+		sellerService.deleteSellerProfile(sellerId);
 		return ApiResponse.<String>builder()
 				.result("Profile deleted successfully")
 				.build();

@@ -24,7 +24,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
-     User buyer;
+    User buyer;
 
     @Column(updatable = false)
      LocalDateTime orderDate = LocalDateTime.now();

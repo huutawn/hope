@@ -20,6 +20,5 @@ public class UserResponse {
     String email;
     String phone;
     Profile profile;
-    Seller seller;
     Set<Role> roles;
 }
