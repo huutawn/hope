@@ -11,4 +11,6 @@ import com.llt.hope.entity.Seller;
 @Repository
 public interface SellerRepository extends JpaRepository<Seller, Long>, JpaSpecificationExecutor<Seller> {
     Optional<Seller> findByUserId(String userId);
+
+    Page<Seller> findSellerByIsActive(boolean isActive,  Pageable pageable);
 }

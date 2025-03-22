@@ -1,5 +1,7 @@
 package com.llt.hope.dto.request;
 
+import java.io.Serializable;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PaymentCreationRequest {
-    Long orderId;
-    String paymentMethod;
+public class PaymentCreationRequest implements Serializable {
+    String status;
+    String message;
+    String url;
 }

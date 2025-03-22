@@ -14,7 +14,7 @@ public class SellerResponse {
     String email;
     String storeName;
     String storeDescription;
-    Boolean isActive;
+    boolean isActive;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }
