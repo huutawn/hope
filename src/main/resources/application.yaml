@@ -3,10 +3,8 @@ server:
   forward-headers-strategy: native
 
 spring:
-
-
   mail:
-    host: smtp.gmail.com
+    host: smtp.mailgun.org
     port: 587
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
@@ -17,10 +15,8 @@ spring:
           starttls:
             enable: true
             required: true
-
-
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/hope}
+    url: jdbc:mysql://localhost:3306/hope
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root
