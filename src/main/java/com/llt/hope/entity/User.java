@@ -39,6 +39,7 @@ public class User {
 
     @Column(name = "otp_expiry_date")
     private LocalDateTime otpExpiryDate;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
     private Set<Role> roles = new HashSet<>();

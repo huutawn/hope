@@ -55,8 +55,8 @@ public class SellerController {
     }
 
     @DeleteMapping("/{sellerId}")
-    public ApiResponse<String> deleteSellerProfile(@PathVariable Long Id) {
-        sellerService.deleteSellerProfile(Id);
+    public ApiResponse<String> deleteSellerProfile(@PathVariable Long sellerId) {
+        sellerService.deleteSellerProfile(sellerId);
         return ApiResponse.<String>builder()
                 .result("Profile deleted successfully")
                 .build();

@@ -1,18 +1,18 @@
 package com.llt.hope.service;
 
-import com.llt.hope.dto.request.SendEmailRequest;
-import com.llt.hope.dto.response.EmailResponse;
+import java.util.List;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +21,7 @@ import java.util.List;
 public class EmailService {
     JavaMailSender mailSender;
 
-
-    public void sendEmail(String subject, String content, List<String> toList){
+    public void sendEmail(String subject, String content, List<String> toList) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message);

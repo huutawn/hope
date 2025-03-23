@@ -1,13 +1,15 @@
 package com.llt.hope.schedule;
 
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.jpa.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.llt.hope.entity.User;
+import com.llt.hope.repository.jpa.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

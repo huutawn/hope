@@ -26,8 +26,8 @@ public class Order {
     @JoinColumn(name = "buyer_id", nullable = false)
     User buyer;
 
-    @Column(updatable = false)
-    LocalDateTime orderDate = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    LocalDateTime createdAt = LocalDateTime.now();
 
     @NotBlank
     String status = "PENDING";

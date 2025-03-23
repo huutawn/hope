@@ -66,6 +66,8 @@ public class CompanyService {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
             }
         }
+        Set<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
 
         Company company = Company.builder()
                 .createdAt(LocalDate.now())
@@ -81,11 +83,14 @@ public class CompanyService {
                 .website(request.getWebsite())
                 .taxCode(request.getTaxCode())
                 .build();
+
         companyRepository.save(company);
         profile.setCompany(company);
         profile = profileRepository.save(profile);
         user.setProfile(profile);
         userRepository.save(user);
+        company.getProfile().getUser().setRoles(roles);
+        companyRepository.save(company);
         return companyMapper.toCompanyResponse(company);
     }
 
@@ -135,6 +140,7 @@ public class CompanyService {
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setRoles(roles);
+        user=userRepository.save(user);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(company1.getId())
                 .isActive(company1.isActive())
@@ -145,7 +151,10 @@ public class CompanyService {
 
     public void deleteCompany(Long companyId) {
         Optional<Company> company = companyRepository.findById(companyId);
-
+        Set<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
+        company.get().getProfile().getUser().setRoles(roles);
+        companyRepository.save(company.get());
         companyRepository.delete(company.get());
     }
 }

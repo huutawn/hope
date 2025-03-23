@@ -1,6 +1,5 @@
 package com.llt.hope.entity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.*;
@@ -21,5 +20,4 @@ public class InvalidatedToken {
 
     @Column(nullable = false)
     private Date expiryTime;
-
 }

@@ -47,12 +47,14 @@ public enum ErrorCode {
     ORDER_NOT_EXISTED(436, "order not existed ", HttpStatus.NOT_FOUND),
     CARTITEM_NOT_EXISTED(437, "cart not existed", HttpStatus.NOT_FOUND),
     SELLER_PROFILE_NOT_EXISTS(438, "Seller Profile not existed", HttpStatus.NOT_FOUND),
-    ROLE_NOT_FOUND(439, "", HttpStatus.NOT_FOUND),
-    ORDER_ITEM_NOT_EXISTED(440, "", HttpStatus.NOT_FOUND),
-    SELLER_PROFILE_ALREADY_ACTIVE(441, "", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(439, "role not found", HttpStatus.NOT_FOUND),
+    ORDER_ITEM_NOT_EXISTED(440, "orderitem not existed", HttpStatus.NOT_FOUND),
+    SELLER_PROFILE_ALREADY_ACTIVE(441, "seller profile already acitive", HttpStatus.BAD_REQUEST),
     JOB_NOT_FOUND(442, "job not found", HttpStatus.NOT_FOUND),
     INVALID_OTP(443, "", HttpStatus.BAD_REQUEST),
-    INVALID_EMAIL(444, "invalid email",HttpStatus.BAD_REQUEST);
+    INVALID_EMAIL(444, "invalid email", HttpStatus.BAD_REQUEST),
+    INVALID_PAYMENT_AMOUNT(445, "invalid payment amount", HttpStatus.BAD_REQUEST),
+    ORDER_ALREADY_PAID(446, "", HttpStatus.CONFLICT);
 
     int code;
     String message;

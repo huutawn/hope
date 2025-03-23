@@ -14,7 +14,7 @@ import lombok.*;
 public class OrderResponse {
     private Long orderId;
     private User buyerId;
-    private LocalDateTime orderDate;
+    private LocalDateTime createdAt;
     private String status;
     private BigDecimal totalAmount;
     private String paymentMethod;

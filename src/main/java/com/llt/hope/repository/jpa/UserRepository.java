@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.llt.hope.entity.Profile;
-import com.llt.hope.entity.Seller;
 import com.llt.hope.entity.User;
 
 @Repository

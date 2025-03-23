@@ -17,5 +17,4 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findProfileByCompany(Company company);
 
     Optional<Profile> findProfileBySeller(Seller seller);
-
 }
