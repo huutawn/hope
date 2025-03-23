@@ -139,7 +139,7 @@ public class SellerService {
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Specification<Seller> spec =
-                (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("active"), isActive);
+                (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isActive"), isActive);
 
         Page<Seller> sellerProfiles = sellerRepository.findAll(spec, pageable);
         List<SellerResponse> sellerProfileResponses = sellerProfiles.getContent().stream()
