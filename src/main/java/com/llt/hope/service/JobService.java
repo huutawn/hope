@@ -45,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 public class JobService {
     JobRepository jobRepository;
     UserRepository userRepository;
-    JobCategoryRepository jobCategoryRepository;
     JobMapper jobMapper;
     JobDocumentMapper jobDocumentMapper;
     JobElasticsearchRepository jobElasticsearchRepository;
@@ -106,7 +105,7 @@ public class JobService {
 
         Page<Job> jobs = jobRepository.findAll(spec, pageable);
         List<JobResponse> jobResponses = jobs.getContent().stream()
-                .map(jobHandlerMapper::toJobResponse) // Chuyển từng Job thành JobResponse
+                .map(jobHandlerMapper::toJobResponse)
                 .toList();
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)
@@ -125,7 +124,7 @@ public class JobService {
                         .findByTitleContainingOrDescriptionContainingOrRequirementsContainingOrResponsibilitiesContaining(
                                 keyword, keyword, keyword, keyword, pageable);
         List<JobResponse> jobResponses = jobDocuments.getContent().stream()
-                .map(jobDocumentMapper::toJobResponse) // Chuyển từng Job thành JobResponse
+                .map(jobDocumentMapper::toJobResponse)
                 .toList();
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)
