@@ -16,7 +16,7 @@ public class JobHandlerMapper {
         return JobResponse.builder()
                 .id(job.getId())
                 .title(job.getTitle())
-                .company(job.getEmployer().getProfile().getCompany())
+                .employer(job.getEmployer())
                 .description(job.getDescription())
                 .requirements(job.getRequirements())
                 .responsibilities(job.getResponsibilities())

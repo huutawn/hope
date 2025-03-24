@@ -3,20 +3,8 @@ server:
   forward-headers-strategy: native
 
 spring:
-  mail:
-    host: smtp.mailgun.org
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
   datasource:
-    url: jdbc:mysql://localhost:3306/hope
+    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/hope}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root
@@ -50,3 +38,6 @@ payment:
     version: ${VERSION}
     command: ${COMMAND}
     orderType: ${ORDER_TYPE}
+
+resend:
+  api_key: ${RESEND_API_KEY:re_UMpdYfjz_M9xnHA7tsbmzMXff4ZSFZ3pk}

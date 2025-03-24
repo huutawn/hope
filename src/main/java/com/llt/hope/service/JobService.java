@@ -3,6 +3,7 @@ package com.llt.hope.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,17 +57,16 @@ public class JobService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         var employer = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         log.info(employer.getProfile().getCountry());
+        if (employer.getProfile().getCompany() == null) {
+            throw new AppException(ErrorCode.COMPANY_NOT_FOUND);
+        }
         if (!employer.getProfile().getCompany().isActive()) {
             throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
         }
 
-        JobCategory jobCategory = jobCategoryRepository
-                .findJobCategoryByName(request.getCategoryName())
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         if (request.getTitle().isEmpty()) throw new AppException((ErrorCode.TITLE_INVALID));
         Job job = Job.builder()
                 .createdAt(LocalDateTime.now())
-                .jobCategory(jobCategory)
                 .applicationDeadline(request.getApplicationDeadline())
                 .benefits(request.getBenefits())
                 .description(request.getDescription())
@@ -84,7 +84,6 @@ public class JobService {
         JobDocument jobDocument = JobDocument.builder()
                 .id(savedJob.getId().toString())
                 .createdAt(LocalDateTime.now())
-                .jobCategory(jobCategory.getName())
                 .description(request.getDescription())
                 .employerId(employer.getId())
                 .title(request.getTitle())

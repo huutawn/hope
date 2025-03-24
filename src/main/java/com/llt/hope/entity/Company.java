@@ -40,7 +40,6 @@ public class Company {
     private boolean isActive;
 
     @OneToOne
-    @JoinColumn(name = "profile_id")
     @JsonBackReference
     private Profile profile; //
 

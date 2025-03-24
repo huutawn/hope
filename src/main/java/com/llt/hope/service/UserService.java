@@ -42,7 +42,8 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     ProfileService profileService;
-    EmailService emailService;
+    ResendEmailService resendEmailService;
+
 
     public UserResponse createUser(UserCreationRequest request) {
         if (repository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
@@ -123,7 +124,7 @@ public class UserService {
                         + "<p>If you did not request this, please ignore this email.</p>"
                         + "<p>Best regards,<br/>Your Company</p>",
                 otp);
-        emailService.sendEmail(subject, content, List.of(user.getEmail()));
+        resendEmailService.sendEmail(request.getEmail(), subject, content);
     }
 
     @Transactional
