@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import com.llt.hope.entity.Company;
 
+import com.llt.hope.entity.User;
 import lombok.*;
 
 @Data
@@ -14,7 +15,7 @@ import lombok.*;
 @Builder
 public class JobResponse {
     private Long id;
-    private Company company;
+    private User employer;
     private String title;
     private String description;
     private String requirements;

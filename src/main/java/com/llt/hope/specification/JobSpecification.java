@@ -19,7 +19,7 @@ public class JobSpecification {
 
     public static Specification<Job> hasRequirements(String requirement) {
         return (root, query, criteriaBuilder) -> {
-            if (requirement == null || requirement.isEmpty()) {
+              if (requirement == null || requirement.isEmpty()) {
                 return null;
             }
             return criteriaBuilder.like(root.get("requirements"), "%" + requirement + "%");

@@ -3,24 +3,8 @@ server:
   forward-headers-strategy: native
 
 spring:
-
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-
-
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/hope}
+    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/hope}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root
@@ -30,9 +14,9 @@ spring:
       ddl-auto: update
     show-sql: true
   elasticsearch:
-    uris: https://6c3c28c1c31c4680b19026beafcc41ce.ap-southeast-1.aws.found.io:443
+    uris: ${ELASTICSEARCH_URL:https://6c3c28c1c31c4680b19026beafcc41ce.ap-southeast-1.aws.found.io:443}
     username: elastic
-    password: kxuXzAQgrnazZ4loL99pKImK
+    password: ${ELASTICSEARCH_PASSWD}
 
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"
@@ -54,3 +38,6 @@ payment:
     version: ${VERSION}
     command: ${COMMAND}
     orderType: ${ORDER_TYPE}
+
+resend:
+  api_key: ${RESEND_API_KEY:re_UMpdYfjz_M9xnHA7tsbmzMXff4ZSFZ3pk}

@@ -1,5 +1,7 @@
 package com.llt.hope.mapper;
 
+import com.llt.hope.exception.AppException;
+import com.llt.hope.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import com.llt.hope.document.elasticsearch.JobDocument;
@@ -21,11 +23,7 @@ public class JobDocumentMapper {
         return JobResponse.builder()
                 .id(Long.parseLong(jobDocument.getId()))
                 .title(jobDocument.getTitle())
-                .company(userRepository
-                        .findById(jobDocument.getEmployerId())
-                        .get()
-                        .getProfile()
-                        .getCompany())
+                .employer(userRepository.findById(jobDocument.getEmployerId()).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED)))
                 .description(jobDocument.getDescription())
                 .requirements(jobDocument.getRequirements())
                 .responsibilities(jobDocument.getResponsibilities())
