@@ -26,6 +26,10 @@ public class Order {
     @JoinColumn(name = "buyer_id", nullable = false)
     User buyer;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    Product product;
+
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt = LocalDateTime.now();
 

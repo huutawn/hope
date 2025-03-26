@@ -2,6 +2,7 @@ package com.llt.hope.dto.request;
 
 import java.math.BigDecimal;
 
+import com.llt.hope.entity.Product;
 import jakarta.validation.constraints.*;
 
 import lombok.*;
@@ -13,8 +14,7 @@ import lombok.*;
 public class OrderCreationRequest {
     private String buyerId;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Tổng tiền phải lớn hơn 0")
-    private BigDecimal totalAmount;
+    private Long productId;
 
     private String paymentMethod;
 

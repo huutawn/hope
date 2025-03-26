@@ -36,26 +36,14 @@ public class Product {
     @Size(max = 100)
     String name;
 
-    @NotNull
     @DecimalMin("0.0")
     BigDecimal price;
 
-    @NotBlank
     String description;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference
-    ProductCategory productCategory;
-
-    String creationProcess;
-    String materialsUsed;
-
-    @NotNull
     @Min(1)
     Integer inventory;
 
-    BigDecimal weight;
     String dimensions;
 
     @Column(updatable = false)

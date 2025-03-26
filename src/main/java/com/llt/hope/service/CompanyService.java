@@ -140,7 +140,7 @@ public class CompanyService {
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setRoles(roles);
-        user=userRepository.save(user);
+        user = userRepository.save(user);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(company1.getId())
                 .isActive(company1.isActive())

@@ -3,6 +3,9 @@ package com.llt.hope.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.llt.hope.entity.Product;
+import com.llt.hope.repository.jpa.ProductRepository;
+import com.llt.hope.repository.jpa.ProfileRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -38,6 +41,7 @@ public class OrderService {
     OrderRepository orderRepository;
     UserRepository userRepository;
     OrderMapper orderMapper;
+    ProductRepository productRepository;
 
     public OrderResponse createOrder(OrderCreationRequest request) {
         String email =
@@ -46,9 +50,11 @@ public class OrderService {
         User buyer = userRepository
                 .findById(request.getBuyerId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HAS_EXISTED));
+        Product product = productRepository.findById(request.getProductId()).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_HAS_EXISTED));
+
         Order order = Order.builder()
                 .buyer(buyer)
-                .totalAmount(request.getTotalAmount())
+                .product(product)
                 .createdAt(LocalDateTime.now())
                 .paymentMethod(request.getPaymentMethod())
                 .status("PENDING")
@@ -60,7 +66,7 @@ public class OrderService {
                 .orderId(order.getId())
                 .buyerId(buyer)
                 .createdAt(LocalDateTime.now())
-                .totalAmount(order.getTotalAmount())
+                .productId(product)
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
                 .paymentMethod(order.getPaymentMethod())

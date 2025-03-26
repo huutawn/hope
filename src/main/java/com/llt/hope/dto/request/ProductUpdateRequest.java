@@ -20,18 +20,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ProductUpdateRequest {
-    @NotBlank
     @Size(max = 100)
     private String name;
 
-    @NotNull
     @DecimalMin("0.0")
     private BigDecimal price;
 
-    @NotBlank
     private String description;
 
-    @NotNull
     private Long inventory;
 
     MultipartFile imageFile;

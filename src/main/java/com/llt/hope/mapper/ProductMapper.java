@@ -12,7 +12,6 @@ import com.llt.hope.entity.Product;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productCategory", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     Product toProduct(ProductCreationRequest productCreationRequest);
 
@@ -20,7 +19,6 @@ public interface ProductMapper {
     ProductResponse toProductResponse(Product product);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productCategory", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     void updateProduct(@MappingTarget Product product, ProductUpdateRequest request);
 }

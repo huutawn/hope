@@ -13,8 +13,6 @@ public interface SellerMapper {
     Seller toSeller(SellerCreationRequest request);
 
     Seller toSellerProfile(SellerCreationRequest request);
-
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "phone", target = "phone")
+    
     SellerResponse toSellerProfileResponse(Seller seller);
 }

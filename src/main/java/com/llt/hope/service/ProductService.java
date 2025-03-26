@@ -27,7 +27,6 @@ import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
 import com.llt.hope.repository.jpa.MediaFileRepository;
-import com.llt.hope.repository.jpa.ProductCategoryRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
@@ -41,11 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-@PreAuthorize("hasRole('SELLER')")
 public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
-    ProductCategoryRepository productCategoryRepository;
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
@@ -60,9 +57,6 @@ public class ProductService {
 
         Set<MediaFile> mediaFiles = new HashSet<>();
 
-        ProductCategory category = productCategoryRepository
-                .findById(request.getCategoryId())
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
@@ -84,8 +78,6 @@ public class ProductService {
                 .images(mediaFiles)
                 .price(request.getPrice())
                 .description(request.getDescription())
-                .productCategory(category)
-                .weight(request.getWeight())
                 .dimensions(request.getDimensions())
                 .inventory(request.getInventory())
                 .build();
@@ -99,17 +91,12 @@ public class ProductService {
                 .images(product.getImages())
                 .price(product.getPrice())
                 .description(product.getDescription())
-                .productCategory(category)
+                .dimensions(product.getDimensions())
                 .inventory(product.getInventory())
                 .build();
         return productResponse;
     }
 
-    //    public List<ProductResponse> getAllProduct() {
-    //        return productRepository.findAll().stream()
-    //                .map(productMapper::toProductResponse)
-    //                .toList();
-    //    }
     public PageResponse<ProductResponse> getAllProduct(Specification<Product> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -138,6 +125,7 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
+    @PreAuthorize("hasRole('SELLER')")
     public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
         Product product =
                 productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));

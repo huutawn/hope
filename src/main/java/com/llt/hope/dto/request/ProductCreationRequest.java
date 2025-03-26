@@ -21,24 +21,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ProductCreationRequest {
-    @NotBlank
     @Size(max = 100)
     String name;
 
-    @NotNull
     @DecimalMin("0.0")
     BigDecimal price;
 
-    @NotBlank
     String description;
 
-    @NotNull
-    Long categoryId;
-
-    @NotNull
     int inventory;
 
-    BigDecimal weight;
     String dimensions;
     List<MultipartFile> imagesFile;
 }

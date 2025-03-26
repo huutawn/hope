@@ -51,7 +51,6 @@ public class CompanyController {
     @DeleteMapping
     public ApiResponse<Void> deleteCompany(@RequestParam long companyId) {
         companyService.deleteCompany(companyId);
-        return ApiResponse.<Void>builder()
-                .build();
+        return ApiResponse.<Void>builder().build();
     }
 }
