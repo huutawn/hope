@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -40,8 +39,8 @@ public class SePayWebController {
 
     }
     @GetMapping
-public ApiResponse<BigDecimal> getFundBalance(){
-    return ApiResponse.<BigDecimal>builder()
+public ApiResponse<Double> getFundBalance(){
+    return ApiResponse.<Double>builder()
             .result(sePayWebhookService.getFundBalance())
             .build();
     }

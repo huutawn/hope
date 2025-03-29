@@ -18,5 +18,5 @@ public class FundBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal balance;
+    private Double balance;
 }

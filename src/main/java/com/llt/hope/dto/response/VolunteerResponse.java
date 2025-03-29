@@ -5,7 +5,6 @@ import com.llt.hope.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 public class VolunteerResponse {
     long id;
     private String transactionId;
-    private BigDecimal amount;
+    private Double amount;
     private String content;
     private String accountNumber;
     private String transactionDate;

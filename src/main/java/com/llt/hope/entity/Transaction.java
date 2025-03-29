@@ -3,7 +3,6 @@ package com.llt.hope.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +18,7 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private User user;
     private String transactionId;
-    private BigDecimal amount;
+    private Double amount;
     private String content;
     private String accountNumber;
     private String transactionDate;

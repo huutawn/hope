@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 
 @Service
 @RequiredArgsConstructor
@@ -56,13 +54,12 @@ public class SePayWebHookService {
 
         // Cập nhật số dư quỹ chung
         FundBalance fundBalance = fundBalanceRepository.findById(1L).orElse(new FundBalance());
-        fundBalance.setBalance(fundBalance.getBalance().add(webhookData.getTransferAmount()));
+        fundBalance.setBalance(fundBalance.getBalance() + webhookData.getTransferAmount());
         fundBalance=fundBalanceRepository.save(fundBalance);
         log.info("💰 Cập nhật số dư quỹ chung: {}", fundBalance.getBalance());
 
         VolunteerResponse volunteerResponse = VolunteerResponse.builder()
                 .id(transaction.getId())
-                .user(transaction.getUser())
                 .accountNumber(transaction.getAccountNumber())
                 .transactionDate(transaction.getTransactionDate())
                 .amount(transaction.getAmount())
@@ -73,7 +70,7 @@ public class SePayWebHookService {
                 .build();
         return volunteerResponse;
     }
-    public BigDecimal getFundBalance(){
+    public Double getFundBalance(){
         FundBalance fundBalance = fundBalanceRepository.findById(1L).orElse(new FundBalance());
         return fundBalance.getBalance();
     }

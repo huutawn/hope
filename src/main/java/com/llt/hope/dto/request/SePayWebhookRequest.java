@@ -3,8 +3,6 @@ package com.llt.hope.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,8 +17,8 @@ public class SePayWebhookRequest {
     private String code; // Mã code thanh toán (có thể null)
     private String content; // Nội dung chuyển khoản
     private String transferType; // Loại giao dịch (in = tiền vào, out = tiền ra)
-    private BigDecimal transferAmount; // Số tiền giao dịch
-    private BigDecimal accumulated; // Số dư tài khoản lũy kế
+    private Double transferAmount; // Số tiền giao dịch
+    private Double accumulated; // Số dư tài khoản lũy kế
     private String subAccount; // Tài khoản phụ (có thể null)
     private String referenceCode; // Mã tham chiếu của ngân hàng
     private String description; // Toàn bộ nội dung tin nhắn sms
