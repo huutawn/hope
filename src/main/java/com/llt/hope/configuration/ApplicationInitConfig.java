@@ -88,7 +88,7 @@ public class ApplicationInitConfig {
             }
             if (fundBalanceRepository.findById(1L).isEmpty()) {
                 FundBalance fundBalance = new FundBalance();
-                fundBalance.setBalance(BigDecimal.valueOf(100.50));
+                fundBalance.setBalance(BigDecimal.valueOf(0.0));
                 fundBalanceRepository.save(fundBalance);
             }
         };
