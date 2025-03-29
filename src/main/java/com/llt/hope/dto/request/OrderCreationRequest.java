@@ -1,12 +1,10 @@
 package com.llt.hope.dto.request;
 
+import java.util.List;
 
-import com.llt.hope.entity.Order;
 import jakarta.validation.constraints.*;
 
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor

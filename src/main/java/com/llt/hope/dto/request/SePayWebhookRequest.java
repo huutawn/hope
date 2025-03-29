@@ -1,9 +1,8 @@
 package com.llt.hope.dto.request;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.math.BigDecimal;
+
+import lombok.*;
 
 @Getter
 @Setter

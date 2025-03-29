@@ -1,13 +1,11 @@
 package com.llt.hope.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.llt.hope.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 public class MessageResponse {
     private Long id;
-
 
     private User sender;
 

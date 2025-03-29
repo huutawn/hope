@@ -1,19 +1,19 @@
 package com.llt.hope.mapper;
 
-import com.llt.hope.dto.response.OrderItemResponse;
-import com.llt.hope.entity.OrderItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import com.llt.hope.dto.request.OrderCreationRequest;
 import com.llt.hope.dto.request.OrderUpdateRequest;
+import com.llt.hope.dto.response.OrderItemResponse;
 import com.llt.hope.dto.response.OrderResponse;
 import com.llt.hope.entity.Order;
+import com.llt.hope.entity.OrderItem;
 import com.llt.hope.entity.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
@@ -37,13 +37,12 @@ public interface OrderMapper {
         return orderItems.stream()
                 .map(item -> new OrderItemResponse(
                         item.getItemId(),
-                        item.getOrder().getId(),    // Trả về orderId
-                        item.getProduct().getId(),  // Trả về productId
-                        item.getProduct().getName(),// Trả về productName
+                        item.getOrder().getId(), // Trả về orderId
+                        item.getProduct().getId(), // Trả về productId
+                        item.getProduct().getName(), // Trả về productName
                         item.getQuantity(),
                         item.getPrice(),
-                        item.getSubtotal()
-                ))
+                        item.getSubtotal()))
                 .toList();
     }
 }

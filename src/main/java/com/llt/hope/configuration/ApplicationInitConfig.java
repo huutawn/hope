@@ -1,18 +1,19 @@
 package com.llt.hope.configuration;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
-import com.llt.hope.entity.FundBalance;
-import com.llt.hope.repository.jpa.FundBalanceRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.entity.FundBalance;
 import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
 import com.llt.hope.entity.User;
+import com.llt.hope.repository.jpa.FundBalanceRepository;
 import com.llt.hope.repository.jpa.ProfileRepository;
 import com.llt.hope.repository.jpa.RoleRepository;
 import com.llt.hope.repository.jpa.UserRepository;
@@ -39,7 +40,10 @@ public class ApplicationInitConfig {
 
     @Bean
     ApplicationRunner applicationRunner(
-            UserRepository userRepository, RoleRepository roleRepository, ProfileRepository profileRepository, FundBalanceRepository fundBalanceRepository) {
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            ProfileRepository profileRepository,
+            FundBalanceRepository fundBalanceRepository) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -82,12 +86,11 @@ public class ApplicationInitConfig {
                         .description("Selller role")
                         .build());
             }
-            if( fundBalanceRepository.findById(1L).isEmpty()){
-                FundBalance fundBalance=new FundBalance();
-                fundBalance.setBalance(0.0);
+            if (fundBalanceRepository.findById(1L).isEmpty()) {
+                FundBalance fundBalance = new FundBalance();
+                fundBalance.setBalance(BigDecimal.valueOf(100.50));
                 fundBalanceRepository.save(fundBalance);
             }
         };
-
     }
 }

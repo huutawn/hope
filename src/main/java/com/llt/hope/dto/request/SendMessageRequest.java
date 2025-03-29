@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 public class SendMessageRequest {
-     String senderEmail;
-     String receiverEmail;
-     String content;
+    String senderEmail;
+    String receiverEmail;
+    String content;
 }

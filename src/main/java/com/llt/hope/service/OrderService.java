@@ -5,10 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.llt.hope.dto.request.OrderItemCreationRequest;
-import com.llt.hope.entity.OrderItem;
-import com.llt.hope.mapper.OrderItemsMapper;
-import com.llt.hope.repository.jpa.OrderItemRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -19,14 +15,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.OrderCreationRequest;
+import com.llt.hope.dto.request.OrderItemCreationRequest;
 import com.llt.hope.dto.request.OrderUpdateRequest;
 import com.llt.hope.dto.response.*;
 import com.llt.hope.entity.Order;
+import com.llt.hope.entity.OrderItem;
 import com.llt.hope.entity.Product;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
+import com.llt.hope.mapper.OrderItemsMapper;
 import com.llt.hope.mapper.OrderMapper;
+import com.llt.hope.repository.jpa.OrderItemRepository;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
@@ -55,10 +55,9 @@ public class OrderService {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
 
-        String email = SecurityUtils.getCurrentUserLogin()
-                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Tạo đơn hàng trước
         Order order = Order.builder()
@@ -76,7 +75,8 @@ public class OrderService {
         List<OrderItem> orderItems = new ArrayList<>();
 
         for (OrderItemCreationRequest itemRequest : request.getItems()) {
-            Product product = productRepository.findById(itemRequest.getProductId())
+            Product product = productRepository
+                    .findById(itemRequest.getProductId())
                     .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
             BigDecimal itemPrice = product.getPrice();

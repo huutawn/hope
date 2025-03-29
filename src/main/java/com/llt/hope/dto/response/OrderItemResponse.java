@@ -2,9 +2,6 @@ package com.llt.hope.dto.response;
 
 import java.math.BigDecimal;
 
-import com.llt.hope.entity.Order;
-import com.llt.hope.entity.Product;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

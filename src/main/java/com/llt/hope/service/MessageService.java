@@ -1,5 +1,12 @@
 package com.llt.hope.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.llt.hope.dto.response.MessageResponse;
 import com.llt.hope.entity.Message;
@@ -14,31 +21,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class MessageService {
-  UserRepository userRepository;
-  MessageRepository messageRepository;
-  SimpMessagingTemplate messagingTemplate;
-  MessageMapper messageMapper;
+    UserRepository userRepository;
+    MessageRepository messageRepository;
+    SimpMessagingTemplate messagingTemplate;
+    MessageMapper messageMapper;
 
     @Transactional
     public MessageResponse sendMessage(String senderEmail, String receiverEmail, String content) {
         // Kiểm tra người dùng
-        User sender = userRepository.findByEmail(senderEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User receiver = userRepository.findByEmail(receiverEmail)
+        User sender =
+                userRepository.findByEmail(senderEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User receiver = userRepository
+                .findByEmail(receiverEmail)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Tạo tin nhắn mới
@@ -50,16 +49,10 @@ public class MessageService {
                 .isRead(false)
                 .build();
 
-        message=messageRepository.save(message);
-
-
+        message = messageRepository.save(message);
 
         // Gửi tin nhắn qua WebSocket đến người nhận
-        messagingTemplate.convertAndSendToUser(
-                receiverEmail,
-                "/queue/messages",
-                message
-        );
+        messagingTemplate.convertAndSendToUser(receiverEmail, "/queue/messages", message);
 
         return messageMapper.toMessageResponse(message);
     }
@@ -74,9 +67,6 @@ public class MessageService {
 
     public List<MessageResponse> getMessagesBetweenUsers(String user1Email, String user2Email) {
         List<Message> messages = messageRepository.findMessagesBetweenUsers(user1Email, user2Email);
-        return messages.stream()
-                .map(messageMapper::toMessageResponse)
-                .collect(Collectors.toList());
+        return messages.stream().map(messageMapper::toMessageResponse).collect(Collectors.toList());
     }
-    }
-
+}
