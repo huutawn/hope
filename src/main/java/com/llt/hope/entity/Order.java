@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.llt.hope.dto.request.OrderItemCreationRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -62,7 +61,9 @@ public class Order {
     }
 
     // Danh sách giá trị hợp lệ
-    public static final String[] VALID_STATUSES = {"PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"};
+    public static final String[] VALID_STATUSES = {
+        "PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"
+    };
     public static final String[] VALID_PAYMENT_METHODS = {"COD", "BANK_TRANSFER", "CREDIT_CARD", "E_WALLET"};
     public static final String[] VALID_PAYMENT_STATUSES = {"PENDING", "PAID", "FAILED", "REFUNDED"};
 

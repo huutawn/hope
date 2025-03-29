@@ -1,8 +1,7 @@
 package com.llt.hope.dto.request;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.Min;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

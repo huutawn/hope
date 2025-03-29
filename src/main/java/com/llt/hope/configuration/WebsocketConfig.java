@@ -1,8 +1,9 @@
 package com.llt.hope.configuration;
 
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
-import lombok.CustomLog;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -17,7 +18,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -25,17 +27,18 @@ import java.util.List;
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
+
     CustomJwtDecoder jwtDecoder;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
     }
+
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -48,11 +51,8 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
                     String token = accessor.getLogin();
                     if (token != null) {
                         String userEmail = jwtDecoder.decode(token).getSubject();
-                        Authentication authentication = new PreAuthenticatedAuthenticationToken(
-                                userEmail,
-                                null,
-                                List.of()
-                        );
+                        Authentication authentication =
+                                new PreAuthenticatedAuthenticationToken(userEmail, null, List.of());
                         accessor.setUser(authentication);
                     }
                 }
@@ -62,4 +62,3 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         });
     }
 }
-

@@ -1,9 +1,11 @@
 package com.llt.hope.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -15,10 +17,12 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
+
     private String transactionId;
-    private Double amount;
+    private BigDecimal amount;
     private String content;
     private String accountNumber;
     private String transactionDate;

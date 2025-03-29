@@ -55,8 +55,8 @@ public enum ErrorCode {
     INVALID_EMAIL(444, "invalid email", HttpStatus.BAD_REQUEST),
     INVALID_PAYMENT_AMOUNT(445, "invalid payment amount", HttpStatus.BAD_REQUEST),
     ORDER_ALREADY_PAID(446, "", HttpStatus.CONFLICT),
-    ORDER_EMPTY(447,"EMTY" ,HttpStatus.BAD_REQUEST ),
-    INVALID_REQUEST(448,"" ,HttpStatus.BAD_REQUEST );
+    ORDER_EMPTY(447, "EMTY", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(448, "", HttpStatus.BAD_REQUEST);
 
     int code;
     String message;

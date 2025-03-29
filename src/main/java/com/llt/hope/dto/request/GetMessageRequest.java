@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 public class GetMessageRequest {
-     String user1Email;
-     String user2Email;
-
+    String user1Email;
+    String user2Email;
 }

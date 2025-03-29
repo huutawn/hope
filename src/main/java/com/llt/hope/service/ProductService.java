@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.llt.hope.repository.jpa.ProductCategoryRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -28,6 +27,7 @@ import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
 import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.ProductCategoryRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;

@@ -1,11 +1,13 @@
 package com.llt.hope.dto.response;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import com.llt.hope.entity.FundBalance;
 import com.llt.hope.entity.User;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -14,8 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 public class VolunteerResponse {
     long id;
+    User user;
     private String transactionId;
-    private Double amount;
+    private BigDecimal amount;
     private String content;
     private String accountNumber;
     private String transactionDate;

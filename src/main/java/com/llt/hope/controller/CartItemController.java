@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
-public class    CartItemController {
+public class CartItemController {
     CartItemService cartItemService;
 
     @PostMapping
