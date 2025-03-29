@@ -24,6 +24,7 @@ public class ProductResponse {
     ProductCategory productCategory;
     User seller;
     int inventory;
+    String dimensions;
     Set<MediaFile> images;
     LocalDateTime createdAt;
 }

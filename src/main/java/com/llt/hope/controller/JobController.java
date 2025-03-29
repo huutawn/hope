@@ -26,7 +26,7 @@ public class JobController {
 
     @PostMapping
     public ApiResponse<JobResponse> createRecruitment(@RequestBody RecruitmentCreationRequest request) {
-        return ApiResponse. <JobResponse>builder()
+        return ApiResponse.<JobResponse>builder()
                 .result(jobService.createRecruitmentNews(request))
                 .build();
     }

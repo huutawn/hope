@@ -2,6 +2,7 @@ package com.llt.hope.entity;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -12,7 +13,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "OrderItems")
+@Table(name = "order_items")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,23 +23,27 @@ import lombok.experimental.FieldDefaults;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemId;
+    Long itemId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) // Thêm FetchType.LAZY
     @JoinColumn(name = "order_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Order order;
+    Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) // Thêm FetchType.LAZY
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    Product product;
 
     @Min(1)
-    private int quantity;
+    int quantity;
 
-    @NotNull
-    private BigDecimal price;
+    BigDecimal price;
 
-    @NotNull
-    private BigDecimal subtotal;
+    BigDecimal subTotal;
+
+    @JsonProperty("subtotal")
+    public BigDecimal getSubtotal() {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
 }

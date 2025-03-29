@@ -18,14 +18,12 @@ import com.llt.hope.dto.request.CartItemUpdateRequest;
 import com.llt.hope.dto.response.CartItemResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.entity.CartItem;
-import com.llt.hope.entity.Product;
+import com.llt.hope.entity.Order;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.CartItemMapper;
-import com.llt.hope.repository.jpa.CartItemRepository;
-import com.llt.hope.repository.jpa.ProductRepository;
-import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.repository.jpa.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CartItemService {
     CartItemRepository cartItemRepository;
     UserRepository userRepository;
-    ProductRepository productRepository;
+    OrderRepository orderRepository;
     CartItemMapper cartItemMapper;
 
     public CartItemResponse addCartItem(CartItemCreationRequest request, Authentication authentication) {
@@ -48,29 +46,29 @@ public class CartItemService {
         User currentUser =
                 userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED_));
 
-        Product product = productRepository
-                .findById(request.getProductId())
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        Order order = orderRepository
+                .findById(request.getOrderId())
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
 
         CartItem cartItem =
-                cartItemRepository.findByUserAndProduct(currentUser, product).orElse(null);
+                cartItemRepository.findByUserAndOrder(currentUser, order).orElse(null);
 
         if (cartItem != null) {
             cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
         } else {
             cartItem = CartItem.builder()
                     .user(currentUser)
-                    .product(product)
-                    .quantity(request.getProductId())
+                    .order(order)
+                    .quantity(request.getOrderId())
                     .build();
         }
         BigDecimal quantityBD = BigDecimal.valueOf(cartItem.getQuantity());
-        BigDecimal totalPrice = cartItem.getProduct().getPrice().multiply(quantityBD);
+        BigDecimal totalPrice = cartItem.getOrder().getTotalAmount().multiply(quantityBD);
         cartItem = cartItemRepository.save(cartItem);
         CartItemResponse cartItemResponse = CartItemResponse.builder()
                 .id(cartItem.getId())
                 .userId(cartItem.getUser())
-                .productId(cartItem.getProduct())
+                .orderId(cartItem.getOrder())
                 .addedAt(LocalDateTime.now())
                 .totalPrice(totalPrice)
                 .quantity(cartItem.getQuantity())
@@ -103,7 +101,7 @@ public class CartItemService {
         if (!cartItemRepository.existsById(cartItemId)) {
             throw new AppException(ErrorCode.CARTITEM_NOT_EXISTED);
         }
-        productRepository.deleteById(cartItemId);
+        orderRepository.deleteById(cartItemId);
     }
 
     public CartItemResponse updateCart(Long id, CartItemUpdateRequest request) {

@@ -1,11 +1,11 @@
 package com.llt.hope.mapper;
 
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import com.llt.hope.document.elasticsearch.JobDocument;
 import com.llt.hope.dto.response.JobResponse;
+import com.llt.hope.exception.AppException;
+import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,9 @@ public class JobDocumentMapper {
         return JobResponse.builder()
                 .id(Long.parseLong(jobDocument.getId()))
                 .title(jobDocument.getTitle())
-                .employer(userRepository.findById(jobDocument.getEmployerId()).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED)))
+                .employer(userRepository
+                        .findById(jobDocument.getEmployerId())
+                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)))
                 .description(jobDocument.getDescription())
                 .requirements(jobDocument.getRequirements())
                 .responsibilities(jobDocument.getResponsibilities())

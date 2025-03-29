@@ -1,7 +1,6 @@
 package com.llt.hope.controller;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +44,7 @@ public class ProductController {
                 .build();
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ApiResponse<ProductResponse> createProduct(
             @ModelAttribute ProductCreationRequest request, Authentication authentication) {
         return ApiResponse.<ProductResponse>builder()

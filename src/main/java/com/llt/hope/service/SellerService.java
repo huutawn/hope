@@ -1,5 +1,6 @@
 package com.llt.hope.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -129,6 +130,7 @@ public class SellerService {
                 .id(seller1.getId())
                 .isActive(seller1.isActive())
                 .name(seller1.getStoreName())
+                .updatedAt(LocalDate.now())
                 .build();
         return activeCompanyResponse;
     }
@@ -155,12 +157,13 @@ public class SellerService {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void deleteSellerProfile(Long id) {
-        if (!sellerRepository.existsById(id)) {
+    public void deleteSellerProfile(Long sellerId) {
+        if (!sellerRepository.existsById(sellerId)) {
             throw new AppException(ErrorCode.SELLER_PROFILE_NOT_EXISTS);
         }
-        sellerRepository.deleteById(id);
-        log.info("Deleted seller profile with id: {}", id);
+        profileRepository.deleteBySellerId(sellerId);
+        sellerRepository.deleteById(sellerId);
     }
 }

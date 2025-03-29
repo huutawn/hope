@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class CartItemCreationRequest {
 
     @NotNull
-    Long productId;
+    Long orderId;
 
     Long quantity;
 }

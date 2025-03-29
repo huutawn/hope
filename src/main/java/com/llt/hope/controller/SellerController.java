@@ -34,7 +34,7 @@ public class SellerController {
                 .build();
     }
 
-    @GetMapping("/nonactive")
+    @GetMapping("/non-active")
     public ApiResponse<PageResponse<SellerResponse>> getAllSellerProfileNonActive(
             @Filter Specification<Seller> spec,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,

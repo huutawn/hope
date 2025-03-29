@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -33,29 +33,22 @@ public class Product {
     @JsonIgnore
     User seller;
 
-    @Size(max = 100)
-    String name;
-
-    @NotNull
-    @DecimalMin("0.0")
-    BigDecimal price;
-
-    @NotBlank
-    String description;
-
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "productCategory_id", nullable = false)
     @JsonBackReference
     ProductCategory productCategory;
 
-    String creationProcess;
-    String materialsUsed;
+    @Size(max = 100)
+    String name;
 
-    @NotNull
+    @DecimalMin("0.0")
+    BigDecimal price;
+
+    String description;
+
     @Min(1)
     Integer inventory;
 
-    BigDecimal weight;
     String dimensions;
 
     @Column(updatable = false)
