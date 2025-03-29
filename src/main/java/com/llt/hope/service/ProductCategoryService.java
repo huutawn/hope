@@ -33,7 +33,6 @@ public class ProductCategoryService {
     ProductCategoryMapper productCategoryMapper;
     UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ADMIN')")
     public ProductCategoryResponse createProductCategory(ProductCategoryCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
