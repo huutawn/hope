@@ -44,7 +44,6 @@ public class UserService {
     ProfileService profileService;
     ResendEmailService resendEmailService;
 
-
     public UserResponse createUser(UserCreationRequest request) {
         if (repository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
         User user = userMapper.toUser(request);

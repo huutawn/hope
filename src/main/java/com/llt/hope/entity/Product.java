@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -32,6 +32,11 @@ public class Product {
     @JoinColumn(name = "seller_id", nullable = false)
     @JsonIgnore
     User seller;
+
+    @ManyToOne
+    @JoinColumn(name = "productCategory_id", nullable = false)
+    @JsonBackReference
+    ProductCategory productCategory;
 
     @Size(max = 100)
     String name;

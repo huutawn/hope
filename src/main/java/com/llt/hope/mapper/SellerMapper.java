@@ -1,7 +1,6 @@
 package com.llt.hope.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import com.llt.hope.dto.request.SellerCreationRequest;
 import com.llt.hope.dto.response.SellerResponse;
@@ -13,6 +12,6 @@ public interface SellerMapper {
     Seller toSeller(SellerCreationRequest request);
 
     Seller toSellerProfile(SellerCreationRequest request);
-    
+
     SellerResponse toSellerProfileResponse(Seller seller);
 }

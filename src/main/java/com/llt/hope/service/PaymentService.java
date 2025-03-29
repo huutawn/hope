@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
-import com.llt.hope.configuration.VNPayConfig;
 import com.llt.hope.dto.response.PaymentResponse;
 import com.llt.hope.entity.Order;
 import com.llt.hope.entity.Payment;
@@ -14,7 +13,6 @@ import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.repository.jpa.OrderRepository;
 import com.llt.hope.repository.jpa.PaymentRepository;
-import com.llt.hope.utils.VNPayUtil;
 
 import lombok.RequiredArgsConstructor;
 

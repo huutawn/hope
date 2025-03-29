@@ -4,9 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.llt.hope.entity.Company;
-
 import com.llt.hope.entity.User;
+
 import lombok.*;
 
 @Data

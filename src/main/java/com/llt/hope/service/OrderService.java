@@ -1,11 +1,14 @@
 package com.llt.hope.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.llt.hope.entity.Product;
-import com.llt.hope.repository.jpa.ProductRepository;
-import com.llt.hope.repository.jpa.ProfileRepository;
+import com.llt.hope.dto.request.OrderItemCreationRequest;
+import com.llt.hope.entity.OrderItem;
+import com.llt.hope.mapper.OrderItemsMapper;
+import com.llt.hope.repository.jpa.OrderItemRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -19,11 +22,13 @@ import com.llt.hope.dto.request.OrderCreationRequest;
 import com.llt.hope.dto.request.OrderUpdateRequest;
 import com.llt.hope.dto.response.*;
 import com.llt.hope.entity.Order;
+import com.llt.hope.entity.Product;
 import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.OrderMapper;
 import com.llt.hope.repository.jpa.OrderRepository;
+import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
@@ -42,38 +47,71 @@ public class OrderService {
     UserRepository userRepository;
     OrderMapper orderMapper;
     ProductRepository productRepository;
+    OrderItemRepository orderItemRepository;
+    OrderItemsMapper orderItemsMapper;
 
     public OrderResponse createOrder(OrderCreationRequest request) {
-        String email =
-                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User buyer = userRepository
-                .findById(request.getBuyerId())
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_HAS_EXISTED));
-        Product product = productRepository.findById(request.getProductId()).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_HAS_EXISTED));
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
 
+        String email = SecurityUtils.getCurrentUserLogin()
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Tạo đơn hàng trước
         Order order = Order.builder()
-                .buyer(buyer)
-                .product(product)
+                .buyer(user)
                 .createdAt(LocalDateTime.now())
                 .paymentMethod(request.getPaymentMethod())
                 .status("PENDING")
                 .paymentStatus("PENDING")
                 .notes(request.getNotes())
+                .totalAmount(BigDecimal.ZERO)
                 .build();
-        order = orderRepository.save(order);
-        OrderResponse orderResponse = OrderResponse.builder()
+        order = orderRepository.save(order); // 🔥 LƯU ORDER TRƯỚC
+
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (OrderItemCreationRequest itemRequest : request.getItems()) {
+            Product product = productRepository.findById(itemRequest.getProductId())
+                    .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+
+            BigDecimal itemPrice = product.getPrice();
+            if (itemPrice == null) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+
+            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
+            totalAmount = totalAmount.add(itemTotal);
+
+            // Gán order vào orderItem để tránh lỗi "order_id cannot be null"
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order) // 🔥 BẮT BUỘC PHẢI CÓ ORDER Ở ĐÂY
+                    .product(product)
+                    .quantity(itemRequest.getQuantity())
+                    .price(itemPrice)
+                    .subTotal(itemTotal)
+                    .build();
+            orderItems.add(orderItem);
+        }
+
+        orderItemRepository.saveAll(orderItems); // 🔥 Lưu danh sách order items
+        order.setTotalAmount(totalAmount);
+        orderRepository.save(order); // 🔥 Cập nhật tổng tiền
+
+        return OrderResponse.builder()
                 .orderId(order.getId())
-                .buyerId(buyer)
-                .createdAt(LocalDateTime.now())
-                .productId(product)
+                .buyerId(user.getId())
+                .createdAt(order.getCreatedAt())
+                .totalAmount(order.getTotalAmount())
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
                 .paymentMethod(order.getPaymentMethod())
                 .notes(order.getNotes())
                 .build();
-
-        return orderResponse;
     }
 
     public PageResponse<OrderResponse> getAllOrder(Specification<Order> spec, int page, int size) {

@@ -47,7 +47,7 @@ public class CompanyService {
     RoleRepository roleRepository;
     ResendEmailService resendEmailService;
 
-    String website="https://hopevn.site/dashboard";
+    String website = "https://hopevn.site/dashboard";
 
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -87,7 +87,7 @@ public class CompanyService {
                 .taxCode(request.getTaxCode())
                 .build();
 
-        company=companyRepository.saveAndFlush(company);
+        company = companyRepository.saveAndFlush(company);
         profile.setCompany(company);
         profile = profileRepository.saveAndFlush(profile);
         user.setProfile(profile);
@@ -141,7 +141,7 @@ public class CompanyService {
                 .findUserByProfile(profile1)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setRoles(roles);
-        user=userRepository.save(user);
+        user = userRepository.save(user);
         String subject = " Your company completely accepted";
         String content = String.format(
                 "<p><strong>Xin chào %s,</strong></p>"
@@ -159,7 +159,7 @@ public class CompanyService {
                         + "<p>Chúc bạn thành công và xây dựng một đội ngũ xuất sắc!</p>"
                         + "<p><strong>Trân trọng,</strong><br/>Đội ngũ Hope</p>",
                 company1.getName(), website);
-        resendEmailService.sendEmail(user.getEmail(),subject,content);
+        resendEmailService.sendEmail(user.getEmail(), subject, content);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(company1.getId())
                 .isActive(company1.isActive())
@@ -169,14 +169,15 @@ public class CompanyService {
     }
 
     public void deleteCompany(Long companyId) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
+        Company company =
+                companyRepository.findById(companyId).orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
 
-        Profile profile = profileRepository.findProfileByCompany(company)
+        Profile profile = profileRepository
+                .findProfileByCompany(company)
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
 
-        User user = userRepository.findUserByProfile(profile)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User user =
+                userRepository.findUserByProfile(profile).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Set<Role> roles = new HashSet<>();
         roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);

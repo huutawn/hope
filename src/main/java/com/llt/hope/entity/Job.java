@@ -27,12 +27,16 @@ public class Job {
 
     private String title;
     private String description;
+
     @Column(columnDefinition = "TEXT")
     private String requirements;
+
     @Column(columnDefinition = "TEXT")
     private String responsibilities;
+
     @Column(columnDefinition = "TEXT")
     private String benefits;
+
     private String suitableForDisability;
 
     @ManyToOne

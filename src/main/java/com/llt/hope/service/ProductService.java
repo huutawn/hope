@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.llt.hope.repository.jpa.ProductCategoryRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -46,6 +47,7 @@ public class ProductService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
+    ProductCategoryRepository productCategoryRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -56,7 +58,9 @@ public class ProductService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Set<MediaFile> mediaFiles = new HashSet<>();
-
+        ProductCategory category = productCategoryRepository
+                .findById(request.getCategoryId())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
@@ -73,6 +77,7 @@ public class ProductService {
         }
         Product product = Product.builder()
                 .createdAt(LocalDateTime.now())
+                .productCategory(category)
                 .seller(seller)
                 .name(request.getName())
                 .images(mediaFiles)
@@ -85,6 +90,7 @@ public class ProductService {
         product = productRepository.save(product);
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
+                .productCategory(category)
                 .createdAt(product.getCreatedAt())
                 .seller(seller)
                 .name(product.getName())

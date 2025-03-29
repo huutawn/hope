@@ -16,8 +16,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class OrderItemResponse {
     private Long itemId;
-    private Order orderId;
-    private Product productId;
+    private Long orderId;
+    private Long productId;
+    String productName;
     private int quantity;
     private BigDecimal price;
     private BigDecimal subtotal;
