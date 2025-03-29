@@ -69,9 +69,6 @@ public class CompanyService {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
             }
         }
-        Set<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefindRole.EMPLOYER_ROLE).ifPresent(roles::add);
-
         Company company = Company.builder()
                 .createdAt(LocalDate.now())
                 .isActive(false)
@@ -91,7 +88,6 @@ public class CompanyService {
         profile.setCompany(company);
         profile = profileRepository.saveAndFlush(profile);
         user.setProfile(profile);
-        user.setRoles(roles);
         userRepository.save(user);
         companyRepository.save(company);
         return companyMapper.toCompanyResponse(company);
