@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.OrderCreationRequest;
@@ -143,11 +144,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse updateOrderStatus(Long id, OrderUpdateRequest request) {
-        Order order = orderRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
+        Order order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
 
-        // Cập nhật trạng thái
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
         }
@@ -156,19 +154,28 @@ public class OrderService {
         }
 
         orderRepository.save(order);
-        return orderMapper.toOrderResponse(order); // Convert Order -> OrderResponse
+        log.info("Updated order {}: status={}, paymentStatus={}", id, order.getStatus(), order.getPaymentStatus());
+        return orderMapper.toOrderResponse(order);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateOrderAfterPayment(Long orderId) {
-        Order order = orderRepository
-                .findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
+        Order order =
+                orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXISTED));
 
-        // Cập nhật trạng thái đơn hàng
+        if (!"PENDING".equals(order.getStatus()) && !"PROCESSING".equals(order.getStatus())) {
+            throw new AppException(ErrorCode.ORDER_ALREADY_PAID);
+        }
+
         order.setPaymentStatus("PAID");
-        order.setStatus("DELIVERED"); // Hoặc PROCESSING, tùy vào quy trình của bạn
+        order.setStatus("PROCESSING");
 
-        orderRepository.save(order); // Lưu thay đổi vào database
+        orderRepository.save(order);
+        log.info(
+                "Payment confirmed for order {}: status={}, paymentStatus={}",
+                orderId,
+                order.getStatus(),
+                order.getPaymentStatus());
     }
 }

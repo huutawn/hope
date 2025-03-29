@@ -1,26 +1,21 @@
 package com.llt.hope.service;
 
+import java.math.BigDecimal;
+
+import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.SePayWebhookRequest;
 import com.llt.hope.dto.response.VolunteerResponse;
 import com.llt.hope.entity.FundBalance;
 import com.llt.hope.entity.Transaction;
-import com.llt.hope.entity.User;
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.repository.jpa.FundBalanceRepository;
 import com.llt.hope.repository.jpa.TransactionRepository;
 import com.llt.hope.repository.jpa.UserRepository;
-import com.llt.hope.utils.SecurityUtils;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +28,6 @@ public class SePayWebHookService {
     UserRepository userRepository;
 
     public VolunteerResponse handleWebhook(SePayWebhookRequest webhookData) {
-
 
         // Chỉ xử lý nếu tiền vào (transferType = "in")
         if (!"in".equalsIgnoreCase(webhookData.getTransferType())) {
@@ -51,13 +45,13 @@ public class SePayWebHookService {
         transaction.setDescription(webhookData.getContent());
         transaction.setReferenceNumber(webhookData.getReferenceCode());
 
-        transaction=transactionRepository.save(transaction);
+        transaction = transactionRepository.save(transaction);
         log.info("✅ Giao dịch đã được lưu vào database: {}", transaction);
 
         // Cập nhật số dư quỹ chung
         FundBalance fundBalance = fundBalanceRepository.findById(1L).orElse(new FundBalance());
         fundBalance.setBalance(fundBalance.getBalance().add(transaction.getAmount()));
-        fundBalance=fundBalanceRepository.save(fundBalance);
+        fundBalance = fundBalanceRepository.save(fundBalance);
         log.info("💰 Cập nhật số dư quỹ chung: {}", fundBalance.getBalance());
 
         VolunteerResponse volunteerResponse = VolunteerResponse.builder()
@@ -72,9 +66,9 @@ public class SePayWebHookService {
                 .build();
         return volunteerResponse;
     }
-    public BigDecimal getFundBalance(){
+
+    public BigDecimal getFundBalance() {
         FundBalance fundBalance = fundBalanceRepository.findById(1L).orElse(new FundBalance());
         return fundBalance.getBalance();
     }
-
 }

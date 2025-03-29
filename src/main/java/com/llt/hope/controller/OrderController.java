@@ -59,6 +59,14 @@ public class OrderController {
         return ApiResponse.<OrderResponse>builder().result(updatedOrder).build();
     }
 
+    @PatchMapping("/{id}/confirm-payment")
+    public ApiResponse<String> confirmPayment(@PathVariable Long id) {
+        orderService.updateOrderAfterPayment(id);
+        return ApiResponse.<String>builder()
+                .result("Order payment confirmed successfully")
+                .build();
+    }
+
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);

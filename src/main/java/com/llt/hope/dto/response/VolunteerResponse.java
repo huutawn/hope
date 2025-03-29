@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.llt.hope.entity.FundBalance;
-import com.llt.hope.entity.User;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class VolunteerResponse {
     long id;
-    User user;
     private String transactionId;
     private BigDecimal amount;
     private String content;
