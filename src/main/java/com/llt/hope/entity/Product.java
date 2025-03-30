@@ -51,6 +51,8 @@ public class Product {
 
     String dimensions;
 
+    String infomation;
+
     @Column(updatable = false)
     LocalDateTime createdAt = LocalDateTime.now();
 

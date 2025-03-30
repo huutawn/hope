@@ -21,6 +21,7 @@ public class ProductResponse {
     String name;
     BigDecimal price;
     String description;
+    String infomation;
     ProductCategory productCategory;
     User seller;
     int inventory;

@@ -28,6 +28,7 @@ public class ProductCreationRequest {
     Long categoryId;
 
     String description;
+    String infomation;
 
     int inventory;
 

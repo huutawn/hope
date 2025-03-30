@@ -2,6 +2,7 @@ package com.llt.hope.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,12 +66,12 @@ public class ProductService {
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
             try {
-
+                List<MediaFile> uploadedFiles = new ArrayList<>();
                 for (MultipartFile file : request.getImagesFile()) {
                     MediaFile mediaFile = cloudinaryService.uploadFile(file, "product", seller.getEmail());
-                    mediaFileRepository.saveAndFlush(mediaFile);
                     mediaFiles.add(mediaFile);
                 }
+                mediaFiles.addAll(mediaFileRepository.saveAll(uploadedFiles));
             } catch (IOException e) {
                 throw new AppException(ErrorCode.UPLOAD_FILE_ERROR);
             }
@@ -83,6 +84,7 @@ public class ProductService {
                 .images(mediaFiles)
                 .price(request.getPrice())
                 .description(request.getDescription())
+                .infomation(request.getInfomation())
                 .dimensions(request.getDimensions())
                 .inventory(request.getInventory())
                 .build();
@@ -97,6 +99,7 @@ public class ProductService {
                 .images(product.getImages())
                 .price(product.getPrice())
                 .description(product.getDescription())
+                .infomation(product.getInfomation())
                 .dimensions(product.getDimensions())
                 .inventory(product.getInventory())
                 .build();
