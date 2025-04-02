@@ -58,9 +58,11 @@ public class ProductService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+
         Set<MediaFile> mediaFiles = new HashSet<>();
+        Long categoryId = request.getCategoryId() != null ? request.getCategoryId() : 1L;
         ProductCategory category = productCategoryRepository
-                .findById(request.getCategoryId())
+                .findById(categoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
