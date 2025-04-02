@@ -2,6 +2,7 @@ package com.llt.hope.controller;
 
 import java.math.BigDecimal;
 
+import com.llt.hope.dto.response.StartTransactionResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.llt.hope.dto.request.SePayWebhookRequest;
@@ -38,4 +39,12 @@ public class SePayWebController {
                 .result(sePayWebhookService.getFundBalance())
                 .build();
     }
+
+    @GetMapping("/start")
+    public ApiResponse<StartTransactionResponse> startTransaction() {
+        return ApiResponse.<StartTransactionResponse>builder()
+                .result(sePayWebhookService.startTransaction())
+                .build();
+    }
+    
 }

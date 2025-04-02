@@ -3,6 +3,7 @@ package com.llt.hope.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,14 +115,21 @@ public class JobService {
 
     public PageResponse<JobResponse> searchJobs(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+log.info("haheha");
+        Page<JobDocument> jobDocuments = jobElasticsearchRepository.searchJobs(keyword, pageable);
+        log.info("Job Documents Content: " + jobDocuments.getContent());
 
-        Page<JobDocument> jobDocuments =
-                jobElasticsearchRepository
-                        .findByTitleContainingOrDescriptionContainingOrRequirementsContainingOrResponsibilitiesContaining(
-                                keyword, keyword, keyword, keyword, pageable);
         List<JobResponse> jobResponses = jobDocuments.getContent().stream()
-                .map(jobDocumentMapper::toJobResponse)
+                .map(jobDocument -> {
+                    log.info("Mapping JobDocument ID: " + jobDocument.getId());
+                    JobResponse response = jobDocumentMapper.toJobResponse(jobDocument);
+                    log.info("Mapped JobResponse: " + response);
+                    return response;
+                })
+                .filter(Objects::nonNull)
                 .toList();
+
+
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)
                 .pageSize(pageable.getPageSize())

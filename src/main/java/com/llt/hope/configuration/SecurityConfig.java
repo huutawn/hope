@@ -37,6 +37,7 @@ public class SecurityConfig {
         "/api/job/filter",
         "/api/job/search",
         "/api/",
+            "/api/postVolunteer/getAll",
         "/api/hooks/sepay-payment",
         "/api/users/send-otp",
         "/api/users/verify-otp",

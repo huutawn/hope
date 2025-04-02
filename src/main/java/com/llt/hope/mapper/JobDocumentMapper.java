@@ -23,9 +23,7 @@ public class JobDocumentMapper {
         return JobResponse.builder()
                 .id(Long.parseLong(jobDocument.getId()))
                 .title(jobDocument.getTitle())
-                .employer(userRepository
-                        .findById(jobDocument.getEmployerId())
-                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)))
+                .employer(userRepository.findById(jobDocument.getEmployerId()).orElse(null))
                 .description(jobDocument.getDescription())
                 .requirements(jobDocument.getRequirements())
                 .responsibilities(jobDocument.getResponsibilities())

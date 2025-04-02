@@ -90,7 +90,7 @@ public class UserService {
                 repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 
-    private static String generateOtp() {
+    public static String generateOtp() {
 
         Random random = new Random();
         StringBuilder otp = new StringBuilder();

@@ -1,7 +1,9 @@
 package com.llt.hope.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -47,6 +49,17 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Profile profile;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Transaction> transactions;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
+    private Set<PostVolunteer> postVolunteers;
+    private BigDecimal fund;
+    @OneToMany(mappedBy = "user")
+    private List<Support> supports;
 
     private boolean accepted;
 }

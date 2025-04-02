@@ -56,7 +56,11 @@ public enum ErrorCode {
     INVALID_PAYMENT_AMOUNT(445, "invalid payment amount", HttpStatus.BAD_REQUEST),
     ORDER_ALREADY_PAID(446, "", HttpStatus.CONFLICT),
     ORDER_EMPTY(447, "EMTY", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST(448, "", HttpStatus.BAD_REQUEST);
+    INVALID_REQUEST(448, "", HttpStatus.BAD_REQUEST),
+    POST_NOT_EXITED(500,"Post not exist", HttpStatus.NOT_FOUND),
+    INSUFFICIENT_FUND(501,"INSUFFICIENT fund",HttpStatus.BAD_REQUEST),
+    ENOUGH_CAPITAL(502,"vốn đã đủ",HttpStatus.BAD_REQUEST),
+    INVALID_POST(503,"bài đăng đã bị vô hiệu do đã đủ vốn hoặc quá hạn",HttpStatus.BAD_REQUEST);
 
     int code;
     String message;
