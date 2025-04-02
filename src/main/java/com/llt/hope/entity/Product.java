@@ -53,6 +53,7 @@ public class Product {
 
     String infomation;
 
+
     @Column(updatable = false)
     LocalDateTime createdAt = LocalDateTime.now();
 

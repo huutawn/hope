@@ -36,6 +36,25 @@ public class ProductController {
                 .result(productService.getAllProduct(spec, page, size))
                 .build();
     }
+    @GetMapping("/getAllBySeller")
+    public ApiResponse<PageResponse<ProductResponse>> getAllProductBySeller(
+            @Filter Specification<Product> spec,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
+        return ApiResponse.<PageResponse<ProductResponse>>builder()
+                .result(productService.getAllProductBySeller(spec, page, size))
+                .build();
+    }
+
+    @GetMapping("/searchProduct")
+    public ApiResponse<PageResponse<ProductResponse>> searchProduct(
+            @RequestParam("productName") String productName,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
+        return ApiResponse.<PageResponse<ProductResponse>>builder()
+                .result(productService.searchProductByName(productName, page, size))
+                .build();
+    }
 
     @GetMapping("/{productId}")
     public ApiResponse<ProductResponse> getProducts(@PathVariable Long id) {

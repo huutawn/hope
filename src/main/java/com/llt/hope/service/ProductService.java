@@ -58,9 +58,11 @@ public class ProductService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+
         Set<MediaFile> mediaFiles = new HashSet<>();
+        Long categoryId = request.getCategoryId() != null ? request.getCategoryId() : 1L;
         ProductCategory category = productCategoryRepository
-                .findById(request.getCategoryId())
+                .findById(categoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -121,11 +123,56 @@ public class ProductService {
                 .data(productResponses)
                 .build();
     }
+    public PageResponse<ProductResponse> getAllProductBySeller(Specification<Product> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Page<Product> products = productRepository.findProductBySeller(user ,pageable);
+
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+        return PageResponse.<ProductResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(products.getTotalElements())
+                .totalPages(products.getTotalPages())
+                .data(productResponses)
+                .build();
+    }
+
 
     public ProductResponse getProduct(Long id) {
         return productMapper.toProductResponse(
                 productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED)));
     }
+
+    public PageResponse<ProductResponse> searchProductByName(String productName, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(productName, pageable);
+
+        List<ProductResponse> productResponses = products.getContent()
+                .stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+
+        return PageResponse.<ProductResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(products.getTotalElements())
+                .totalPages(products.getTotalPages())
+                .data(productResponses)
+                .build();
+    }
+
 
     public void deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {

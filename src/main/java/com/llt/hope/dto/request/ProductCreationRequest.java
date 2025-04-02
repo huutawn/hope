@@ -34,4 +34,6 @@ public class ProductCreationRequest {
 
     String dimensions;
     List<MultipartFile> imagesFile;
+
+
 }
