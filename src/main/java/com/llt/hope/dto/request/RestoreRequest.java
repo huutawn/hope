@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ActivePostVolunteerRequest {
+public class RestoreRequest {
     long postVolunteerId;
-    BigDecimal fund;
+    BigDecimal amount;
 }

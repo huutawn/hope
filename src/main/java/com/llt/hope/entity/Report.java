@@ -17,24 +17,22 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @Builder
-public class Like {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post; // Bài đăng được thích
+
+    @JoinColumn(name = "post_volunteer_id", nullable = false)
+    private PostVolunteer postVolunteer;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người thích bài
+    private User user;
+
+    @Column(columnDefinition = "TEXT")
+    String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
 }

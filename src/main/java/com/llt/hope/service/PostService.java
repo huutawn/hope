@@ -27,7 +27,6 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.PostMapper;
-import com.llt.hope.repository.jpa.LikeRepository;
 import com.llt.hope.repository.jpa.MediaFileRepository;
 import com.llt.hope.repository.jpa.PostRepository;
 import com.llt.hope.repository.jpa.UserRepository;
@@ -48,7 +47,6 @@ public class PostService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
-    LikeRepository likeRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -84,18 +82,7 @@ public class PostService {
                 .build();
 
         post = postRepository.save(post);
-        PostResponse postResponse = PostResponse.builder()
-                .id(post.getId())
-                .user(user)
-                .title(post.getTitle())
-                .images(post.getImages())
-                .content(post.getContent())
-                .isActive(post.isActive())
-                .isPublished(post.isPublished())
-                .isPinned(post.isPinned())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .build();
+        PostResponse postResponse =postMapper.toPostResponse(post);
         return postResponse;
     }
 

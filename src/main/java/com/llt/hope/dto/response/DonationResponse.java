@@ -1,9 +1,9 @@
 package com.llt.hope.dto.response;
 
+import java.math.BigDecimal;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.math.BigDecimal;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -88,9 +88,8 @@ public class OrderService {
             BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
             totalAmount = totalAmount.add(itemTotal);
 
-            // Gán order vào orderItem để tránh lỗi "order_id cannot be null"
             OrderItem orderItem = OrderItem.builder()
-                    .order(order) // 🔥 BẮT BUỘC PHẢI CÓ ORDER Ở ĐÂY
+                    .order(order) //
                     .product(product)
                     .quantity(itemRequest.getQuantity())
                     .price(itemPrice)

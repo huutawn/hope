@@ -37,7 +37,8 @@ public class SecurityConfig {
         "/api/job/filter",
         "/api/job/search",
         "/api/",
-            "/api/postVolunteer/getAll",
+        "/api/postVolunteer/getAll",
+            "/api/support/post/**",
         "/api/hooks/sepay-payment",
         "/api/users/send-otp",
         "/api/users/verify-otp",
@@ -46,8 +47,8 @@ public class SecurityConfig {
         "/api/index.html",
         "/api/api/public/**",
         "/api/payment/vn-pay-callback",
-            "/api/product/getAll",
-            "/api/product/searchProduct"
+        "/api/product/getAll",
+        "/api/product/searchProduct"
     };
 
     @Autowired

@@ -3,20 +3,20 @@ package com.llt.hope.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.llt.hope.dto.response.StartTransactionResponse;
-import com.llt.hope.entity.User;
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
-import com.llt.hope.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.SePayWebhookRequest;
+import com.llt.hope.dto.response.StartTransactionResponse;
 import com.llt.hope.dto.response.VolunteerResponse;
 import com.llt.hope.entity.FundBalance;
 import com.llt.hope.entity.Transaction;
+import com.llt.hope.entity.User;
+import com.llt.hope.exception.AppException;
+import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.repository.jpa.FundBalanceRepository;
 import com.llt.hope.repository.jpa.TransactionRepository;
 import com.llt.hope.repository.jpa.UserRepository;
+import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,6 @@ public class SePayWebHookService {
     FundBalanceRepository fundBalanceRepository;
     UserRepository userRepository;
 
-
-
     public VolunteerResponse handleWebhook(SePayWebhookRequest webhookData) {
 
         // Chỉ xử lý nếu tiền vào (transferType = "in")
@@ -44,17 +42,14 @@ public class SePayWebHookService {
         }
 
         String content = webhookData.getContent().trim();
-        String otp = content.replaceFirst("hope","");
+        String otp = content.replaceFirst("hope", "");
 
-
-        User user = userRepository.findUserByOtp(otp)
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findUserByOtp(otp).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         BigDecimal fund = user.getFund();
-        if(user.getFund()==null)
-            fund=BigDecimal.ZERO;
+        if (user.getFund() == null) fund = BigDecimal.ZERO;
         user.setFund(fund.add(webhookData.getTransferAmount()));
-        user=userRepository.saveAndFlush(user);
+        user = userRepository.saveAndFlush(user);
         // Tạo bản ghi giao dịch
         Transaction transaction = new Transaction();
         transaction.setTransactionId(webhookData.getId().toString());
@@ -65,7 +60,6 @@ public class SePayWebHookService {
         transaction.setDescription(webhookData.getContent());
         transaction.setReferenceNumber(webhookData.getReferenceCode());
         transaction.setUser(user);
-
 
         transaction = transactionRepository.save(transaction);
         log.info("✅ Giao dịch đã được lưu vào database: {}", transaction);
@@ -95,20 +89,18 @@ public class SePayWebHookService {
         FundBalance fundBalance = fundBalanceRepository.findById(1L).orElse(new FundBalance());
         return fundBalance.getBalance();
     }
-    public StartTransactionResponse startTransaction(){
-        String email = SecurityUtils.getCurrentUserLogin()
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+
+    public StartTransactionResponse startTransaction() {
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         String otp = UserService.generateOtp();
         user.setOtp(otp);
         user.setOtpExpiryDate(LocalDateTime.now());
         userRepository.save(user);
-        StartTransactionResponse startTransactionResponse = StartTransactionResponse.builder()
-                .content("hope"+otp)
-                .build();
+        StartTransactionResponse startTransactionResponse =
+                StartTransactionResponse.builder().content("hope" + otp).build();
         return startTransactionResponse;
     }
-
-
 }

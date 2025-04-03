@@ -1,8 +1,9 @@
 package com.llt.hope.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.llt.hope.dto.response.SupportResponse;
 import com.llt.hope.entity.Support;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SupportMapper {

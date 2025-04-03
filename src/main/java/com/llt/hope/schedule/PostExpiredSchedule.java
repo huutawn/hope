@@ -1,22 +1,22 @@
 package com.llt.hope.schedule;
 
-import com.llt.hope.constant.StatusCons;
-import com.llt.hope.entity.PostVolunteer;
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.jpa.PostVolunteerRepository;
-import com.llt.hope.repository.jpa.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.llt.hope.constant.StatusCons;
+import com.llt.hope.entity.PostVolunteer;
+import com.llt.hope.repository.jpa.PostVolunteerRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class PostExpiredSchedule {
 
-  private final PostVolunteerRepository postVolunteerRepository;
+    private final PostVolunteerRepository postVolunteerRepository;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void expirePost() {

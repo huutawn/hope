@@ -1,21 +1,21 @@
 package com.llt.hope.controller;
 
-import com.llt.hope.dto.request.ActivePostVolunteerRequest;
-import com.llt.hope.dto.request.DonationRequest;
-import com.llt.hope.dto.request.PostCreationRequest;
-import com.llt.hope.dto.request.PostVolunteerCreationRequest;
-import com.llt.hope.dto.response.*;
-import com.llt.hope.entity.Post;
-import com.llt.hope.entity.PostVolunteer;
-import com.llt.hope.service.PostVolunteerService;
-import com.turkraft.springfilter.boot.Filter;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.util.List;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.llt.hope.dto.request.ActivePostVolunteerRequest;
+import com.llt.hope.dto.request.DonationRequest;
+import com.llt.hope.dto.request.PostVolunteerCreationRequest;
+import com.llt.hope.dto.response.*;
+import com.llt.hope.entity.PostVolunteer;
+import com.llt.hope.service.PostVolunteerService;
+import com.turkraft.springfilter.boot.Filter;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequestMapping("/api/postVolunteer")
@@ -58,6 +58,7 @@ public class PostVolunteerController {
                 .result(postVolunteerService.activatePost(request))
                 .build();
     }
+
     @PatchMapping("/donate")
     public ApiResponse<DonationResponse> donate(@RequestBody DonationRequest request) {
         return ApiResponse.<DonationResponse>builder()
@@ -72,16 +73,32 @@ public class PostVolunteerController {
                 .build();
     }
 
+    //    @GetMapping("/getMyPost")
+    //    public ApiResponse<PageResponse<PostVolunteerResponse>> getMyPost(
+    //            @Filter Specification<Post> spec,
+    //            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    //            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
+    //        return ApiResponse.<PageResponse<PostVolunteerResponse>>builder()
+    //                .result(postVolunteerService.getAllCurrentPosts(spec, page, size))
+    //                .build();
+    //    }
+    @GetMapping("/waiting")
+    public ApiResponse<PageResponse> getAllPostWaiting(
+            @Filter Specification<PostVolunteer> spec,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
 
-//    @GetMapping("/getMyPost")
-//    public ApiResponse<PageResponse<PostVolunteerResponse>> getMyPost(
-//            @Filter Specification<Post> spec,
-//            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-//            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
-//        return ApiResponse.<PageResponse<PostVolunteerResponse>>builder()
-//                .result(postVolunteerService.getAllCurrentPosts(spec, page, size))
-//                .build();
-//    }
+        return ApiResponse.<PageResponse>builder()
+                .result(postVolunteerService.getAllPostRestore(spec, page, size))
+                .build();
+    }
+
+    @PatchMapping("/restore/{postId}")
+    public ApiResponse<PostVolunteerResponse> restorePost(@PathVariable Long postId) {
+        return ApiResponse.<PostVolunteerResponse>builder()
+                .result(postVolunteerService.RequestRestore(postId))
+                .build();
+    }
 
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable Long postId) {

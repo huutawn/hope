@@ -33,10 +33,7 @@ public class Product {
     @JsonIgnore
     User seller;
 
-    @ManyToOne
-    @JoinColumn(name = "productCategory_id", nullable = false)
-    @JsonBackReference
-    ProductCategory productCategory;
+
 
     @Size(max = 100)
     String name;
@@ -52,7 +49,6 @@ public class Product {
     String dimensions;
 
     String infomation;
-
 
     @Column(updatable = false)
     LocalDateTime createdAt = LocalDateTime.now();

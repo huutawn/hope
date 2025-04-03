@@ -40,7 +40,7 @@ public class OrderItem {
     int quantity;
 
     BigDecimal price;
-
+    String address;
     BigDecimal subTotal;
 
     @JsonProperty("subtotal")

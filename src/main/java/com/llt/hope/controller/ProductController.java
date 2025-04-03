@@ -36,6 +36,7 @@ public class ProductController {
                 .result(productService.getAllProduct(spec, page, size))
                 .build();
     }
+
     @GetMapping("/getAllBySeller")
     public ApiResponse<PageResponse<ProductResponse>> getAllProductBySeller(
             @Filter Specification<Product> spec,

@@ -3,20 +3,14 @@ package com.llt.hope.configuration;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
+import com.llt.hope.entity.*;
+import com.llt.hope.repository.jpa.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.llt.hope.constant.PredefindRole;
-import com.llt.hope.entity.FundBalance;
-import com.llt.hope.entity.Profile;
-import com.llt.hope.entity.Role;
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.jpa.FundBalanceRepository;
-import com.llt.hope.repository.jpa.ProfileRepository;
-import com.llt.hope.repository.jpa.RoleRepository;
-import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +37,8 @@ public class ApplicationInitConfig {
             UserRepository userRepository,
             RoleRepository roleRepository,
             ProfileRepository profileRepository,
-            FundBalanceRepository fundBalanceRepository) {
+            FundBalanceRepository fundBalanceRepository,
+            ProductCategoryRepository productCategoryRepository) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -90,6 +85,12 @@ public class ApplicationInitConfig {
                 FundBalance fundBalance = new FundBalance();
                 fundBalance.setBalance(BigDecimal.valueOf(0.0));
                 fundBalanceRepository.save(fundBalance);
+            }
+            if (productCategoryRepository.findById(3L).isEmpty()) {
+                ProductCategory productCategory = new ProductCategory();
+                productCategory.setId(3L);
+                productCategory.setName("hj");
+                productCategoryRepository.save(productCategory);
             }
         };
     }

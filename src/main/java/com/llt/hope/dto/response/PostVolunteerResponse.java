@@ -1,18 +1,13 @@
 package com.llt.hope.dto.response;
 
-import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.llt.hope.entity.MediaFile;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -30,6 +25,8 @@ public class PostVolunteerResponse {
     private BigDecimal totalAmount;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private String stk;
+    private String bankName;
     private boolean isActive;
     private List<MediaFile> files;
     private UserResponse user;

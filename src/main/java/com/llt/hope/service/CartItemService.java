@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.llt.hope.utils.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -78,6 +79,10 @@ public class CartItemService {
 
     public PageResponse<CartItemResponse> getAllCartItem(Specification<CartItem> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        String email = SecurityUtils.getCurrentUserLogin()
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<CartItem> items = cartItemRepository.findAll(pageable);
         List<CartItemResponse> cartItemResponses = items.getContent().stream()

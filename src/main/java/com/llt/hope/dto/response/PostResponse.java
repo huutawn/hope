@@ -1,15 +1,9 @@
 package com.llt.hope.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.*;
-
-import com.llt.hope.entity.Comment;
-import com.llt.hope.entity.Like;
 import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.User;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class PostResponse {
     private Long id;
 
-    private User user; // Người đăng bài
+    private UserResponse user;
 
     private String title;
 
@@ -33,14 +27,9 @@ public class PostResponse {
     private boolean isPinned;
 
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
     private boolean isActive;
 
-    private Set<Comment> comments;
 
-    private List<Like> likes;
 
-    private int likeCount;
-
-    private int commentCount;
 }

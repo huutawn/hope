@@ -115,7 +115,7 @@ public class JobService {
 
     public PageResponse<JobResponse> searchJobs(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-log.info("haheha");
+        log.info("haheha");
         Page<JobDocument> jobDocuments = jobElasticsearchRepository.searchJobs(keyword, pageable);
         log.info("Job Documents Content: " + jobDocuments.getContent());
 
@@ -128,7 +128,6 @@ log.info("haheha");
                 })
                 .filter(Objects::nonNull)
                 .toList();
-
 
         return PageResponse.<JobResponse>builder()
                 .currentPage(page)

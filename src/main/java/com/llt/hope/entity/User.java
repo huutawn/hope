@@ -50,14 +50,20 @@ public class User {
     @JsonManagedReference
     private Profile profile;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Transaction> transactions;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<PostVolunteer> postVolunteers;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Report> reports;
+
     private BigDecimal fund;
+
     @OneToMany(mappedBy = "user")
     private List<Support> supports;
 

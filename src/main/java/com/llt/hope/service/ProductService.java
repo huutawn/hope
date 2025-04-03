@@ -58,12 +58,7 @@ public class ProductService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-
         Set<MediaFile> mediaFiles = new HashSet<>();
-        Long categoryId = request.getCategoryId() != null ? request.getCategoryId() : 1L;
-        ProductCategory category = productCategoryRepository
-                .findById(categoryId)
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         User seller = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!request.getImagesFile().isEmpty() || request.getImagesFile() != null) {
@@ -80,7 +75,6 @@ public class ProductService {
         }
         Product product = Product.builder()
                 .createdAt(LocalDateTime.now())
-                .productCategory(category)
                 .seller(seller)
                 .name(request.getName())
                 .images(mediaFiles)
@@ -91,10 +85,9 @@ public class ProductService {
                 .inventory(request.getInventory())
                 .build();
 
-        product = productRepository.save(product);
+        product = productRepository.saveAndFlush(product);
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
-                .productCategory(category)
                 .createdAt(product.getCreatedAt())
                 .seller(seller)
                 .name(product.getName())
@@ -123,6 +116,7 @@ public class ProductService {
                 .data(productResponses)
                 .build();
     }
+
     public PageResponse<ProductResponse> getAllProductBySeller(Specification<Product> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
 
@@ -133,7 +127,7 @@ public class ProductService {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        Page<Product> products = productRepository.findProductBySeller(user ,pageable);
+        Page<Product> products = productRepository.findProductBySeller(user, pageable);
 
         List<ProductResponse> productResponses = products.getContent().stream()
                 .map(productMapper::toProductResponse)
@@ -147,7 +141,6 @@ public class ProductService {
                 .build();
     }
 
-
     public ProductResponse getProduct(Long id) {
         return productMapper.toProductResponse(
                 productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED)));
@@ -159,8 +152,7 @@ public class ProductService {
 
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(productName, pageable);
 
-        List<ProductResponse> productResponses = products.getContent()
-                .stream()
+        List<ProductResponse> productResponses = products.getContent().stream()
                 .map(productMapper::toProductResponse)
                 .toList();
 
@@ -172,7 +164,6 @@ public class ProductService {
                 .data(productResponses)
                 .build();
     }
-
 
     public void deleteProduct(Long productId) {
         if (!productRepository.existsById(productId)) {

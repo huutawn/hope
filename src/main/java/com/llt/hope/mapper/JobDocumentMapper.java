@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.llt.hope.document.elasticsearch.JobDocument;
 import com.llt.hope.dto.response.JobResponse;
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.repository.jpa.UserRepository;
 
 import lombok.RequiredArgsConstructor;
