@@ -36,6 +36,8 @@ public class SecurityConfig {
         "/api/post/getAll",
         "/api/job/filter",
         "/api/job/search",
+            "/api/auth/***",
+            "/api/auth/outbound/authentication",
         "/api/",
         "/api/postVolunteer/getAll",
             "/api/support/post/**",
