@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.ProductCategory;
 import com.llt.hope.entity.User;
 
 import lombok.*;
@@ -22,7 +21,6 @@ public class ProductResponse {
     BigDecimal price;
     String description;
     String infomation;
-    ProductCategory productCategory;
     User seller;
     int inventory;
     String dimensions;

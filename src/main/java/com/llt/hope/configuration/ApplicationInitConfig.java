@@ -37,8 +37,8 @@ public class ApplicationInitConfig {
             UserRepository userRepository,
             RoleRepository roleRepository,
             ProfileRepository profileRepository,
-            FundBalanceRepository fundBalanceRepository,
-            ProductCategoryRepository productCategoryRepository) {
+            FundBalanceRepository fundBalanceRepository
+            ) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -86,12 +86,7 @@ public class ApplicationInitConfig {
                 fundBalance.setBalance(BigDecimal.valueOf(0.0));
                 fundBalanceRepository.save(fundBalance);
             }
-            if (productCategoryRepository.findById(3L).isEmpty()) {
-                ProductCategory productCategory = new ProductCategory();
-                productCategory.setId(3L);
-                productCategory.setName("hj");
-                productCategoryRepository.save(productCategory);
-            }
+
         };
     }
 }

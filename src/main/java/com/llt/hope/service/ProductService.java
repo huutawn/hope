@@ -28,7 +28,6 @@ import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProductMapper;
 import com.llt.hope.repository.jpa.MediaFileRepository;
-import com.llt.hope.repository.jpa.ProductCategoryRepository;
 import com.llt.hope.repository.jpa.ProductRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
@@ -48,7 +47,6 @@ public class ProductService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
-    ProductCategoryRepository productCategoryRepository;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional

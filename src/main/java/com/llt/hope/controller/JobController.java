@@ -54,13 +54,5 @@ public class JobController {
                 .build();
     }
 
-    @GetMapping("/search")
-    public ApiResponse<PageResponse<JobResponse>> search(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
-        return ApiResponse.<PageResponse<JobResponse>>builder()
-                .result(jobService.searchJobs(keyword, page, size))
-                .build();
-    }
+
 }

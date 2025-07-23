@@ -41,7 +41,7 @@ public class PostVolunteer {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaFile> files;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "postVolunteer", cascade = CascadeType.ALL)

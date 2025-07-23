@@ -4,7 +4,7 @@ server:
 
 spring:
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/hope}
+    url: jdbc:mysql://localhost:3306/hope
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root
@@ -13,11 +13,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  elasticsearch:
-    uris: ${ELASTICSEARCH_URL:https://6c3c28c1c31c4680b19026beafcc41ce.ap-southeast-1.aws.found.io:443}
-    username: elastic
-    password: kxuXzAQgrnazZ4loL99pKImK
-
+ 
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"
   valid-duration: 7200 #in hours
@@ -28,6 +24,10 @@ cloudinary:
   secret-key: ${CLOUDINARY_API_SECRET}
 
 
+client:
+  id: ${CLIENT_ID}
+  secret: ${CLIENT_SECRET}
+  redirect-uri: ${REDIRECT_URI}
 
 payment:
   vnPay:
