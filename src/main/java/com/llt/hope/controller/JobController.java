@@ -1,5 +1,7 @@
 package com.llt.hope.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @RestController
-@RequestMapping("/job")
+@RequestMapping("/api/job")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JobController {
@@ -33,9 +35,24 @@ public class JobController {
     public ApiResponse<PageResponse<JobResponse>> getAllJobRecruitments(
             @Filter Specification<Job> spec,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "3") int size) {
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         return ApiResponse.<PageResponse<JobResponse>>builder()
                 .result(jobService.getAllJobRecruitments(spec, page, size))
                 .build();
     }
+
+    @GetMapping("/filter")
+    public ApiResponse<PageResponse<JobResponse>> filter(
+            @RequestParam(value = "categoryName", required = false) String categoryName,
+            @RequestParam(value = "requirement", required = false) String requirement,
+            @RequestParam(value = "minSalary", required = false) BigDecimal minSalary,
+            @RequestParam(value = "maxSalary", required = false) BigDecimal maxSalary,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        return ApiResponse.<PageResponse<JobResponse>>builder()
+                .result(jobService.filterJobs(categoryName, requirement, minSalary, maxSalary, page, size))
+                .build();
+    }
+
+
 }

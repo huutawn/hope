@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.llt.hope.dto.request.RoleRequest;
 import com.llt.hope.dto.response.RoleResponse;
 import com.llt.hope.mapper.RoleMapper;
-import com.llt.hope.repository.PermissionRepository;
-import com.llt.hope.repository.RoleRepository;
+import com.llt.hope.repository.jpa.PermissionRepository;
+import com.llt.hope.repository.jpa.RoleRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

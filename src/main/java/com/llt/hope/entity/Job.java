@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 
 @Entity
@@ -25,23 +27,30 @@ public class Job {
 
     private String title;
     private String description;
+
+    @Column(columnDefinition = "TEXT")
     private String requirements;
+
+    @Column(columnDefinition = "TEXT")
     private String responsibilities;
+
+    @Column(columnDefinition = "TEXT")
     private String benefits;
+
     private String suitableForDisability;
 
     @ManyToOne
-    @JoinColumn(name = "job_category_id")
     private JobCategory jobCategory;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "company_id")
     private Company company;
 
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
     private Boolean isActive;
 
     private LocalDateTime createdAt = LocalDateTime.now();

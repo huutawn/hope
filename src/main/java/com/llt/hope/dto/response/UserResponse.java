@@ -1,5 +1,6 @@
 package com.llt.hope.dto.response;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import com.llt.hope.entity.Profile;
@@ -18,6 +19,6 @@ public class UserResponse {
     String email;
     String phone;
     Profile profile;
-
     Set<Role> roles;
+    BigDecimal fund;
 }

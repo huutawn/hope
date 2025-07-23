@@ -1,17 +1,16 @@
 package com.llt.hope.configuration;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
+import com.llt.hope.entity.*;
+import com.llt.hope.repository.jpa.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.llt.hope.constant.PredefindRole;
-import com.llt.hope.entity.Role;
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.RoleRepository;
-import com.llt.hope.repository.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,12 @@ public class ApplicationInitConfig {
     static final String ADMIN_PASSWORD = "admin";
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            ProfileRepository profileRepository,
+            FundBalanceRepository fundBalanceRepository
+            ) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -57,15 +61,32 @@ public class ApplicationInitConfig {
                         .build();
 
                 userRepository.save(user);
+
+                Profile profile = Profile.builder().user(user).fullName("ADMIN").build();
+                profileRepository.save(profile);
+
+                user.setProfile(profile);
+                userRepository.save(user);
                 log.warn("admin user has been created with default password: admin, please change the password");
             }
-            if(roleRepository.findById(PredefindRole.EMPLOYER_ROLE).isEmpty()){
+            if (roleRepository.findById(PredefindRole.EMPLOYER_ROLE).isEmpty()) {
                 Role employer = roleRepository.save(Role.builder()
                         .name(PredefindRole.EMPLOYER_ROLE)
                         .description("Employee role")
-                        .build()
-                );
+                        .build());
             }
+            if (roleRepository.findById(PredefindRole.SELLER_ROLE).isEmpty()) {
+                Role employer = roleRepository.save(Role.builder()
+                        .name(PredefindRole.SELLER_ROLE)
+                        .description("Selller role")
+                        .build());
+            }
+            if (fundBalanceRepository.findById(1L).isEmpty()) {
+                FundBalance fundBalance = new FundBalance();
+                fundBalance.setBalance(BigDecimal.valueOf(0.0));
+                fundBalanceRepository.save(fundBalance);
+            }
+
         };
     }
 }

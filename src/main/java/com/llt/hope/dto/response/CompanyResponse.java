@@ -30,7 +30,9 @@ public class CompanyResponse {
 
     private String size; // Quy mô công ty (Small, Medium, Large)
 
-    private MediaFile companyImage;
+    private MediaFile logo;
+
+    private boolean isActive;
 
     private String taxCode; // Mã số thuế (nếu có)
 

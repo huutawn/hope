@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +15,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.llt.hope.dto.request.PostCreationRequest;
+import com.llt.hope.dto.response.ActivePostResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.entity.MediaFile;
@@ -26,16 +27,15 @@ import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.PostMapper;
-import com.llt.hope.repository.MediaFileRepository;
-import com.llt.hope.repository.PostRepository;
-import com.llt.hope.repository.UserRepository;
+import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.PostRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -51,10 +51,9 @@ public class PostService {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public PostResponse createPost(PostCreationRequest request) {
-        String email = SecurityUtils.getCurrentUserLogin()
-                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        String email =
+                SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Set<MediaFile> mediaFiles = new HashSet<>();
 
@@ -74,7 +73,8 @@ public class PostService {
         Post post = Post.builder()
                 .createdAt(LocalDateTime.now())
                 .title(request.getTitle())
-                .images(mediaFiles)  // Đảm bảo mediaFiles được gán vào Post
+                .isActive(false)
+                .images(mediaFiles) // Đảm bảo mediaFiles được gán vào Post
                 .content(request.getContent())
                 .isPublished(request.isPublished())
                 .isPinned(request.isPinned())
@@ -82,25 +82,15 @@ public class PostService {
                 .build();
 
         post = postRepository.save(post);
-        PostResponse postResponse = PostResponse.builder()
-                .id(post.getId())
-                .user(user)
-                .title(post.getTitle())
-                .images(post.getImages())
-                .content(post.getContent())
-                .isPublished(post.isPublished())
-                .isPinned(post.isPinned())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .build();
+        PostResponse postResponse =postMapper.toPostResponse(post);
         return postResponse;
     }
 
-    @PreAuthorize("isAuthenticated()")
-    public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public PageResponse<PostResponse> getAllPostNotActive(Specification<Post> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findPostByIsActive(false, pageable);
         List<PostResponse> postResponses =
                 posts.getContent().stream().map(postMapper::toPostResponse).toList();
 
@@ -113,7 +103,33 @@ public class PostService {
                 .build();
     }
 
-    @PreAuthorize("isAuthenticated()")
+    public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Post> posts = postRepository.findPostByIsActive(true, pageable);
+        List<PostResponse> postResponses =
+                posts.getContent().stream().map(postMapper::toPostResponse).toList();
+
+        return PageResponse.<PostResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public ActivePostResponse activePost(long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
+        post.setActive(true);
+        post = postRepository.save(post);
+        return ActivePostResponse.builder()
+                .id(post.getId())
+                .isActive(post.isActive())
+                .build();
+    }
+
     public PageResponse<PostResponse> getAllCurrentPosts(Specification<Post> specm, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -131,5 +147,9 @@ public class PostService {
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
                 .build();
+    }
+
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
     }
 }

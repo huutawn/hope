@@ -8,7 +8,7 @@ import com.llt.hope.dto.request.PermissionRequest;
 import com.llt.hope.dto.response.PermissionResponse;
 import com.llt.hope.entity.Permission;
 import com.llt.hope.mapper.PermissionMapper;
-import com.llt.hope.repository.PermissionRepository;
+import com.llt.hope.repository.jpa.PermissionRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

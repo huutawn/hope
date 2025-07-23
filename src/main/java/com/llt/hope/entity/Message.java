@@ -28,5 +28,7 @@ public class Message {
     @Column(length = 5000)
     private String content;
 
+    private boolean isRead;
+
     private LocalDateTime sentAt;
 }

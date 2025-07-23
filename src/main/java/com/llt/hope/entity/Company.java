@@ -5,6 +5,9 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.*;
 
 @Entity
@@ -34,7 +37,11 @@ public class Company {
 
     private String size; // Quy mô công ty (Small, Medium, Large)
 
-    private boolean isActive; //
+    private boolean isActive;
+
+    @OneToOne
+    @JsonBackReference
+    private Profile profile; //
 
     @OneToOne
     @JoinColumn(name = "file_id")
@@ -43,13 +50,11 @@ public class Company {
     private String taxCode; // Mã số thuế (nếu có)
 
     @OneToMany(mappedBy = "company")
+    @JsonManagedReference
     private List<Job> jobs; // Danh sách việc làm công ty đã đăng
 
     // Danh sách nhà tuyển dụng thuộc công ty này
 
     @Column(nullable = false)
     private LocalDate createdAt; // Ngày tạo công ty
-
-    @Column(nullable = false)
-    private LocalDate updatedAt; // Ngày cập nhật gần nhất
 }

@@ -2,8 +2,10 @@ package com.llt.hope.entity;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -40,9 +42,13 @@ public class Profile {
     @JoinColumn(name = "file_id")
     private MediaFile profilePicture;
 
-    @OneToOne
-    @JoinColumn(name = "company_id") // Nhà tuyển dụng đã được xác minh chưa?
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Company company;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Seller seller;
 
     private String bio;
 }

@@ -6,13 +6,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.llt.hope.dto.request.ProfileCreationRequest;
+import com.llt.hope.dto.request.ProfileUpdateRequest;
 import com.llt.hope.dto.response.ProfileResponse;
+import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.ProfileMapper;
-import com.llt.hope.repository.*;
+import com.llt.hope.mapper.UserMapper;
+import com.llt.hope.repository.jpa.MediaFileRepository;
+import com.llt.hope.repository.jpa.ProfileRepository;
+import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -30,16 +34,20 @@ public class ProfileService {
     CloudinaryService cloudinaryService;
     ProfileMapper profileMapper;
     MediaFileRepository mediaFileRepository;
+    UserMapper userMapper;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ProfileResponse createMyProfile(ProfileCreationRequest request) {
+    public ProfileResponse updateMyProfile(ProfileUpdateRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         MediaFile mediaFile = null;
         if (request.getProfilePicture() != null) {
             try {
+                cloudinaryService.deleteFile(
+                        user.getProfile().getProfilePicture().getPublicId());
+                mediaFileRepository.delete(user.getProfile().getProfilePicture());
                 mediaFile = cloudinaryService.uploadFile(request.getProfilePicture(), "profile", email);
                 mediaFile = mediaFileRepository.save(mediaFile);
             } catch (IOException e) {
@@ -62,30 +70,31 @@ public class ProfileService {
     }
 
     @PreAuthorize("isAuthenticated()")
-    public ProfileResponse getMyProfile() {
+    public UserResponse getMyProfile() {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Profile profile = profileRepository
                 .findProfileByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
-        return profileMapper.toProfileResponse(profile);
+        return userMapper.toUserResponse(user);
     }
 
-    public Profile createInitProfile(String email,String phone, String fullName){
+    public Profile createInitProfile(String email, String phone, String fullName) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Profile profile = Profile.builder()
-               .city("")
-               .bio("")
-               .address("")
-               .dob(null)
-               .disabilityType("")
-               .disabilityDescription("")
-               .fullName(fullName)
-               .gender("")
-               .phone(phone)
-               .user(user)
-               .build();
+                .city("")
+                .bio("")
+                .address("")
+                .dob(null)
+                .disabilityType("")
+                .disabilityDescription("")
+                .fullName(fullName)
+                .gender("")
+                .country("Việt Nam")
+                .phone(phone)
+                .user(user)
+                .build();
         return profileRepository.save(profile);
     }
 }

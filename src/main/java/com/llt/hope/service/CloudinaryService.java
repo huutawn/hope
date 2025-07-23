@@ -19,11 +19,7 @@ public class CloudinaryService {
     private final Cloudinary cloudinary;
 
     public MediaFile uploadFile(MultipartFile file, String relatedName, String relatedId) throws IOException {
-
-        // Định danh file trên Cloudinary (Ví dụ: lesson_1234_timestamp.mp4)
         String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
-
-        // Upload file lên Cloudinary
         Map uploadResult = cloudinary
                 .uploader()
                 .upload(file.getBytes(), ObjectUtils.asMap("public_id", fileName, "folder", "hope"));
@@ -31,13 +27,10 @@ public class CloudinaryService {
         String publicId = (String) uploadResult.get("public_id");
         String url = (String) uploadResult.get("url");
         long fileSize = file.getSize();
-
-        // Tạo bản ghi MediaFile
         MediaFile mediaFile = new MediaFile();
         mediaFile.setUrl(url);
         mediaFile.setPublicId(publicId);
         mediaFile.setFileSize(fileSize);
-
         return mediaFile;
     }
 

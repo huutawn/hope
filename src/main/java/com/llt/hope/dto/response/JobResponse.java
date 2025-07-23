@@ -13,6 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class JobResponse {
+    private Long id;
     private User employer;
     private String title;
     private String description;
@@ -24,7 +25,7 @@ public class JobResponse {
     private String location;
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
-    private LocalDateTime applicationDeadline;
+    private LocalDate applicationDeadline;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private Integer views;

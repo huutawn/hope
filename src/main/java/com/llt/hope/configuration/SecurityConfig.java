@@ -22,17 +22,33 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-        "/users",
-        "/auth/token",
-        "/auth/introspect",
-        "/users/signup",
-        "/auth/logout",
-        "/auth/refresh",
-        "/cloudinary/upload",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/swagger-ui.html",
-        "/job/getAll"
+        "/api/users",
+        "/api/auth/token",
+        "/api/auth/introspect",
+        "/api/users/signup",
+        "/api/auth/logout",
+        "/api/auth/refresh",
+        "/api/cloudinary/upload",
+        "/api/v3/api-docs/**",
+        "/api/swagger-ui/**",
+        "/api/swagger-ui.html",
+        "/api/job/getAll",
+        "/api/post/getAll",
+        "/api/job/filter",
+        "/api/job/search",
+        "/api/",
+        "/api/postVolunteer/getAll",
+            "/api/support/post/**",
+        "/api/hooks/sepay-payment",
+        "/api/users/send-otp",
+        "/api/users/verify-otp",
+        "/api/users/reset-password",
+        "/api/email",
+        "/api/index.html",
+        "/api/api/public/**",
+        "/api/payment/vn-pay-callback",
+        "/api/product/getAll",
+        "/api/product/searchProduct"
     };
 
     @Autowired
