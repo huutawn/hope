@@ -29,15 +29,7 @@ client:
   secret: ${CLIENT_SECRET}
   redirect-uri: ${REDIRECT_URI}
 
-payment:
-  vnPay:
-    url: ${PAY_URL}
-    tmnCode: ${TMN_CODE}
-    secretKey: ${SECRET_KEY}
-    returnUrl: ${RETURN_URL}
-    version: ${VERSION}
-    command: ${COMMAND}
-    orderType: ${ORDER_TYPE}
+
   sepay:
     url: ${SEPAY.BASE_URL}
     api_key: ${SEPAY_API_KEY}
