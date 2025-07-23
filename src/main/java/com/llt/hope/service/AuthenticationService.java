@@ -2,6 +2,7 @@ package com.llt.hope.service;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -87,19 +88,31 @@ public class AuthenticationService {
         log.info("TOKEN_RESPONSE {}", response);
         var userInfo = outboundUserClient.getUserInfo("json",response.getAccessToken());
         log.info("User Info {}",userInfo);
-        var user= userRepository.findByEmail(userInfo.getEmail()).orElseGet(
-                ()->userRepository.save(User.builder()
-                        .email(userInfo.getEmail())
-                        .roles(roles)
-                                .profile(
-                                        profileRepository.save(Profile.builder()
-                                                        .fullName(userInfo.getName())
-                                                        .profilePicture(mediaFileRepository.save(MediaFile.builder()
-                                                                        .url(userInfo.getPicture())
-                                                                .build()))
-                                                .build())
-                                )
-                        .build())
+        var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(
+                () -> {
+                    MediaFile profilePicture = mediaFileRepository.save(MediaFile.builder()
+                            .url(userInfo.getPicture())
+                            .createdAt(LocalDateTime.now())
+                            .build());
+                    User newUser = User.builder()
+                            .email(userInfo.getEmail())
+                            .roles(roles)
+                            .password(UUID.randomUUID().toString())
+                            .build();
+                    newUser = userRepository.saveAndFlush(newUser);
+                    Profile profile = Profile.builder()
+                            .fullName(userInfo.getName())
+                            .profilePicture(profilePicture)
+                            .user(newUser)
+                            .build();
+
+
+                    profile = profileRepository.save(profile);
+
+                    newUser.setProfile(profile);
+                    userRepository.save(newUser);
+                    return newUser;
+                }
         );
         var token =generateToken(user);
         var refreshToken = generateToken(user);
