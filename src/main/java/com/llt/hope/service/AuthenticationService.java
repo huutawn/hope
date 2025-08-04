@@ -155,14 +155,17 @@ public class AuthenticationService {
 
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken());
+        var refreshJWT =verifyToken(request.getRefreshToken());
         log.info("refresh");
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
+        var jitt=refreshJWT.getJWTClaimsSet().getJWTID();
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
+        var expiryTimeRefresh = refreshJWT.getJWTClaimsSet().getExpirationTime();
         InvalidatedToken invalidatedToken =
                 InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-
+        InvalidatedToken invalidatedToken1=InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
         invalidatedTokenRepository.save(invalidatedToken);
+        invalidatedTokenRepository.save(invalidatedToken1);
 
         var email = signedJWT.getJWTClaimsSet().getSubject();
 
