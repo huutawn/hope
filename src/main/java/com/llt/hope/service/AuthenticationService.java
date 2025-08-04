@@ -170,9 +170,11 @@ public class AuthenticationService {
                 userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         var token = generateToken(user);
+        var refreshToken=generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token.token)
+                .refreshToken(refreshToken.token)
                 .build();
     }
 
