@@ -3,16 +3,21 @@ server:
   forward-headers-strategy: native
 
 spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    username: elastic
+    password:
   datasource:
     url: jdbc:mysql://localhost:3306/hope
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
-    password: root
+    password: ${DB_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
     show-sql: true
+
  
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"
