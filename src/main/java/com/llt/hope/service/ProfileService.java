@@ -54,11 +54,13 @@ public class ProfileService {
                 throw new RuntimeException(e);
             }
         }
-
+        user.setPhone(request.getPhone());
+        userRepository.save(user);
         oldPr.setCity(request.getCity());
         oldPr.setBio(request.getBio());
         oldPr.setAddress(request.getAddress());
         oldPr.setDob(request.getDob());
+        oldPr.setUser(user);
         oldPr.setDisabilityType(request.getDisabilityType());
         oldPr.setFullName(request.getFullName());
         oldPr.setDisabilityDescription(request.getDisabilityDescription());
