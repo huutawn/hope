@@ -43,6 +43,7 @@ public class ProfileService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         MediaFile mediaFile = null;
+        Profile oldPr=user.getProfile();
         if (request.getProfilePicture() != null) {
             try {
                 cloudinaryService.deleteFile(
@@ -50,23 +51,32 @@ public class ProfileService {
                 mediaFileRepository.delete(user.getProfile().getProfilePicture());
                 mediaFile = cloudinaryService.uploadFile(request.getProfilePicture(), "profile", email);
                 mediaFile = mediaFileRepository.save(mediaFile);
+                oldPr.setProfilePicture(mediaFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        Profile profile = Profile.builder()
-                .city(request.getCity())
-                .bio(request.getBio())
-                .address(request.getAddress())
-                .dob(request.getDob())
-                .disabilityType(request.getDisabilityType())
-                .disabilityDescription(request.getDisabilityDescription())
-                .fullName(request.getFullName())
-                .gender(request.getGender())
-                .user(user)
-                .profilePicture(mediaFile)
-                .build();
-        return profileMapper.toProfileResponse(profileRepository.save(profile));
+
+        oldPr.setCity(request.getCity());
+        oldPr.setBio(request.getBio());
+        oldPr.setAddress(request.getAddress());
+        oldPr.setDob(request.getDob());
+        oldPr.setDisabilityType(request.getDisabilityType());
+        oldPr.setFullName(request.getFullName());
+        oldPr.setDisabilityDescription(request.getDisabilityDescription());
+        oldPr.setGender(request.getGender());
+//         oldPr = Profile.builder()
+//                .city(request.getCity())
+//                .bio(request.getBio())
+//                .address(request.getAddress())
+//                .dob(request.getDob())
+//                .disabilityType(request.getDisabilityType())
+//                .disabilityDescription(request.getDisabilityDescription())
+//                .fullName(request.getFullName())
+//                .gender(request.getGender())
+//                .profilePicture(mediaFile)
+//                .build();
+        return profileMapper.toProfileResponse(profileRepository.save(oldPr));
     }
 
     @PreAuthorize("isAuthenticated()")
