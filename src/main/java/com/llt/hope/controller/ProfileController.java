@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileController {
     ProfileService profileService;
 
-    @PatchMapping
+    @PutMapping
     public ApiResponse<ProfileResponse> updateMyProfile(@ModelAttribute ProfileUpdateRequest request) {
         return ApiResponse.<ProfileResponse>builder()
                 .result(profileService.updateMyProfile(request))

@@ -39,15 +39,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class AuthenticationService {
-    UserRepository userRepository;
-    InvalidTokenRepository invalidatedTokenRepository;
-    OutboundIdentityClient outboundIdentityClient;
-    OutboundUserClient outboundUserClient;
-    ProfileRepository profileRepository;
-    MediaFileRepository mediaFileRepository;
+    private final UserRepository userRepository;
+    private final InvalidTokenRepository invalidatedTokenRepository;
+    private final OutboundIdentityClient outboundIdentityClient;
+    private final OutboundUserClient outboundUserClient;
+    private final ProfileRepository profileRepository;
+    private final MediaFileRepository mediaFileRepository;
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String signerKey;
