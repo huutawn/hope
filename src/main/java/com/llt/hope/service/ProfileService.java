@@ -46,9 +46,7 @@ public class ProfileService {
         Profile oldPr=user.getProfile();
         if (request.getProfilePicture() != null) {
             try {
-                cloudinaryService.deleteFile(
-                        user.getProfile().getProfilePicture().getPublicId());
-                mediaFileRepository.delete(user.getProfile().getProfilePicture());
+
                 mediaFile = cloudinaryService.uploadFile(request.getProfilePicture(), "profile", email);
                 mediaFile = mediaFileRepository.save(mediaFile);
                 oldPr.setProfilePicture(mediaFile);
