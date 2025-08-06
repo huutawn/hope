@@ -52,7 +52,6 @@ public class AuthenticationController {
     ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
         authenticationService.refreshToken(request);
-        return ApiResponse.<AuthenticationResponse>builder()
-                .build();
+        return ApiResponse.<AuthenticationResponse>builder().build();
     }
 }
