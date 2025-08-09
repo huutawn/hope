@@ -64,6 +64,7 @@ public class User {
 
     private BigDecimal fund;
 
+
     @OneToMany(mappedBy = "user")
     private List<Support> supports;
 

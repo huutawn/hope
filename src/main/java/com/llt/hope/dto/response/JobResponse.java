@@ -15,6 +15,7 @@ import lombok.*;
 public class JobResponse {
     private Long id;
     private User employer;
+    private JobCategoryResponse jobCategory;
     private String title;
     private String description;
     private String requirements;

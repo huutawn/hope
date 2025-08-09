@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.llt.hope.entity.JobCategory;
+import com.llt.hope.repository.jpa.JobCategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +43,7 @@ public class JobService {
     UserRepository userRepository;
     JobMapper jobMapper;
     JobHandlerMapper jobHandlerMapper;
+    JobCategoryRepository jobCategoryRepository;
 
     @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
@@ -54,6 +57,10 @@ public class JobService {
         if (!employer.getProfile().getCompany().isActive()) {
             throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
         }
+        JobCategory jobCategory =jobCategoryRepository.findById(request.getCategoryId())
+                .orElseGet(()->jobCategoryRepository.save(JobCategory.builder()
+                                .name("khác")
+                        .build()));
 
         if (request.getTitle().isEmpty()) throw new AppException((ErrorCode.TITLE_INVALID));
         Job job = Job.builder()
@@ -64,6 +71,7 @@ public class JobService {
                 .employer(employer)
                 .title(request.getTitle())
                 .views(0)
+                .jobCategory(jobCategory)
                 .location(request.getLocation())
                 .salaryMax(request.getSalaryMax())
                 .salaryMin(request.getSalaryMin())
@@ -73,7 +81,7 @@ public class JobService {
                 .build();
         Job savedJob = jobRepository.save(job);
 
-        return jobMapper.toJobResponse(savedJob);
+        return jobHandlerMapper.toJobResponse(savedJob);
     }
 
     public PageResponse<JobResponse> getAllJobRecruitments(Specification<Job> spec, int page, int size) {

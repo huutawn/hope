@@ -21,4 +21,5 @@ public class UserResponse {
     Profile profile;
     Set<Role> roles;
     BigDecimal fund;
+    Boolean accepted;
 }

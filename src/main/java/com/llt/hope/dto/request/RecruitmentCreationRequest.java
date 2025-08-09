@@ -23,5 +23,5 @@ public class RecruitmentCreationRequest {
     private BigDecimal salaryMin;
     private BigDecimal salaryMax;
     private LocalDate applicationDeadline;
-    private String categoryName;
+    private Long categoryId;
 }

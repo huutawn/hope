@@ -58,6 +58,7 @@ public class UserService {
         Profile profile =
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
+        user.setAccepted(true);
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
     }
@@ -124,6 +125,23 @@ public class UserService {
                         + "<p>Best regards,<br/>Your Company</p>",
                 otp);
         resendEmailService.sendEmail(request.getEmail(), subject, content);
+    }
+    public UserResponse banUser(String id){
+        User user=repository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setAccepted(false);
+        UserResponse userResponse=UserResponse.builder()
+                .id(user.getId())
+                .fund(user.getFund())
+                .phone(user.getPhone())
+                .accepted(user.isAccepted())
+                .email(user.getEmail())
+                .profile(user.getProfile())
+                .roles(user.getRoles())
+                .build();
+        repository.save(user);
+        return userResponse;
+
     }
 
     @Transactional

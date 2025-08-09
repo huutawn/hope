@@ -46,6 +46,7 @@ public class CompanyService {
     CompanyMapper companyMapper;
     RoleRepository roleRepository;
     ResendEmailService resendEmailService;
+    EmailService emailService;
 
     String website = "https://hopevn.site/dashboard";
 
@@ -155,7 +156,7 @@ public class CompanyService {
                         + "<p>Chúc bạn thành công và xây dựng một đội ngũ xuất sắc!</p>"
                         + "<p><strong>Trân trọng,</strong><br/>Đội ngũ Hope</p>",
                 company1.getName(), website);
-        resendEmailService.sendEmail(user.getEmail(), subject, content);
+        emailService.sendEmail(user.getEmail(), subject, content);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(company1.getId())
                 .isActive(company1.isActive())

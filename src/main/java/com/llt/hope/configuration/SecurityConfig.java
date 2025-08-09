@@ -50,7 +50,9 @@ public class SecurityConfig {
         "/api/api/public/**",
         "/api/payment/vn-pay-callback",
         "/api/product/getAll",
-        "/api/product/searchProduct"
+        "/api/product/searchProduct",
+            "/api/jobCategory"
+
     };
 
     @Autowired

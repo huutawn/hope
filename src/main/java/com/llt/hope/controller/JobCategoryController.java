@@ -21,8 +21,8 @@ public class JobCategoryController {
     JobCategoryService jobCategoryService;
 
     @PostMapping
-    public ApiResponse<JobCategoryResponse> createRecruitment(@RequestBody JobCategoryCreationRequest request) {
-        return ApiResponse.<JobCategoryResponse>builder()
+    public ApiResponse<String> createRecruitment(@RequestBody List<JobCategoryCreationRequest> request) {
+        return ApiResponse.<String>builder()
                 .result(jobCategoryService.createJobCategory(request))
                 .build();
     }

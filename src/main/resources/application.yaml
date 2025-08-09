@@ -12,6 +12,9 @@ spring:
     port: 587
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
   datasource:
     url: jdbc:mysql://localhost:3306/hope
     driver-class-name: "com.mysql.cj.jdbc.Driver"
