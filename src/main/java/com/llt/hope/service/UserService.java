@@ -50,10 +50,15 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         HashSet<Role> roles = new HashSet<>();
-
-        Role role=roleRepository.findById(request.getRole())
+        Role role=new Role();
+        if(request.getRole()!=null){
+        role=roleRepository.findById(request.getRole())
                         .orElseGet(()->roleRepository.findById(PredefindRole.USER_ROLE)
-                                .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED)));
+                                .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED)));}
+        else {
+            role=roleRepository.findById(PredefindRole.USER_ROLE)
+                    .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        }
         roles.add(role);
         user.setRoles(roles);
         user.setAccepted(true);
