@@ -60,7 +60,8 @@ public enum ErrorCode {
     POST_NOT_EXITED(500, "Post not exist", HttpStatus.NOT_FOUND),
     INSUFFICIENT_FUND(501, "INSUFFICIENT fund", HttpStatus.BAD_REQUEST),
     ENOUGH_CAPITAL(502, "vốn đã đủ", HttpStatus.BAD_REQUEST),
-    INVALID_POST(503, "bài đăng đã bị vô hiệu do đã đủ vốn hoặc quá hạn", HttpStatus.BAD_REQUEST);
+    INVALID_POST(503, "bài đăng đã bị vô hiệu do đã đủ vốn hoặc quá hạn", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_EXISTED(504,"KHÔNG CÓ VAI TRÒ NÀY",HttpStatus.NOT_FOUND);
 
     int code;
     String message;

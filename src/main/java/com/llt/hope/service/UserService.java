@@ -63,6 +63,27 @@ public class UserService {
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
     }
+    public UserResponse createUserByAdmin(UserCreationRequest request) {
+        if (repository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
+        User user = userMapper.toUser(request);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        HashSet<Role> roles = new HashSet<>();
+
+        Role role=roleRepository.findById(request.getRole())
+                        .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        roles.add(role);
+
+        user.setRoles(roles);
+        user.setAccepted(true);
+        repository.saveAndFlush(user);
+        Profile profile =
+                profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
+        user.setProfile(profile);
+        user.setAccepted(true);
+        return userMapper.toUserResponse(repository.save(user));
+        // hjhjhjhj
+    }
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
