@@ -54,6 +54,7 @@ public class UserService {
         roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
+        user.setAccepted(true);
         repository.saveAndFlush(user);
         Profile profile =
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
