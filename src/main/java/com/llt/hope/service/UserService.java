@@ -135,10 +135,10 @@ public class UserService {
                 otp);
         resendEmailService.sendEmail(request.getEmail(), subject, content);
     }
-    public UserResponse banUser(String id){
-        User user=repository.findById(id)
+    public UserResponse banUser(BannedReq req){
+        User user=repository.findById(req.getUserId())
                 .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
-        user.setAccepted(false);
+        user.setAccepted(req.getIsBanned());
         UserResponse userResponse=UserResponse.builder()
                 .id(user.getId())
                 .fund(user.getFund())
