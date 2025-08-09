@@ -67,6 +67,8 @@ public class UserService {
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
         user.setAccepted(true);
+        log.info(user.isAccepted()+"");
+        log.info("user {}",user);
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
     }

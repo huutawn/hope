@@ -35,7 +35,7 @@ public class UserController {
                 .build();
     }
 
-    @PatchMapping("/ban/{userId}")
+    @PatchMapping("/ban")
     ApiResponse<UserResponse> banUser(@RequestBody BannedReq req ) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.banUser(req))
