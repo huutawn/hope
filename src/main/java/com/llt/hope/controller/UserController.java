@@ -34,12 +34,7 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
-    @PostMapping("/admin")
-    ApiResponse<UserResponse> createUserByAdmin(@RequestBody @Valid UserCreationRequest request) {
-        return ApiResponse.<UserResponse>builder()
-                .result(userService.createUserByAdmin(request))
-                .build();
-    }
+
     @PatchMapping("/ban/{userId}")
     ApiResponse<UserResponse> banUser(@PathVariable String userId) {
         return ApiResponse.<UserResponse>builder()
