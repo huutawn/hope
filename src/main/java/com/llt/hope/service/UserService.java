@@ -53,7 +53,7 @@ public class UserService {
 
         Role role=roleRepository.findById(request.getRole())
                         .orElseGet(()->roleRepository.findById(PredefindRole.USER_ROLE)
-                                .orElseThrow(()-new AppException(ErrorCode.ROLE_NOT_EXISTED)));
+                                .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED)));
 
         user.setRoles(roles);
         user.setAccepted(true);
