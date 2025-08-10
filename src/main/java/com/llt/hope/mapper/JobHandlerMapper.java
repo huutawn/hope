@@ -26,6 +26,7 @@ public class JobHandlerMapper {
                 .benefits(job.getBenefits())
                 .suitableForDisability(job.getSuitableForDisability())
                 .location(job.getLocation())
+                .jobType(job.getJobType())
                 .jobCategory(toJobCategoryResponse(job.getJobCategory()))
                 .salaryMin(job.getSalaryMin())
                 .salaryMax(job.getSalaryMax())

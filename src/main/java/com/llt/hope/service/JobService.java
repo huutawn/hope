@@ -72,6 +72,7 @@ public class JobService {
                 .employer(employer)
                 .title(request.getTitle())
                 .views(0)
+                .jobType(request.getJobType())
                 .company(employer.getProfile().getCompany())
                 .jobCategory(jobCategory)
                 .location(request.getLocation())
