@@ -25,7 +25,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
  
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"

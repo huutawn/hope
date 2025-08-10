@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.llt.hope.entity.JobCategory;
+import com.llt.hope.entity.User;
 import com.llt.hope.repository.jpa.JobCategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -71,6 +72,7 @@ public class JobService {
                 .employer(employer)
                 .title(request.getTitle())
                 .views(0)
+                .company(employer.getProfile().getCompany())
                 .jobCategory(jobCategory)
                 .location(request.getLocation())
                 .salaryMax(request.getSalaryMax())
@@ -89,6 +91,23 @@ public class JobService {
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<Job> jobs = jobRepository.findAll(spec, pageable);
+        List<JobResponse> jobResponses =
+                jobs.getContent().stream().map(jobHandlerMapper::toJobResponse).toList();
+        return PageResponse.<JobResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(jobs.getTotalElements())
+                .totalPages(jobs.getTotalPages())
+                .data(jobResponses)
+                .build();
+    }
+    public PageResponse<JobResponse> getAllJobByCompany(Specification<Job> spec, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        User user=userRepository.findByEmail(SecurityUtils.getCurrentUserLogin().get())
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Page<Job> jobs = jobRepository.findAllByCompany(user.getProfile().getCompany(), pageable);
         List<JobResponse> jobResponses =
                 jobs.getContent().stream().map(jobHandlerMapper::toJobResponse).toList();
         return PageResponse.<JobResponse>builder()

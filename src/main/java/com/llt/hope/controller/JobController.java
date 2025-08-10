@@ -40,6 +40,15 @@ public class JobController {
                 .result(jobService.getAllJobRecruitments(spec, page, size))
                 .build();
     }
+    @GetMapping("/company")
+    public ApiResponse<PageResponse<JobResponse>> getAllJobByCompany(
+            @Filter Specification<Job> spec,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        return ApiResponse.<PageResponse<JobResponse>>builder()
+                .result(jobService.getAllJobByCompany(spec, page, size))
+                .build();
+    }
 
     @GetMapping("/filter")
     public ApiResponse<PageResponse<JobResponse>> filter(
