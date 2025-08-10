@@ -30,7 +30,12 @@ public class JobController {
                 .result(jobService.createRecruitmentNews(request))
                 .build();
     }
-
+    @GetMapping("/detail")
+    public ApiResponse<JobResponse> getDetail(@RequestParam(value = "jobId")Long jobId) {
+        return ApiResponse.<JobResponse>builder()
+                .result(jobService.getDetail(jobId))
+                .build();
+    }
     @GetMapping("/getAll")
     public ApiResponse<PageResponse<JobResponse>> getAllJobRecruitments(
             @Filter Specification<Job> spec,
@@ -49,6 +54,7 @@ public class JobController {
                 .result(jobService.getAllJobByCompany(spec, page, size))
                 .build();
     }
+
 
     @GetMapping("/filter")
     public ApiResponse<PageResponse<JobResponse>> filter(

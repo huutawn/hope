@@ -121,6 +121,19 @@ public class JobService {
 
 
 
+    @PreAuthorize("isAuthenticated()")
+    public JobResponse getDetail(Long id){
+        Job job=jobRepository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.JOB_NOT_FOUND));
+        Integer view= job.getViews();
+        if(view==null)
+            view=0;
+        job.setViews(view+1);
+        job=jobRepository.save(job);
+        return jobHandlerMapper.toJobResponse(job);
+    }
+
+
     public PageResponse<JobResponse> filterJobs(
             String categoryName, String requirement, BigDecimal minSalary, BigDecimal maxSalary, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
