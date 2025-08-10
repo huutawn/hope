@@ -164,7 +164,7 @@ public class CompanyService {
                 .build();
         return activeCompanyResponse;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCompany(Long companyId) {
         Company company =
                 companyRepository.findById(companyId).orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
@@ -185,5 +185,10 @@ public class CompanyService {
         profileRepository.saveAndFlush(profile);
 
         companyRepository.deleteById(companyId);
+    }
+    public CompanyResponse getDetail(Long id){
+        Company company=companyRepository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.COMPANY_NOT_FOUND));
+        return companyMapper.toCompanyResponse(company);
     }
 }
