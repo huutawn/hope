@@ -56,7 +56,7 @@ public class ApplicationService {
     public PageResponse<JobApplicationResponse> getAllApplicantByJob(
             long jobId, Specification<JobApplication> spec, int page, int size) {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_FOUND));
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "appliedAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<JobApplication> jobApplications = jobApplicationRepository.findAllJobApplicationsByJob(job, pageable);
         List<JobApplicationResponse> jobApplicationResponses = jobApplications.getContent().stream()
