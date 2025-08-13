@@ -20,6 +20,7 @@ public class PostMapper {
               .user(userMapper.toUserResponse(post.getUser()))
                .isActive(post.isActive())
                .isPinned(post.isPinned())
+               .type(post.getType())
                .isPublished(post.isPublished())
                .images(post.getImages())
                .createdAt(post.getCreatedAt())

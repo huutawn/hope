@@ -34,6 +34,7 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - discovery.type=single-node
       - xpack.security.enabled=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ulimits:
       memlock:
         soft: -1

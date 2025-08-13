@@ -24,7 +24,6 @@ import com.llt.hope.entity.Job;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.JobHandlerMapper;
-import com.llt.hope.mapper.JobMapper;
 import com.llt.hope.repository.jpa.JobRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.specification.JobSpecification;
@@ -42,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 public class JobService {
     JobRepository jobRepository;
     UserRepository userRepository;
-    JobMapper jobMapper;
     JobHandlerMapper jobHandlerMapper;
     JobCategoryRepository jobCategoryRepository;
 
