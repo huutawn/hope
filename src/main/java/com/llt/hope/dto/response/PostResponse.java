@@ -25,6 +25,7 @@ public class PostResponse {
     private Set<MediaFile> images;
     private boolean isPublished;
     private boolean isPinned;
+    private String type;
 
     private LocalDateTime createdAt;
 

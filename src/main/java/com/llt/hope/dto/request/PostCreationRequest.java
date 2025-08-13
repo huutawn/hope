@@ -19,6 +19,7 @@ public class PostCreationRequest {
 
     private boolean isPublished = true;
     private boolean isPinned = false;
+    private String type;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;

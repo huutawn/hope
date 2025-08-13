@@ -1,8 +1,14 @@
 package com.llt.hope.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
+import com.google.zxing.WriterException;
+import com.llt.hope.entity.MediaFile;
+import com.llt.hope.repository.jpa.MediaFileRepository;
 import org.springframework.stereotype.Service;
 
 import com.llt.hope.dto.request.SePayWebhookRequest;
@@ -32,6 +38,9 @@ public class SePayWebHookService {
     TransactionRepository transactionRepository;
     FundBalanceRepository fundBalanceRepository;
     UserRepository userRepository;
+    QRService qrService;
+    CloudinaryService cloudinaryService;
+    MediaFileRepository mediaFileRepository;
 
     public VolunteerResponse handleWebhook(SePayWebhookRequest webhookData) {
 
@@ -90,17 +99,32 @@ public class SePayWebHookService {
         return fundBalance.getBalance();
     }
 
-    public StartTransactionResponse startTransaction() {
+    public StartTransactionResponse startTransaction(Double amount) throws IOException, WriterException {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        String otp = UserService.generateOtp();
-        user.setOtp(otp);
+        String code = generateCode(8);
+        user.setCode(code);
         user.setOtpExpiryDate(LocalDateTime.now());
         userRepository.save(user);
+        String content="hope"+code;
+
+        File file= qrService.generateBankQrFile(amount+"",content,email+amount);
+        MediaFile mediaFile=cloudinaryService.uploadFile(file,code,email);
+        mediaFileRepository.save(mediaFile);
         StartTransactionResponse startTransactionResponse =
-                StartTransactionResponse.builder().content("hope" + otp).build();
+                StartTransactionResponse.builder().qr(mediaFile.getUrl()).build();
         return startTransactionResponse;
+    }
+    public String generateCode(int length){
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
     }
 }

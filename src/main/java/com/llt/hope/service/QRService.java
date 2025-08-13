@@ -29,7 +29,7 @@ import java.util.List;
 public class QRService {
     String baseQR="0002010102111531397007040052044600000000628391638550010A000000727012500069704230111000062839160208QRIBFTTA5204513753037045802VN5914NGUYEN HUU TAN6006Ha Noi8707CLASSIC6304B0BD";
 
-    public String generateBankQrFile( String amount, String content,  String fileName)
+    public File generateBankQrFile( String amount, String content,  String fileName)
             throws IOException, WriterException {
 
         String qrPayload = generateBankQr(baseQR, amount, content);
@@ -48,7 +48,7 @@ public class QRService {
         BitMatrix bitMatrix = qrCodeWriter.encode(qrPayload, BarcodeFormat.QR_CODE, 300, 300);
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", outputFile.toPath());
 
-        return "success";
+        return outputFile;
     }
 
     public String generateBankQr(String accountInfo, String amount, String content) {

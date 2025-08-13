@@ -18,5 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     Page<Post> findPostByUser(User user, Pageable pageable);
 
     Page<Post> findPostByIsActive(boolean isActive, Pageable pageable);
+    Page<Post> findAllByType(String type,Pageable pageable);
 
 }

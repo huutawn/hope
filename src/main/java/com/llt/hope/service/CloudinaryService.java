@@ -1,5 +1,6 @@
 package com.llt.hope.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -27,6 +28,25 @@ public class CloudinaryService {
         String publicId = (String) uploadResult.get("public_id");
         String url = (String) uploadResult.get("url");
         long fileSize = file.getSize();
+        MediaFile mediaFile = new MediaFile();
+        mediaFile.setUrl(url);
+        mediaFile.setPublicId(publicId);
+        mediaFile.setFileSize(fileSize);
+        return mediaFile;
+    }
+    public MediaFile uploadFile(File file, String relatedName, String relatedId) throws IOException {
+        String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
+        Map uploadResult = cloudinary
+                .uploader()
+                .upload(file, ObjectUtils.asMap(
+                        "public_id", fileName,
+                        "folder", "hope"
+                ));
+
+        String publicId = (String) uploadResult.get("public_id");
+        String url = (String) uploadResult.get("url");
+        long fileSize = file.length();
+
         MediaFile mediaFile = new MediaFile();
         mediaFile.setUrl(url);
         mediaFile.setPublicId(publicId);
