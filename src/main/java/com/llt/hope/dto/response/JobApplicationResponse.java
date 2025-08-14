@@ -1,5 +1,6 @@
 package com.llt.hope.dto.response;
 
+import com.llt.hope.entity.CVForm;
 import com.llt.hope.entity.Job;
 import com.llt.hope.entity.User;
 
@@ -15,6 +16,7 @@ public class JobApplicationResponse {
     private Long id;
     User applicant;
     Job job;
+    CVForm cvForm;
 
     private boolean isActive;
 }

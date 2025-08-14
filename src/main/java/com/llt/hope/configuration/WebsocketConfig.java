@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.annotation.Nonnull;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -21,16 +22,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
+    
+    private final CustomJwtDecoder jwtDecoder;
+    
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("http://localhost:63342", "http://localhost:3000", "http://your_frontend_domain.com", "https://your_frontend_domain.com").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*"); // For native WebSocket connection
     }
-
-    CustomJwtDecoder jwtDecoder;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -51,6 +55,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
                     String token = accessor.getLogin();
                     if (token != null) {
                         String userEmail = jwtDecoder.decode(token).getSubject();
+                        log.info(userEmail);
                         Authentication authentication =
                                 new PreAuthenticatedAuthenticationToken(userEmail, null, List.of());
                         accessor.setUser(authentication);

@@ -50,11 +50,45 @@ public class MessageService {
                 .build();
 
         message = messageRepository.save(message);
+        MessageResponse messageResponse = messageMapper.toMessageResponse(message);
 
         // Gửi tin nhắn qua WebSocket đến người nhận
-        messagingTemplate.convertAndSendToUser(receiverEmail, "/queue/messages", message);
+        log.info("Sending message to user: {} on topic: /queue/messages", receiverEmail);
+        messagingTemplate.convertAndSendToUser(receiverEmail, "/queue/messages", messageResponse);
+        
+        // Gửi thông báo đến topic chung để cập nhật danh sách conversation
+        messagingTemplate.convertAndSend("/topic/messages/" + receiverEmail, messageResponse);
 
-        return messageMapper.toMessageResponse(message);
+        return messageResponse;
+    }
+    
+    /**
+     * Send message via WebSocket directly (for real-time messaging)
+     */
+    public void sendWebSocketMessage(String senderEmail, String receiverEmail, String content) {
+        MessageResponse tempMessage = MessageResponse.builder()
+                .content(content)
+                .sentAt(LocalDateTime.now())
+                .isRead(false)
+                .build();
+        
+        // Send to receiver's private queue
+        messagingTemplate.convertAndSendToUser(receiverEmail, "/queue/messages", tempMessage);
+        log.info("WebSocket message sent from {} to {}", senderEmail, receiverEmail);
+    }
+    
+    /**
+     * Broadcast message to a room/group
+     */
+    public void broadcastMessage(String roomId, String senderEmail, String content) {
+        MessageResponse message = MessageResponse.builder()
+                .content(content)
+                .sentAt(LocalDateTime.now())
+                .isRead(false)
+                .build();
+        
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
+        log.info("Message broadcasted to room {} by {}", roomId, senderEmail);
     }
 
     public void markMessagesAsRead(String senderEmail, String receiverEmail) {

@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,6 +37,8 @@ public class SecurityConfig {
         "/api/job/getAll",
         "/api/post/getAll",
         "/api/job/filter",
+            "/ws",
+            "/ws/**",
         "/api/job/search",
             "/api/auth/**",
             "/api/auth/outbound/authentication",
@@ -80,13 +84,18 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*"); // Cho phép tất cả origin
-        corsConfiguration.addAllowedMethod("*"); // Cho phép tất cả method
-        corsConfiguration.addAllowedHeader("*"); // Cho phép tất cả header
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        CorsConfiguration config = new CorsConfiguration();
+        // Cho phép các origin cụ thể cho API HTTP (KHÔNG dùng *)
+        // Hoặc chỉ cho phép * nếu bạn chắc chắn API đó không gửi/nhận credentials
+        // Nhưng nếu bạn gửi JWT, bạn nên liệt kê rõ ràng
+        config.setAllowedOrigins(Arrays.asList("http://localhost:63342", "http://localhost:3000", "http://your_frontend_domain.com"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("*")); // Cho phép tất cả headers
+        config.setAllowCredentials(true); // Rất quan trọng nếu bạn gửi cookie/auth header
+        config.setMaxAge(3600L); // Thời gian cache preflight request
+        source.registerCorsConfiguration("/api/**", config); // Áp dụng cho các API của bạn
+        // source.registerCorsConfiguration("/**", config); // Cẩn thận khi dùng /**
         return source;
     }
 

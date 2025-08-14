@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +62,7 @@ public class UserService {
         }
         roles.add(role);
         user.setRoles(roles);
+        user.setCode(generateCode(8));
         user.setAccepted(true);
         repository.saveAndFlush(user);
         Profile profile =
@@ -71,6 +73,16 @@ public class UserService {
         log.info("user {}",user);
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
+    }
+    public String generateCode(int length){
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
     }
 
 
