@@ -16,7 +16,9 @@ import lombok.experimental.FieldDefaults;
 public class PostResponse {
     private Long id;
 
-    private UserResponse user;
+    private String userId;
+    private String name;
+    private String userPic;
 
     private String title;
 

@@ -19,7 +19,10 @@ public class JobHandlerMapper {
         return JobResponse.builder()
                 .id(job.getId())
                 .title(job.getTitle())
-                .employer(job.getEmployer())
+                .employerId(job.getEmployer().getId())
+                .companyId(job.getCompany().getId())
+                .companyName(job.getCompany().getName())
+                .companyPicture(job.getCompany().getLogo()!=null?job.getCompany().getLogo().getUrl():null)
                 .description(job.getDescription())
                 .requirements(job.getRequirements())
                 .responsibilities(job.getResponsibilities())
@@ -33,7 +36,6 @@ public class JobHandlerMapper {
                 .jobCategory(toJobCategoryResponse(job.getJobCategory()))
                 .applicationDeadline(job.getApplicationDeadline())
                 .isActive(job.getIsActive())
-                .createdAt(job.getCreatedAt())
                 .views(job.getViews())
                 .build();
     }

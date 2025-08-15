@@ -17,6 +17,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostVolunteerResponse {
     private Long id;
+    private String userId;
+    private String name;
+    private String userPic;
     private String title;
     private String location;
     private String content;
@@ -29,5 +32,5 @@ public class PostVolunteerResponse {
     private String bankName;
     private boolean isActive;
     private List<MediaFile> files;
-    private UserResponse user;
+
 }

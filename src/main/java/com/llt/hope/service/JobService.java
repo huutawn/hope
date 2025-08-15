@@ -7,6 +7,7 @@ import java.util.List;
 import com.llt.hope.entity.JobCategory;
 import com.llt.hope.entity.User;
 import com.llt.hope.repository.jpa.JobCategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,19 +31,23 @@ import com.llt.hope.specification.JobSpecification;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@RequiredArgsConstructor
 public class JobService {
     JobRepository jobRepository;
     UserRepository userRepository;
     JobHandlerMapper jobHandlerMapper;
     JobCategoryRepository jobCategoryRepository;
+    DocumentIndexingService documentIndexingService;
+
 
     @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
@@ -81,6 +86,9 @@ public class JobService {
                 .responsibilities(request.getResponsibilities())
                 .build();
         Job savedJob = jobRepository.save(job);
+        
+        // Index job in Elasticsearch if available
+        documentIndexingService.indexJob(job);
 
         return jobHandlerMapper.toJobResponse(savedJob);
     }
