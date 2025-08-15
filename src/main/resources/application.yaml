@@ -4,9 +4,10 @@ server:
 
 spring:
   elasticsearch:
+    enabled: ${ELASTICSEARCH_ENABLED:true}
     uris: http://localhost:9200
     username: elastic
-    password: ${ELASTIC_PASSWORD}
+    password: ${ELASTIC_PASSWORD:}
   mail:
     host: smtp.gmail.com
     port: 587

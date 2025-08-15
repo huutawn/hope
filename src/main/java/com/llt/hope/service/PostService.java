@@ -47,6 +47,7 @@ public class PostService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
+    DocumentIndexingService documentIndexingService;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -83,6 +84,11 @@ public class PostService {
                 .build();
 
         post = postRepository.save(post);
+        
+        // Index post in Elasticsearch (only if it's published)
+            documentIndexingService.indexPost(post);
+
+        
         PostResponse postResponse =postMapper.toPostResponse(post);
         return postResponse;
     }
@@ -152,6 +158,10 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         post.setActive(true);
         post = postRepository.save(post);
+        
+        // Index post in Elasticsearch when activated
+        documentIndexingService.indexPost(post);
+        
         return ActivePostResponse.builder()
                 .id(post.getId())
                 .isActive(post.isActive())
