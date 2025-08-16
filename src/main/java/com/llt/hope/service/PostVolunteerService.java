@@ -153,10 +153,10 @@ public class PostVolunteerService {
     public PostVolunteerResponse likePost(Long id){
         PostVolunteer post=postVolunteerRepository.findById(id)
                 .orElseThrow(()->new AppException(ErrorCode.POST_NOT_EXISTED));
-        Integer currentLike=post.getLike();
-        if(post.getLike()==null)
+        Integer currentLike=post.getLikes();
+        if(post.getLikes()==null)
             currentLike=0;
-        post.setLike(currentLike+1);
+        post.setLikes(currentLike+1);
         post=postVolunteerRepository.save(post);
         return postVolunteerMapper.toPostVolunteerResponse(post);
     }
