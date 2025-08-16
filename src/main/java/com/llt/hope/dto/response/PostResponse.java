@@ -28,7 +28,7 @@ public class PostResponse {
     private boolean isPublished;
     private boolean isPinned;
     private String type;
-
+    private Integer like;
     private LocalDateTime createdAt;
 
     private boolean isActive;

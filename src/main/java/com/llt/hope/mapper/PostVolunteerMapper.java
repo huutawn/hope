@@ -32,6 +32,7 @@ public class PostVolunteerMapper {
                 .content(postVolunteer.getContent())
                 .location(postVolunteer.getLocation())
                 .isActive(postVolunteer.isActive())
+                .like(postVolunteer.getLike())
                 .commentCount(commentRepository.countByPostVolunteerId(postVolunteer.getId()))
                 .build();
     }
