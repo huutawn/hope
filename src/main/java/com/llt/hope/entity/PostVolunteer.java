@@ -50,4 +50,7 @@ public class PostVolunteer {
 
     @OneToMany(mappedBy = "postVolunteer")
     private List<Support> supports;
+
+    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
 }

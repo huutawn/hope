@@ -33,7 +33,7 @@ public class SupportController {
 
     @GetMapping("/volunteer")
     public ApiResponse<List<SupportResponse>> getSupportByVolunteer() {
-        return ApiResponse.<List<SupportResponse>>builder()
+        return ApiResponse. <List<SupportResponse>>builder()
                 .result(supportService.getDonatedPostsByCurrentUser())
                 .build();
     }

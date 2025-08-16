@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.llt.hope.dto.response.PostVolunteerResponse;
 import com.llt.hope.entity.PostVolunteer;
+import com.llt.hope.repository.jpa.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostVolunteerMapper {
     private final UserMapper userMapper;
+    private final CommentRepository commentRepository;
 
     public PostVolunteerResponse toPostVolunteerResponse(PostVolunteer postVolunteer) {
         if (userMapper == null) return null;
@@ -30,6 +32,7 @@ public class PostVolunteerMapper {
                 .content(postVolunteer.getContent())
                 .location(postVolunteer.getLocation())
                 .isActive(postVolunteer.isActive())
+                .commentCount(commentRepository.countByPostVolunteerId(postVolunteer.getId()))
                 .build();
     }
 }

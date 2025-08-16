@@ -32,7 +32,8 @@ public class PostResponse {
     private LocalDateTime createdAt;
 
     private boolean isActive;
-
-
+    
+    // Comment information
+    private long commentCount;
 
 }
