@@ -37,6 +37,7 @@ public class PostVolunteer {
     private LocalDateTime updateAt;
     private String status;
     private boolean isActive;
+    private Integer like;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaFile> files;

@@ -29,6 +29,7 @@ public class PostMapper {
                .images(post.getImages())
                .createdAt(post.getCreatedAt())
                .commentCount(commentRepository.countByPostId(post.getId()))
+               .like(post.getLikes())
               .build();
    }
 }

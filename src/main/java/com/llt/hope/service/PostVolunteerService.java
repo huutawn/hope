@@ -149,7 +149,17 @@ public class PostVolunteerService {
                 .build();
         return postVolunteerResponse;
     }
-
+    @PreAuthorize("isAuthenticated()")
+    public PostVolunteerResponse likePost(Long id){
+        PostVolunteer post=postVolunteerRepository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.POST_NOT_EXISTED));
+        Integer currentLike=post.getLike();
+        if(post.getLike()==null)
+            currentLike=0;
+        post.setLike(currentLike+1);
+        post=postVolunteerRepository.save(post);
+        return postVolunteerMapper.toPostVolunteerResponse(post);
+    }
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<PostVolunteerResponse> getAllPostNotActive(
             Specification<PostVolunteer> spec, int page, int size) {
