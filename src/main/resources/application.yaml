@@ -5,7 +5,7 @@ server:
 spring:
   elasticsearch:
     enabled: ${ELASTICSEARCH_ENABLED:true}
-    uris: http://localhost:9200
+    uris:  ${ELASTIC_URI:http://localhost:9200}
     username: elastic
     password: ${ELASTIC_PASSWORD:}
   mail:
@@ -17,7 +17,7 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   datasource:
-    url: jdbc:mysql://localhost:3306/hope
+    url: ${SQL_URL:jdbc:mysql://localhost:3306/hope}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
     password: ${DB_PASSWORD}

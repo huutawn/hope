@@ -63,7 +63,9 @@ public enum ErrorCode {
     INVALID_POST(503, "bài đăng đã bị vô hiệu do đã đủ vốn hoặc quá hạn", HttpStatus.BAD_REQUEST),
     ROLE_NOT_EXISTED(504,"KHÔNG CÓ VAI TRÒ NÀY",HttpStatus.NOT_FOUND),
     CV_NOT_FOUND(505,"không tìm thấy cv",HttpStatus.NOT_FOUND),
-    NOTIFICATION_NOT_FOUND(506, "Notification not found", HttpStatus.NOT_FOUND);
+    NOTIFICATION_NOT_FOUND(506, "Notification not found", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_EXISTED(507, "Comment not found", HttpStatus.NOT_FOUND),
+    UNAUTHORIZED(508, "You are not authorized to perform this action", HttpStatus.FORBIDDEN);
 
     int code;
     String message;

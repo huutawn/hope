@@ -6,12 +6,14 @@ import org.mapstruct.Mapper;
 
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.entity.Post;
+import com.llt.hope.repository.jpa.CommentRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class PostMapper {
     private final UserMapper userMapper;
+    private final CommentRepository commentRepository;
    public PostResponse toPostResponse(Post post){
        return PostResponse.builder()
               .id(post.getId())
@@ -26,6 +28,7 @@ public class PostMapper {
                .isPublished(post.isPublished())
                .images(post.getImages())
                .createdAt(post.getCreatedAt())
+               .commentCount(commentRepository.countByPostId(post.getId()))
               .build();
    }
 }

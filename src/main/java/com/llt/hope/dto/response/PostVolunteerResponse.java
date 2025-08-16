@@ -32,5 +32,8 @@ public class PostVolunteerResponse {
     private String bankName;
     private boolean isActive;
     private List<MediaFile> files;
+    
+    // Comment information
+    private long commentCount;
 
 }
