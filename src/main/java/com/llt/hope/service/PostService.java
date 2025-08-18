@@ -47,6 +47,7 @@ public class PostService {
     UserRepository userRepository;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
+    DocumentIndexingService documentIndexingService;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional
@@ -76,12 +77,18 @@ public class PostService {
                 .isActive(false)
                 .images(mediaFiles) // Đảm bảo mediaFiles được gán vào Post
                 .content(request.getContent())
+                .type(request.getType())
                 .isPublished(request.isPublished())
                 .isPinned(request.isPinned())
                 .user(user)
                 .build();
 
         post = postRepository.save(post);
+        
+        // Index post in Elasticsearch (only if it's published)
+            documentIndexingService.indexPost(post);
+
+        
         PostResponse postResponse =postMapper.toPostResponse(post);
         return postResponse;
     }
@@ -102,11 +109,38 @@ public class PostService {
                 .data(postResponses)
                 .build();
     }
+    @PreAuthorize("isAuthenticated()")
+    public PostResponse likePost(Long id){
+        Post post=postRepository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.POST_NOT_EXISTED));
+        Integer currentLike=post.getLikes();
+        if(post.getLikes()==null)
+            currentLike=0;
+        post.setLikes(currentLike+1);
+        post=postRepository.save(post);
+        return postMapper.toPostResponse(post);
+    }
+
 
     public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Post> posts = postRepository.findPostByIsActive(true, pageable);
+        List<PostResponse> postResponses =
+                posts.getContent().stream().map(postMapper::toPostResponse).toList();
+
+        return PageResponse.<PostResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+    public PageResponse<PostResponse> getAllByType(String type, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Post> posts = postRepository.findAllByType(type, pageable);
         List<PostResponse> postResponses =
                 posts.getContent().stream().map(postMapper::toPostResponse).toList();
 
@@ -124,6 +158,10 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         post.setActive(true);
         post = postRepository.save(post);
+        
+        // Index post in Elasticsearch when activated
+        documentIndexingService.indexPost(post);
+        
         return ActivePostResponse.builder()
                 .id(post.getId())
                 .isActive(post.isActive())

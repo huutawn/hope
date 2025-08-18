@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.llt.hope.entity.MediaFile;
 import com.llt.hope.entity.User;
 
 import lombok.*;
@@ -14,7 +15,11 @@ import lombok.*;
 @Builder
 public class JobResponse {
     private Long id;
-    private User employer;
+    private String employerId;
+    private Long companyId;
+    private String companyPicture;
+    private String companyName;
+    private JobCategoryResponse jobCategory;
     private String title;
     private String description;
     private String requirements;
@@ -27,6 +32,5 @@ public class JobResponse {
     private BigDecimal salaryMax;
     private LocalDate applicationDeadline;
     private Boolean isActive;
-    private LocalDateTime createdAt;
     private Integer views;
 }

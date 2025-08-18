@@ -32,15 +32,19 @@ public class ApplicationService {
     JobRepository jobRepository;
     JobApplicationRepository jobApplicationRepository;
     JobApplicationMapper jobApplicationMapper;
+    CVRepository cvRepository;
 
-    public JobApplicationResponse applyJob(long jobId) {
+    public JobApplicationResponse applyJob(long jobId,Long cvId) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_FOUND));
+        CVForm cvForm=cvRepository.findById(cvId)
+                .orElseThrow(()->new AppException(ErrorCode.CV_NOT_FOUND));
 
         JobApplication jobApplication = new JobApplication();
         jobApplication.setJob(job);
+        jobApplication.setCvForm(cvForm);
         jobApplication.setApplicant(user);
         jobApplication.setAppliedAt(LocalDateTime.now());
         jobApplication.setStatus("APPLIED");
@@ -56,7 +60,7 @@ public class ApplicationService {
     public PageResponse<JobApplicationResponse> getAllApplicantByJob(
             long jobId, Specification<JobApplication> spec, int page, int size) {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_FOUND));
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "appliedAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<JobApplication> jobApplications = jobApplicationRepository.findAllJobApplicationsByJob(job, pageable);
         List<JobApplicationResponse> jobApplicationResponses = jobApplications.getContent().stream()

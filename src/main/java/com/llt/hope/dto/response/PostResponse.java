@@ -16,7 +16,9 @@ import lombok.experimental.FieldDefaults;
 public class PostResponse {
     private Long id;
 
-    private UserResponse user;
+    private String userId;
+    private String name;
+    private String userPic;
 
     private String title;
 
@@ -25,11 +27,13 @@ public class PostResponse {
     private Set<MediaFile> images;
     private boolean isPublished;
     private boolean isPinned;
-
+    private String type;
+    private Integer like;
     private LocalDateTime createdAt;
 
     private boolean isActive;
-
-
+    
+    // Comment information
+    private long commentCount;
 
 }

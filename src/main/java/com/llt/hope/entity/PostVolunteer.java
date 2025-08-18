@@ -37,6 +37,7 @@ public class PostVolunteer {
     private LocalDateTime updateAt;
     private String status;
     private boolean isActive;
+    private Integer likes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaFile> files;
@@ -50,4 +51,7 @@ public class PostVolunteer {
 
     @OneToMany(mappedBy = "postVolunteer")
     private List<Support> supports;
+
+    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
 }

@@ -27,6 +27,10 @@ public class JobApplication {
     @JoinColumn(name = "user_id", nullable = false)
     User applicant;
 
+    @ManyToOne
+    @JoinColumn(name = "cv_form_id")
+    CVForm cvForm;
+
     private String status;
 
     @Column(name = "appliedAt")

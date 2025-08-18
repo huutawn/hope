@@ -50,6 +50,7 @@ public class PostVolunteerService {
     PostVolunteerMapper postVolunteerMapper;
     CloudinaryService cloudinaryService;
     MediaFileRepository mediaFileRepository;
+    DocumentIndexingService documentIndexingService;
 
     @Transactional
     public DonationResponse donate(DonationRequest request) {
@@ -124,6 +125,12 @@ public class PostVolunteerService {
                 .user(user)
                 .build();
         postVolunteer = postVolunteerRepository.save(postVolunteer);
+        
+        // Index post volunteer in Elasticsearch (only when active)
+        if (postVolunteer.isActive()) {
+            documentIndexingService.indexPostVolunteer(postVolunteer);
+        }
+        
         UserResponse userResponse = userMapper.toUserResponse(user);
         PostVolunteerResponse postVolunteerResponse = PostVolunteerResponse.builder()
                 .id(postVolunteer.getId())
@@ -136,11 +143,23 @@ public class PostVolunteerService {
                 .stk(postVolunteer.getStk())
                 .bankName(postVolunteer.getBankName())
                 .isActive(false)
-                .user(userResponse)
+                .userId(postVolunteer.getUser().getId())
+                .userPic(postVolunteer.getUser().getProfile().getProfilePicture()!=null?postVolunteer.getUser().getProfile().getProfilePicture().getUrl():null)
+                .name(postVolunteer.getUser().getProfile().getFullName()==null?postVolunteer.getUser().getEmail():postVolunteer.getUser().getProfile().getFullName())
                 .build();
         return postVolunteerResponse;
     }
-
+    @PreAuthorize("isAuthenticated()")
+    public PostVolunteerResponse likePost(Long id){
+        PostVolunteer post=postVolunteerRepository.findById(id)
+                .orElseThrow(()->new AppException(ErrorCode.POST_NOT_EXISTED));
+        Integer currentLike=post.getLikes();
+        if(post.getLikes()==null)
+            currentLike=0;
+        post.setLikes(currentLike+1);
+        post=postVolunteerRepository.save(post);
+        return postVolunteerMapper.toPostVolunteerResponse(post);
+    }
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<PostVolunteerResponse> getAllPostNotActive(
             Specification<PostVolunteer> spec, int page, int size) {
@@ -190,6 +209,10 @@ public class PostVolunteerService {
         postVolunteer.setActive(true);
         postVolunteer.setFund(request.getFund());
         postVolunteer = postVolunteerRepository.save(postVolunteer);
+        
+        // Index post volunteer in Elasticsearch when activated
+        documentIndexingService.indexPostVolunteer(postVolunteer);
+        
         return ActivePostResponse.builder()
                 .id(postVolunteer.getId())
                 .isActive(true)

@@ -58,6 +58,12 @@ public class PostVolunteerController {
                 .result(postVolunteerService.activatePost(request))
                 .build();
     }
+    @PatchMapping("/like")
+    public ApiResponse<PostVolunteerResponse> likePost(@RequestParam(value = "postId")Long id) {
+        return ApiResponse.<PostVolunteerResponse>builder()
+                .result(postVolunteerService.likePost(id))
+                .build();
+    }
 
     @PatchMapping("/donate")
     public ApiResponse<DonationResponse> donate(@RequestBody DonationRequest request) {

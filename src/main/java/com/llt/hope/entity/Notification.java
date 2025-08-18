@@ -21,7 +21,11 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private String title;
+    
     private String message;
+    
+    private String type;
 
     private boolean isRead;
 

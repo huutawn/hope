@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostVolunteerCreationRequest {
+public class   PostVolunteerCreationRequest {
     private String title;
     private String location;
     private String content;

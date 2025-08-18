@@ -1,0 +1,7 @@
+đổi trong các response sau:
+    *JobResponse:
+        Thay User thành các trường như employerId, companyId, companyName, companyPic
+    *PostResponse:
+        Thay UserResponse thành userId, name, userPic
+    *PostVolunteer
+         Thay UserResponse thành userId, name, userPic

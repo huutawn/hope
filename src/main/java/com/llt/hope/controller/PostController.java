@@ -37,6 +37,13 @@ public class PostController {
                 .build();
     }
 
+    @PatchMapping("/like")
+    public ApiResponse<PostResponse> likePost(@RequestParam(value = "postId")Long id) {
+        return ApiResponse.<PostResponse>builder()
+                .result(postService.likePost(id))
+                .build();
+    }
+
     @GetMapping("/non-active")
     public ApiResponse<PageResponse> getAllCompanyNonActive(
             @Filter Specification<Post> spec,

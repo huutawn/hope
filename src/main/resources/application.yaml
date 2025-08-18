@@ -3,16 +3,34 @@ server:
   forward-headers-strategy: native
 
 spring:
+  elasticsearch:
+    enabled: ${ELASTICSEARCH_ENABLED:true}
+    uris:  ${ELASTIC_URI:http://localhost:9200}
+    username: elastic
+    password: ${ELASTIC_PASSWORD:}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
   datasource:
-    url: jdbc:mysql://localhost:3306/hope
+    url: ${SQL_URL:jdbc:mysql://localhost:3306/hope}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: root
-    password: root
+    password: ${DB_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
     show-sql: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
  
 jwt:
   signerKey: "sDd3tkGGcBWFeKUZsqBgXGPx/dkcXehI8WcYobvUW1T7tLqgVsFHXDPotVIK2TL/"
@@ -29,15 +47,7 @@ client:
   secret: ${CLIENT_SECRET}
   redirect-uri: ${REDIRECT_URI}
 
-payment:
-  vnPay:
-    url: ${PAY_URL}
-    tmnCode: ${TMN_CODE}
-    secretKey: ${SECRET_KEY}
-    returnUrl: ${RETURN_URL}
-    version: ${VERSION}
-    command: ${COMMAND}
-    orderType: ${ORDER_TYPE}
+
   sepay:
     url: ${SEPAY.BASE_URL}
     api_key: ${SEPAY_API_KEY}

@@ -62,7 +62,12 @@ public class User {
     @JsonManagedReference
     private Set<Report> reports;
 
+    private Double point;
+
     private BigDecimal fund;
+
+    private String code;
+
 
     @OneToMany(mappedBy = "user")
     private List<Support> supports;

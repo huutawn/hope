@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -50,17 +51,40 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         HashSet<Role> roles = new HashSet<>();
-
-        roleRepository.findById(PredefindRole.USER_ROLE).ifPresent(roles::add);
-
+        Role role=new Role();
+        if(request.getRole()!=null){
+        role=roleRepository.findById(request.getRole())
+                        .orElseGet(()->roleRepository.findById(PredefindRole.USER_ROLE)
+                                .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED)));}
+        else {
+            role=roleRepository.findById(PredefindRole.USER_ROLE)
+                    .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        }
+        roles.add(role);
         user.setRoles(roles);
+        user.setCode(generateCode(8));
+        user.setAccepted(true);
         repository.saveAndFlush(user);
         Profile profile =
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
+        user.setAccepted(true);
+        log.info(user.isAccepted()+"");
+        log.info("user {}",user);
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
     }
+    public String generateCode(int length){
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
+    }
+
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -124,6 +148,23 @@ public class UserService {
                         + "<p>Best regards,<br/>Your Company</p>",
                 otp);
         resendEmailService.sendEmail(request.getEmail(), subject, content);
+    }
+    public UserResponse banUser(BannedReq req){
+        User user=repository.findById(req.getUserId())
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setAccepted(req.getIsBanned());
+        UserResponse userResponse=UserResponse.builder()
+                .id(user.getId())
+                .fund(user.getFund())
+                .phone(user.getPhone())
+                .accepted(user.isAccepted())
+                .email(user.getEmail())
+                .profile(user.getProfile())
+                .roles(user.getRoles())
+                .build();
+        repository.save(user);
+        return userResponse;
+
     }
 
     @Transactional
