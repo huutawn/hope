@@ -8,10 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import com.llt.hope.entity.PostVolunteer;
 
+import java.util.List;
+
 @Repository
 public interface PostVolunteerRepository
         extends JpaRepository<PostVolunteer, Long>, JpaSpecificationExecutor<PostVolunteer> {
-    Page<PostVolunteer> findPostVolunteerByIsActive(boolean isActive, Pageable pageable);
+    Page<PostVolunteer> findPostVolunteerByIsActiveAndStatus(boolean isActive,String status, Pageable pageable);
 
     Page<PostVolunteer> findPostVolunteerByStatus(String status, Pageable pageable);
+
+    List<PostVolunteer> findAllByStatus(String status);
 }

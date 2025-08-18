@@ -2,6 +2,7 @@ package com.llt.hope.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class PostVolunteerService {
                 .title(postVolunteer.getTitle())
                 .content(postVolunteer.getContent())
                 .location(postVolunteer.getLocation())
-                .status(StatusCons.NORMAL)
+                .status(StatusCons.INIT)
                 .createAt(postVolunteer.getCreateAt())
                 .files(postVolunteer.getFiles())
                 .stk(postVolunteer.getStk())
@@ -165,7 +166,7 @@ public class PostVolunteerService {
             Specification<PostVolunteer> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<PostVolunteer> posts = postVolunteerRepository.findPostVolunteerByIsActive(false, pageable);
+        Page<PostVolunteer> posts = postVolunteerRepository.findPostVolunteerByIsActiveAndStatus(false,StatusCons.INIT, pageable);
         List<PostVolunteerResponse> PostVolunteerResponses = posts.getContent().stream()
                 .map(postVolunteerMapper::toPostVolunteerResponse)
                 .toList();
@@ -182,7 +183,7 @@ public class PostVolunteerService {
     public PageResponse<PostVolunteerResponse> getAllPost(Specification<PostVolunteer> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        Page<PostVolunteer> posts = postVolunteerRepository.findPostVolunteerByIsActive(true, pageable);
+        Page<PostVolunteer> posts = postVolunteerRepository.findPostVolunteerByIsActiveAndStatus(true,StatusCons.NORMAL, pageable);
         List<PostVolunteerResponse> PostVolunteerResponses = posts.getContent().stream()
                 .map(postVolunteerMapper::toPostVolunteerResponse)
                 .toList();
@@ -206,7 +207,10 @@ public class PostVolunteerService {
         PostVolunteer postVolunteer = postVolunteerRepository
                 .findById(request.getPostVolunteerId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
+        int date=calculateDays(request.getFund());
+        postVolunteer.setExpiryDate(LocalDate.now().plusDays(date));
         postVolunteer.setActive(true);
+        postVolunteer.setStatus(StatusCons.NORMAL);
         postVolunteer.setFund(request.getFund());
         postVolunteer = postVolunteerRepository.save(postVolunteer);
         
@@ -217,6 +221,15 @@ public class PostVolunteerService {
                 .id(postVolunteer.getId())
                 .isActive(true)
                 .build();
+    }
+    public  int calculateDays(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.valueOf(300000))<0) {
+            return 3;
+        } else {
+
+            double calculatedValue = 3 + 8.5 * (Math.log10(amount.doubleValue()) - Math.log10(300000));
+            return (int) Math.round(calculatedValue);
+        }
     }
 
     public List<PostVolunteerResponse> getAllPostFulledByCurrentUser() {

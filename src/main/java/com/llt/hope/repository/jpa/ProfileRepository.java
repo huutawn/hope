@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.llt.hope.entity.Company;
 import com.llt.hope.entity.Profile;
-import com.llt.hope.entity.Seller;
 import com.llt.hope.entity.User;
 
 @Repository

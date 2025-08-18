@@ -1,5 +1,6 @@
 package com.llt.hope.schedule;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,15 +21,14 @@ public class PostExpiredSchedule {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void expirePost() {
-
-        List<PostVolunteer> postVolunteersExpired = postVolunteerRepository.findAll().stream()
-                .filter(postVolunteer -> postVolunteer.getCreateAt() != null)
-                .filter(postVolunteer -> postVolunteer.getCreateAt().plusDays(7).isBefore(LocalDateTime.now()))
-                .toList();
-
-        if (!postVolunteersExpired.isEmpty()) {
-            postVolunteersExpired.forEach(post -> post.setStatus(StatusCons.EXPIRED));
-            postVolunteerRepository.saveAll(postVolunteersExpired);
+        List<PostVolunteer> postVolunteers=postVolunteerRepository.findAllByStatus(StatusCons.NORMAL);
+        for(PostVolunteer postVolunteer:postVolunteers){
+            if(postVolunteer.getExpiryDate().isEqual(LocalDate.now())||postVolunteer.getExpiryDate().isAfter(LocalDate.now())
+            || postVolunteer.getTotalAmount().equals(postVolunteer.getFund())
+            ) {
+                postVolunteer.setStatus(StatusCons.FULLED);
+                postVolunteerRepository.save(postVolunteer);
+            }
         }
     }
 }

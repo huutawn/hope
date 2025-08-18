@@ -46,9 +46,5 @@ public class Profile {
     @JsonManagedReference
     private Company company;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Seller seller;
-
     private String bio;
 }
