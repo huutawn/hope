@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -27,7 +28,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class QRService {
-    String baseQR="0002010102111531397007040052044600000000628391638550010A000000727012500069704230111000062839160208QRIBFTTA5204513753037045802VN5914NGUYEN HUU TAN6006Ha Noi8707CLASSIC6304B0BD";
+    @Value("${base-qr}")
+    String baseQR;
 
     public File generateBankQrFile( String amount, String content,  String fileName)
             throws IOException, WriterException {

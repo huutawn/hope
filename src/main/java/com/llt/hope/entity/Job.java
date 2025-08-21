@@ -26,6 +26,7 @@ public class Job {
     private User employer;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(columnDefinition = "TEXT")
