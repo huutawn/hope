@@ -41,8 +41,8 @@ public class MessageController {
     @GetMapping("/messages")
     @ResponseBody
     public ApiResponse<List<MessageResponse>> getMessages(
-            @RequestParam String user1Email,
-            @RequestParam String user2Email) {
+            @RequestParam(value = "email1") String user1Email,
+            @RequestParam(value = "email2") String user2Email) {
 
         return ApiResponse.<List<MessageResponse>>builder()
                 .result(messageService.getMessagesBetweenUsers(user1Email, user2Email))
