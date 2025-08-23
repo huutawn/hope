@@ -29,7 +29,7 @@ public class MessageController {
     MessageService messageService;
 
     // REST API endpoints
-    @PostMapping("/api/messages/send")
+    @PostMapping("/messages/send")
     @ResponseBody
     public ApiResponse<MessageResponse> sendMessage(@RequestBody SendMessageRequest request) {
         return ApiResponse.<MessageResponse>builder()
@@ -38,11 +38,14 @@ public class MessageController {
                 .build();
     }
 
-    @GetMapping("/api/messages")
+    @GetMapping("/messages")
     @ResponseBody
-    public ApiResponse<List<MessageResponse>> getMessages(@RequestBody GetMessageRequest request) {
+    public ApiResponse<List<MessageResponse>> getMessages(
+            @RequestParam String user1Email,
+            @RequestParam String user2Email) {
+
         return ApiResponse.<List<MessageResponse>>builder()
-                .result(messageService.getMessagesBetweenUsers(request.getUser1Email(), request.getUser2Email()))
+                .result(messageService.getMessagesBetweenUsers(user1Email, user2Email))
                 .build();
     }
 

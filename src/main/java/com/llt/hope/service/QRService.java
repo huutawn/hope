@@ -6,9 +6,11 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +31,7 @@ import java.util.List;
 @Slf4j
 public class QRService {
     @Value("${base-qr}")
+            @NonFinal
     String baseQR;
 
     public File generateBankQrFile( String amount, String content,  String fileName)

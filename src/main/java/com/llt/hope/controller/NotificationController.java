@@ -28,7 +28,7 @@ public class NotificationController {
     NotificationService notificationService;
 
     // REST API endpoints
-    @PostMapping("/api/notifications/create")
+    @PostMapping("/notifications/create")
     @ResponseBody
     public ApiResponse<NotificationResponse> createNotification(@RequestBody NotificationRequest request) {
         return ApiResponse.<NotificationResponse>builder()
@@ -40,7 +40,7 @@ public class NotificationController {
                 .build();
     }
 
-    @GetMapping("/api/notifications/{userEmail}")
+    @GetMapping("/notifications/{userEmail}")
     @ResponseBody
     public ApiResponse<List<NotificationResponse>> getUserNotifications(@PathVariable String userEmail) {
         return ApiResponse.<List<NotificationResponse>>builder()

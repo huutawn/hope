@@ -91,12 +91,12 @@ public class SecurityConfig {
         // Cho phép các origin cụ thể cho API HTTP (KHÔNG dùng *)
         // Hoặc chỉ cho phép * nếu bạn chắc chắn API đó không gửi/nhận credentials
         // Nhưng nếu bạn gửi JWT, bạn nên liệt kê rõ ràng
-        config.setAllowedOrigins(List.of("http://localhost:3000","http://152.42.199.139/**","http://152.42.199.139")); // Mở cho dev
+        config.setAllowedOrigins(List.of("*")); // Mở cho dev
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*")); // Cho phép tất cả headers
         config.setAllowCredentials(true); // Rất quan trọng nếu bạn gửi cookie/auth header
         config.setMaxAge(3600L); // Thời gian cache preflight request
-        source.registerCorsConfiguration("/api/**", config); // Áp dụng cho các API của bạn
+        source.registerCorsConfiguration("/**", config); // Áp dụng cho các API của bạn
         // source.registerCorsConfiguration("/**", config); // Cẩn thận khi dùng /**
         return source;
     }
