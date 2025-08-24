@@ -19,12 +19,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Optional<Profile> findProfileByCompany(Company company);
 
-    Optional<Profile> findProfileBySeller(Seller seller);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Profile p SET p.company = NULL WHERE p.company.id = :companyId")
-    void unlinkProfilesFromCompany(@Param("companyId") Long companyId);
-
-    void deleteBySellerId(Long sellerId);
 }
