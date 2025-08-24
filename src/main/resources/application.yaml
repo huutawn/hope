@@ -58,3 +58,5 @@ client:
 
 resend:
   api_key: ${RESEND_API_KEY:re_UMpdYfjz_M9xnHA7tsbmzMXff4ZSFZ3pk}
+
+base-qr: ${BASE_QR}
