@@ -27,6 +27,7 @@ public class   ReportController {
                 .build();
     }
 
+
     @GetMapping("/{postId}")
     public ApiResponse<List<ReportByPostResponse>> getReportByPost(@PathVariable long postId) {
         return ApiResponse.<List<ReportByPostResponse>>builder()

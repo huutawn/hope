@@ -130,7 +130,7 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
-
+        log.info("test workflow");
         var token = generateToken(user);
         var refreshToken=generateRefreshToken(user);
 
