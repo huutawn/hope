@@ -32,8 +32,20 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("http://localhost:63342", "http://localhost:3000", "http://your_frontend_domain.com", "https://your_frontend_domain.com").withSockJS();
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*"); // For native WebSocket connection
+        // For SockJS with specific origins (production và local development)
+        registry.addEndpoint("/ws")
+            .setAllowedOriginPatterns(
+                "http://localhost:*", // Cho phép mọi port localhost
+                "http://127.0.0.1:*", // Cho phép 127.0.0.1 với mọi port
+                "file://*", // Cho phép file:// protocol cho HTML test files
+                "http://localhost:3000",
+                "https://ourhope.io.vn",
+                "https://fe-hope-vn-version.vercel.app"
+            )
+            .withSockJS();
+            
+        // For native WebSocket connection (cho phép tất cả origins để test)
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
     }
 
     @Override

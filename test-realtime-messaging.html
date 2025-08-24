@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Real-time Messaging - Hope Project</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .section {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section.active {
+            background-color: #e8f5e8;
+            border-color: #28a745;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-warning:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .messages-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.received {
+            background-color: #f1f3f4;
+            color: #333;
+            margin-right: auto;
+        }
+        .message .sender {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        .message .time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        .log-container {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        .log-entry.error {
+            color: #fc8181;
+        }
+        .log-entry.success {
+            color: #68d391;
+        }
+        .log-entry.info {
+            color: #63b3ed;
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .user-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Test Real-time Messaging System</h1>
+            <p>Hệ thống test tin nhắn thời gian thực với xác thực JWT</p>
+        </div>
+
+        <!-- Phần đăng nhập -->
+        <div class="section" id="loginSection">
+            <h3>🔐 Đăng Nhập</h3>
+            <div id="loginStatus" class="status info">
+                Vui lòng đăng nhập để sử dụng hệ thống messaging
+            </div>
+            
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" placeholder="Nhập email của bạn (ví dụ: user@example.com)">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Mật khẩu:</label>
+                <input type="password" id="loginPassword" placeholder="Nhập mật khẩu">
+            </div>
+            
+            <button class="btn-primary" onclick="login()">Đăng Nhập</button>
+            <button class="btn-warning" onclick="logout()" id="logoutBtn" disabled>Đăng Xuất</button>
+        </div>
+
+        <!-- Thông tin người dùng -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <strong>👤 Người dùng hiện tại:</strong> <span id="currentUser"></span><br>
+            <strong>🔑 Token:</strong> <span id="tokenDisplay" style="font-family: monospace; font-size: 10px;"></span>
+        </div>
+
+        <!-- Phần kết nối WebSocket -->
+        <div class="section" id="websocketSection" style="display: none;">
+            <h3>🌐 Kết Nối WebSocket</h3>
+            <div id="connectionStatus" class="status info">
+                Chưa kết nối WebSocket
+            </div>
+            
+            <button class="btn-success" onclick="connectWebSocket()" id="connectBtn">Kết Nối WebSocket</button>
+            <button class="btn-danger" onclick="disconnectWebSocket()" id="disconnectBtn" disabled>Ngắt Kết Nối</button>
+        </div>
+
+        <!-- Phần gửi tin nhắn -->
+        <div class="two-column">
+            <div class="section" id="messagingSection" style="display: none;">
+                <h3>💬 Gửi Tin Nhắn</h3>
+                
+                <div class="form-group">
+                    <label for="receiverEmail">Email người nhận:</label>
+                    <input type="email" id="receiverEmail" placeholder="Nhập email người nhận">
+                </div>
+                
+                <div class="form-group">
+                    <label for="messageContent">Nội dung tin nhắn:</label>
+                    <textarea id="messageContent" rows="3" placeholder="Nhập tin nhắn của bạn..."></textarea>
+                </div>
+                
+                <button class="btn-primary" onclick="sendMessage()" id="sendMessageBtn">Gửi Tin Nhắn</button>
+                <button class="btn-success" onclick="sendPrivateMessage()">Gửi Tin Nhắn Riêng</button>
+                
+                <h4>📝 Tin nhắn nhóm:</h4>
+                <div class="form-group">
+                    <label for="roomId">ID phòng:</label>
+                    <input type="text" id="roomId" placeholder="Nhập ID phòng (ví dụ: room1)">
+                </div>
+                <button class="btn-warning" onclick="sendRoomMessage()">Gửi Tin Nhắn Nhóm</button>
+            </div>
+
+            <div class="section" id="messagesDisplay" style="display: none;">
+                <h3>📨 Tin Nhắn Nhận Được</h3>
+                <div class="messages-container" id="messagesContainer">
+                    <div style="text-align: center; color: #666; margin-top: 100px;">
+                        Chưa có tin nhắn nào
+                    </div>
+                </div>
+                <button class="btn-warning" onclick="clearMessages()">Xóa Tất Cả Tin Nhắn</button>
+            </div>
+        </div>
+
+        <!-- Phần logs -->
+        <div class="section">
+            <h3>📋 Logs Hệ Thống</h3>
+            <div class="log-container" id="logContainer">
+                <div class="log-entry info">Hệ thống đã sẵn sàng. Vui lòng đăng nhập để bắt đầu.</div>
+            </div>
+            <button class="btn-warning" onclick="clearLogs()">Xóa Logs</button>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục
+        let stompClient = null;
+        let currentUserEmail = '';
+        let jwtToken = '';
+        let isLoggedIn = false;
+        let isWebSocketConnected = false;
+
+        // Hàm log
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Hàm cập nhật status
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        // Hàm đăng nhập
+        async function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!email || !password) {
+                updateStatus('loginStatus', 'Vui lòng nhập đầy đủ email và mật khẩu!', 'error');
+                addLog('Lỗi: Thiếu email hoặc mật khẩu', 'error');
+                return;
+            }
+
+            addLog('Đang thực hiện đăng nhập...', 'info');
+            updateStatus('loginStatus', 'Đang đăng nhập...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok ) {
+                    // Đăng nhập thành công
+                    jwtToken = result.data.result.token;
+                    currentUserEmail = email;
+                    isLoggedIn = true;
+                    
+                    updateStatus('loginStatus', 'Đăng nhập thành công!', 'success');
+                    addLog(`Đăng nhập thành công với email: ${email}`, 'success');
+                    
+                    // Hiển thị thông tin user
+                    document.getElementById('currentUser').textContent = email;
+                    document.getElementById('tokenDisplay').textContent = jwtToken.substring(0, 50) + '...';
+                    document.getElementById('userInfo').style.display = 'block';
+                    
+                    // Enable/disable buttons
+                    document.getElementById('logoutBtn').disabled = false;
+                    
+                    // Hiển thị section WebSocket
+                    document.getElementById('websocketSection').style.display = 'block';
+                    document.getElementById('loginSection').classList.add('active');
+                    
+                } else {
+                    // Đăng nhập thất bại
+                    const errorMessage = result.message || 'Đăng nhập thất bại';
+                    updateStatus('loginStatus', errorMessage, 'error');
+                    addLog(`Lỗi đăng nhập: ${errorMessage}`, 'error');
+                }
+            } catch (error) {
+                const errorMessage = `Lỗi kết nối: ${error.message}`;
+                updateStatus('loginStatus', errorMessage, 'error');
+                addLog(errorMessage, 'error');
+            }
+        }
+
+        // Hàm đăng xuất
+        function logout() {
+            // Ngắt kết nối WebSocket nếu đang kết nối
+            if (isWebSocketConnected) {
+                disconnectWebSocket();
+            }
+            
+            // Reset trạng thái
+            jwtToken = '';
+            currentUserEmail = '';
+            isLoggedIn = false;
+            
+            updateStatus('loginStatus', 'Đã đăng xuất', 'info');
+            addLog('Người dùng đã đăng xuất', 'info');
+            
+            // Ẩn các section
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('websocketSection').style.display = 'none';
+            document.getElementById('messagingSection').style.display = 'none';
+            document.getElementById('messagesDisplay').style.display = 'none';
+            document.getElementById('loginSection').classList.remove('active');
+            
+            // Disable buttons
+            document.getElementById('logoutBtn').disabled = true;
+            
+            // Clear form
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Hàm kết nối WebSocket
+        function connectWebSocket() {
+            if (!isLoggedIn || !jwtToken) {
+                addLog('Lỗi: Vui lòng đăng nhập trước khi kết nối WebSocket', 'error');
+                return;
+            }
+
+            addLog('Đang kết nối WebSocket...', 'info');
+            updateStatus('connectionStatus', 'Đang kết nối...', 'info');
+
+            try {
+                const socket = new SockJS('http://localhost:8080/ws');
+                stompClient = Stomp.over(socket);
+                
+                // Kết nối với JWT token
+                stompClient.connect(
+                    { login: jwtToken }, // Truyền JWT token làm login parameter
+                    function(frame) {
+                        addLog('Kết nối WebSocket thành công!', 'success');
+                        updateStatus('connectionStatus', 'Đã kết nối WebSocket', 'success');
+                        isWebSocketConnected = true;
+                        
+                        // Enable/disable buttons
+                        document.getElementById('connectBtn').disabled = true;
+                        document.getElementById('disconnectBtn').disabled = false;
+                        
+                        // Hiển thị section messaging
+                        document.getElementById('messagingSection').style.display = 'block';
+                        document.getElementById('messagesDisplay').style.display = 'block';
+                        document.getElementById('websocketSection').classList.add('active');
+                        
+                        // Subscribe to personal message queue
+                        stompClient.subscribe('/user/queue/messages', function(message) {
+                            const messageObj = JSON.parse(message.body);
+                            addLog(`Nhận tin nhắn từ ${messageObj.senderEmail || 'Unknown'}`, 'success');
+                            displayMessage(messageObj, 'received');
+                        });
+
+                        // Subscribe to notifications
+                        stompClient.subscribe('/user/queue/notifications', function(notification) {
+                            const notificationObj = JSON.parse(notification.body);
+                            addLog(`Nhận thông báo: ${notificationObj.title}`, 'info');
+                        });
+
+                        addLog('Đã đăng ký nhận tin nhắn và thông báo', 'success');
+                    },
+                    function(error) {
+                        addLog(`Lỗi kết nối WebSocket: ${error}`, 'error');
+                        updateStatus('connectionStatus', 'Kết nối thất bại', 'error');
+                        isWebSocketConnected = false;
+                    }
+                );
+            } catch (error) {
+                addLog(`Lỗi WebSocket: ${error.message}`, 'error');
+                updateStatus('connectionStatus', 'Kết nối thất bại', 'error');
+            }
+        }
+
+        // Hàm ngắt kết nối WebSocket
+        function disconnectWebSocket() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+                addLog('Đã ngắt kết nối WebSocket', 'info');
+            }
+            
+            updateStatus('connectionStatus', 'Đã ngắt kết nối', 'info');
+            isWebSocketConnected = false;
+            
+            // Enable/disable buttons
+            document.getElementById('connectBtn').disabled = false;
+            document.getElementById('disconnectBtn').disabled = true;
+            
+            // Ẩn section messaging
+            document.getElementById('messagingSection').style.display = 'none';
+            document.getElementById('messagesDisplay').style.display = 'none';
+            document.getElementById('websocketSection').classList.remove('active');
+        }
+
+        // Hàm gửi tin nhắn
+        function sendMessage() {
+            if (!isWebSocketConnected || !stompClient) {
+                addLog('Lỗi: Vui lòng kết nối WebSocket trước', 'error');
+                return;
+            }
+
+            const receiverEmail = document.getElementById('receiverEmail').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+
+            if (!receiverEmail || !content) {
+                addLog('Lỗi: Vui lòng nhập đầy đủ email người nhận và nội dung tin nhắn', 'error');
+                return;
+            }
+
+            const messageRequest = {
+                senderEmail: currentUserEmail,
+                receiverEmail: receiverEmail,
+                content: content
+            };
+
+            try {
+                stompClient.send('/app/message.send', {}, JSON.stringify(messageRequest));
+                addLog(`Đã gửi tin nhắn đến ${receiverEmail}`, 'success');
+                
+                // Hiển thị tin nhắn đã gửi
+                displayMessage({
+                    senderEmail: currentUserEmail,
+                    receiverEmail: receiverEmail,
+                    content: content,
+                    sentAt: new Date().toISOString()
+                }, 'sent');
+                
+                // Clear message input
+                document.getElementById('messageContent').value = '';
+                
+            } catch (error) {
+                addLog(`Lỗi gửi tin nhắn: ${error.message}`, 'error');
+            }
+        }
+
+        // Hàm gửi tin nhắn riêng
+        function sendPrivateMessage() {
+            if (!isWebSocketConnected || !stompClient) {
+                addLog('Lỗi: Vui lòng kết nối WebSocket trước', 'error');
+                return;
+            }
+
+            const receiverEmail = document.getElementById('receiverEmail').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+
+            if (!receiverEmail || !content) {
+                addLog('Lỗi: Vui lòng nhập đầy đủ thông tin', 'error');
+                return;
+            }
+
+            const messageRequest = {
+                senderEmail: currentUserEmail,
+                receiverEmail: receiverEmail,
+                content: content
+            };
+
+            try {
+                stompClient.send('/app/message.private', {}, JSON.stringify(messageRequest));
+                addLog(`Đã gửi tin nhắn riêng đến ${receiverEmail}`, 'success');
+                
+                // Clear message input
+                document.getElementById('messageContent').value = '';
+                
+            } catch (error) {
+                addLog(`Lỗi gửi tin nhắn riêng: ${error.message}`, 'error');
+            }
+        }
+
+        // Hàm gửi tin nhắn nhóm
+        function sendRoomMessage() {
+            if (!isWebSocketConnected || !stompClient) {
+                addLog('Lỗi: Vui lòng kết nối WebSocket trước', 'error');
+                return;
+            }
+
+            const roomId = document.getElementById('roomId').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+
+            if (!roomId || !content) {
+                addLog('Lỗi: Vui lòng nhập ID phòng và nội dung tin nhắn', 'error');
+                return;
+            }
+
+            const messageRequest = {
+                senderEmail: currentUserEmail,
+                receiverEmail: '', // Không cần cho tin nhắn phòng
+                content: content
+            };
+
+            try {
+                // Subscribe to room if not already subscribed
+                stompClient.subscribe('/topic/room/' + roomId, function(message) {
+                    const messageObj = JSON.parse(message.body);
+                    addLog(`Nhận tin nhắn phòng [${roomId}]`, 'info');
+                    displayMessage({
+                        ...messageObj,
+                        senderEmail: `[Room ${roomId}] ${messageObj.senderEmail || 'Unknown'}`
+                    }, 'received');
+                });
+
+                stompClient.send('/app/message.room.' + roomId, {}, JSON.stringify(messageRequest));
+                addLog(`Đã gửi tin nhắn đến phòng ${roomId}`, 'success');
+                
+                // Clear message input
+                document.getElementById('messageContent').value = '';
+                
+            } catch (error) {
+                addLog(`Lỗi gửi tin nhắn phòng: ${error.message}`, 'error');
+            }
+        }
+
+        // Hàm hiển thị tin nhắn
+        function displayMessage(messageObj, type) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            // Remove "no messages" text if exists
+            if (messagesContainer.children.length === 1 && messagesContainer.children[0].style.textAlign === 'center') {
+                messagesContainer.innerHTML = '';
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'sender';
+            senderDiv.textContent = type === 'sent' ? 'Bạn' : (messageObj.senderEmail || 'Unknown');
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.textContent = messageObj.content;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'time';
+            timeDiv.textContent = new Date(messageObj.sentAt || new Date()).toLocaleTimeString();
+            
+            messageDiv.appendChild(senderDiv);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Hàm xóa tin nhắn
+        function clearMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '<div style="text-align: center; color: #666; margin-top: 100px;">Chưa có tin nhắn nào</div>';
+            addLog('Đã xóa tất cả tin nhắn hiển thị', 'info');
+        }
+
+        // Hàm xóa logs
+        function clearLogs() {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.innerHTML = '<div class="log-entry info">Logs đã được xóa</div>';
+        }
+
+        // Khởi tạo khi trang load
+        window.onload = function() {
+            addLog('Trang test real-time messaging đã sẵn sàng', 'success');
+            
+            // Fill some default values for testing
+            document.getElementById('loginEmail').value = 'user1@example.com';
+            document.getElementById('loginPassword').value = 'password123';
+            document.getElementById('receiverEmail').value = 'user2@example.com';
+            document.getElementById('messageContent').value = 'Xin chào! Đây là tin nhắn test.';
+            document.getElementById('roomId').value = 'room1';
+        };
+
+        // Handle Enter key for quick actions
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        document.getElementById('messageContent').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -29,7 +29,7 @@ public class MessageController {
     MessageService messageService;
 
     // REST API endpoints
-    @PostMapping("/messages/send")
+    @PostMapping("/api/messages/send")
     @ResponseBody
     public ApiResponse<MessageResponse> sendMessage(@RequestBody SendMessageRequest request) {
         return ApiResponse.<MessageResponse>builder()
@@ -38,7 +38,7 @@ public class MessageController {
                 .build();
     }
 
-    @GetMapping("/messages")
+    @GetMapping("/api/messages")
     @ResponseBody
     public ApiResponse<List<MessageResponse>> getMessages(
             @RequestParam(value = "email1") String user1Email,

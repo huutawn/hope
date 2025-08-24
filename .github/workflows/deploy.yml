@@ -1,0 +1,50 @@
+# Tên của workflow, sẽ hiển thị trên tab Actions của GitHub
+name: Deploy Backend to Production VPS
+
+# Kích hoạt workflow mỗi khi có code được push lên nhánh 'main'
+on:
+  push:
+    branches:
+      - main
+
+# Định nghĩa các công việc (jobs) sẽ được thực thi
+jobs:
+  # Công việc để build và deploy backend
+  deploy-backend:
+    name: Build and Deploy Backend
+    # Chạy trên một máy ảo Ubuntu mới nhất
+    runs-on: ubuntu-latest
+    steps:
+      # Bước 1: Lấy source code từ repo về máy ảo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Bước 2: Đăng nhập vào Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }} # <-- ĐÃ SỬA LỖI CHÍNH TẢ Ở ĐÂY
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Bước 3: Build và push image Spring Boot
+      - name: Build and push Java Backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: . # Sửa lại: '.' có nghĩa là thư mục gốc của repo
+          file: ./Dockerfile # Sửa lại: Dockerfile nằm ở thư mục gốc
+          push: true
+          tags: tawn/hopes:latest
+
+      # Bước 4: SSH vào VPS và deploy backend
+      - name: Deploy Backend to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "--- Deploying Backend ---"
+            cd /hope/be
+            docker-compose pull java_backend
+            docker-compose up -d --force-recreate java_backend
+            echo "Backend deployed successfully!"
