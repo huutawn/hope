@@ -116,7 +116,7 @@ public class PostVolunteerService {
         PostVolunteer postVolunteer = PostVolunteer.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .status(StatusCons.NORMAL)
+                .status(StatusCons.INIT)
                 .stk(request.getStk())
                 .bankName(request.getBankName())
                 .location(request.getLocation())
