@@ -1,5 +1,7 @@
 package com.llt.hope.mapper;
 
+import com.llt.hope.dto.response.ProfileResponse;
+import com.llt.hope.entity.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -9,12 +11,44 @@ import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.entity.User;
 
-@Mapper(componentModel = "spring")
-public interface UserMapper {
-    User toUser(UserCreationRequest request);
+public class UserMapper {
+   public User toUser(UserCreationRequest request){
+        return User.builder()
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .password(request.getPassword())
+                .build();
 
-    UserResponse toUserResponse(User user);
-
-    @Mapping(target = "roles", ignore = true)
-    void updateUser(@MappingTarget User user, UserUpdateRequest request);
+    }
+   public UserResponse toUserResponse(User user){
+        return UserResponse.builder()
+                .id(user.getId())
+                .roles(user.getRoles())
+                .fund(user.getFund())
+                .email(user.getEmail())
+                .accepted(user.isAccepted())
+                .phone(user.getPhone())
+                .profile(toProfileResponse(user.getProfile()))
+                .build();
+    }
+   public ProfileResponse toProfileResponse(Profile profile){
+        return ProfileResponse.builder()
+                .dob(profile.getDob())
+                .id(profile.getId())
+                .bio(profile.getBio())
+                .city(profile.getCity())
+                .address(profile.getAddress())
+                .country(profile.getCountry())
+                .profilePicture(profile.getProfilePicture())
+                .disabilityType(profile.getDisabilityType())
+                .fullName(profile.getFullName())
+                .gender(profile.getGender())
+                .phone(profile.getPhone())
+                .build();
+    }
+    public User updateUser(User user,UserUpdateRequest request){
+       user.getProfile().setFullName(request.getLastName()+request.getFirstName());
+       user.getProfile().setDob(request.getDob());
+       return user;
+    }
 }

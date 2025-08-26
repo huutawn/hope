@@ -47,4 +47,5 @@ jobs:
             cd /hope/be
             docker-compose pull java_backend
             docker-compose up -d --force-recreate java_backend
+            docker restart nginx
             echo "Backend deployed successfully!"
