@@ -10,7 +10,9 @@ import com.llt.hope.dto.request.UserCreationRequest;
 import com.llt.hope.dto.request.UserUpdateRequest;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.entity.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
    public User toUser(UserCreationRequest request){
         return User.builder()
