@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PostMapper {
-    private final UserMapper userMapper;
     private final CommentRepository commentRepository;
    public PostResponse toPostResponse(Post post){
        return PostResponse.builder()

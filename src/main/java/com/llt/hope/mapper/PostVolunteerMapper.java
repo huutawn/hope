@@ -11,11 +11,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class PostVolunteerMapper {
-    private final UserMapper userMapper;
     private final CommentRepository commentRepository;
 
     public PostVolunteerResponse toPostVolunteerResponse(PostVolunteer postVolunteer) {
-        if (userMapper == null) return null;
         return PostVolunteerResponse.builder()
                 .id(postVolunteer.getId())
                 .userId(postVolunteer.getUser().getId())
