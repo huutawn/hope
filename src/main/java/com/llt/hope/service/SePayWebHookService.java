@@ -53,7 +53,7 @@ public class SePayWebHookService {
         String content = webhookData.getContent().trim();
         String otp = content.replaceFirst("hope", "");
 
-        User user = userRepository.findUserByOtp(otp).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByCode(otp).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         BigDecimal fund = user.getFund();
         if (user.getFund() == null) fund = BigDecimal.ZERO;
@@ -110,8 +110,13 @@ public class SePayWebHookService {
         userRepository.save(user);
         String content="hope"+code;
 
-        File file= qrService.generateBankQrFile(amount+"",content,email+amount);
-        MediaFile mediaFile=cloudinaryService.uploadFile(file,code,email);
+        var file= qrService.generateBankQrFile(amount+"",content,email+amount);
+
+        String url=cloudinaryService.uploadFile(file,code,email);
+        MediaFile mediaFile=MediaFile.builder()
+                .url(url)
+                .createdAt(LocalDateTime.now())
+                .build();
         mediaFileRepository.save(mediaFile);
         StartTransactionResponse startTransactionResponse =
                 StartTransactionResponse.builder().qr(mediaFile.getUrl()).build();

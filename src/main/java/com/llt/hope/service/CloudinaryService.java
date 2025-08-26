@@ -34,6 +34,21 @@ public class CloudinaryService {
         mediaFile.setFileSize(fileSize);
         return mediaFile;
     }
+    public String uploadFile(byte[] fileBytes, String relatedName, String relatedId) throws IOException {
+        String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
+
+        // Không cần đọc file từ đường dẫn nữa, vì bạn đã có mảng byte
+        // byte[] fileBytes = Files.readAllBytes(file.toPath()); // <-- Dòng này sẽ bị xóa
+
+        Map uploadResult = cloudinary
+                .uploader()
+                .upload(
+                        fileBytes,
+                        ObjectUtils.asMap("public_id", fileName, "folder", "hope")); // <-- Sử dụng fileBytes trực tiếp
+
+        String url = (String) uploadResult.get("url");
+        return url;
+    }
     public MediaFile uploadFile(File file, String relatedName, String relatedId) throws IOException {
         String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
         Map uploadResult = cloudinary

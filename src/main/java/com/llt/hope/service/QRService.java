@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,26 +37,24 @@ public class QRService {
             @NonFinal
     String baseQR;
 
-    public File generateBankQrFile( String amount, String content,  String fileName)
+    public byte[] generateBankQrFile(String amount, String content, String fileName)
             throws IOException, WriterException {
 
-        String qrPayload = generateBankQr(baseQR, amount, content);
-
-        // Tạo folder nếu chưa tồn tại
-        Path dirPath = Path.of("D:\\qr");
-        if (!Files.exists(dirPath)) {
-            Files.createDirectories(dirPath);
-        }
-
-        // Đường dẫn file
-        File outputFile = dirPath.resolve(fileName+".png").toFile();
+        String qrPayload = generateBankQr(baseQR, amount, content); // Giả định generateBankQr đã có
 
         // Sinh ảnh QR
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(qrPayload, BarcodeFormat.QR_CODE, 300, 300);
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", outputFile.toPath());
 
-        return outputFile;
+        // Thay vì ghi ra file, ghi vào BufferedImage trong bộ nhớ
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix); // <-- Dòng thay đổi chính
+
+        // Ghi BufferedImage vào một ByteArrayOutputStream (trong bộ nhớ) dưới dạng PNG
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(qrImage, "PNG", baos); // <-- Ghi ảnh vào stream
+
+        // Trả về mảng byte của ảnh
+        return baos.toByteArray(); // <-- Trả về mảng byte
     }
 
     public String generateBankQr(String accountInfo, String amount, String content) {
@@ -72,22 +73,22 @@ public class QRService {
         // 58 - Country Code
         payload.append("58").append("02").append("VN");
         // 59 - Merchant Name
-        payload.append("59").append(String.format("%02d", "NGUYEN HUU TAN".length()))
+        payload.append("59")
+                .append(String.format("%02d", "NGUYEN HUU TAN".length()))
                 .append("NGUYEN HUU TAN");
         // 60 - Merchant City
-        payload.append("60").append(String.format("%02d", "Ha Noi".length()))
-                .append("Ha Noi");
+        payload.append("60").append(String.format("%02d", "Ha Noi".length())).append("Ha Noi");
 
         // 54 - Transaction Amount
         if (amount != null && !amount.isEmpty()) {
-            payload.append("54").append(String.format("%02d", amount.length()))
-                    .append(amount);
+            payload.append("54").append(String.format("%02d", amount.length())).append(amount);
         }
 
         // 62 - Additional Data Field
         if (content != null && !content.isEmpty()) {
             String contentField = "08" + String.format("%02d", content.length()) + content;
-            payload.append("62").append(String.format("%02d", contentField.length()))
+            payload.append("62")
+                    .append(String.format("%02d", contentField.length()))
                     .append(contentField);
         }
 

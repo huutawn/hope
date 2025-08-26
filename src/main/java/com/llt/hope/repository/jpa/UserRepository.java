@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findUserByProfile(Profile profile);
 
     Optional<User> findUserByOtp(String otp);
+
+    Optional<User> findByCode(String code);
     
     /**
      * Find users by role name
