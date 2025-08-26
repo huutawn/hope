@@ -18,7 +18,7 @@ public class UserResponse {
     String id;
     String email;
     String phone;
-    Profile profile;
+    ProfileResponse profile;
     Set<Role> roles;
     BigDecimal fund;
     Boolean accepted;

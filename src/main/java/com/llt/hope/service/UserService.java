@@ -88,7 +88,7 @@ public class UserService {
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        userMapper.updateUser(user, request);
+        user= userMapper.updateUser(user, request);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -153,15 +153,7 @@ public class UserService {
         User user=repository.findById(req.getUserId())
                 .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setAccepted(req.getIsBanned());
-        UserResponse userResponse=UserResponse.builder()
-                .id(user.getId())
-                .fund(user.getFund())
-                .phone(user.getPhone())
-                .accepted(user.isAccepted())
-                .email(user.getEmail())
-                .profile(user.getProfile())
-                .roles(user.getRoles())
-                .build();
+        UserResponse userResponse=userMapper.toUserResponse(user);
         repository.save(user);
         return userResponse;
 
