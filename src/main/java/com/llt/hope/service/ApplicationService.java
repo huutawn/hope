@@ -3,6 +3,9 @@ package com.llt.hope.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.llt.hope.mapper.ApplicationMapper;
+import com.llt.hope.mapper.JobHandlerMapper;
+import com.llt.hope.mapper.UserMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +17,6 @@ import com.llt.hope.dto.response.*;
 import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
-import com.llt.hope.mapper.JobApplicationMapper;
 import com.llt.hope.repository.jpa.*;
 import com.llt.hope.utils.SecurityUtils;
 
@@ -31,9 +33,10 @@ public class ApplicationService {
     UserRepository userRepository;
     JobRepository jobRepository;
     JobApplicationRepository jobApplicationRepository;
-    JobApplicationMapper jobApplicationMapper;
+    ApplicationMapper jobApplicationMapper;
     CVRepository cvRepository;
-
+    JobHandlerMapper jobHandlerMapper;
+    UserMapper userMapper;
     public JobApplicationResponse applyJob(long jobId,Long cvId) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -49,11 +52,7 @@ public class ApplicationService {
         jobApplication.setAppliedAt(LocalDateTime.now());
         jobApplication.setStatus("APPLIED");
         jobApplication = jobApplicationRepository.save(jobApplication);
-        JobApplicationResponse jobApplicationResponse = JobApplicationResponse.builder()
-                .id(jobApplication.getId())
-                .job(jobApplication.getJob())
-                .applicant(jobApplication.getApplicant())
-                .build();
+        JobApplicationResponse jobApplicationResponse = jobApplicationMapper.toJobApplicationResponse(jobApplication);
         return jobApplicationResponse;
     }
 

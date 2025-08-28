@@ -14,9 +14,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class JobApplicationResponse {
     private Long id;
-    User applicant;
-    Job job;
-    CVForm cvForm;
-
+    UserResponse applicant;
+    JobResponse job;
+    CVFormResponse cvForm;
     private boolean isActive;
 }

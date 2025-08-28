@@ -1,6 +1,8 @@
 package com.llt.hope.mapper;
 
+import com.llt.hope.dto.response.CVFormResponse;
 import com.llt.hope.dto.response.JobCategoryResponse;
+import com.llt.hope.entity.CVForm;
 import com.llt.hope.entity.JobCategory;
 import jdk.jfr.Category;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,23 @@ public class JobHandlerMapper {
                 .applicationDeadline(job.getApplicationDeadline())
                 .isActive(job.getIsActive())
                 .views(job.getViews())
+                .build();
+    }
+
+    public CVFormResponse toCVFormResponse(CVForm cvForm){
+        return CVFormResponse.builder()
+                .id(cvForm.getId())
+                .exp(cvForm.getExp())
+                .dob(cvForm.getDob())
+                .phone(cvForm.getPhone())
+                .skill(cvForm.getSkill())
+                .email(cvForm.getEmail())
+                .address(cvForm.getAddress())
+                .typeOfJob(cvForm.getTypeOfJob())
+                .education(cvForm.getEducation())
+                .userId(cvForm.getUser().getId())
+                .typeOfDisability(cvForm.getTypeOfDisability())
+                .userName(cvForm.getName())
                 .build();
     }
     private JobCategoryResponse toJobCategoryResponse(JobCategory jobCategory){
