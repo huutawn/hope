@@ -128,7 +128,6 @@ public class JobService {
 
 
 
-    @PreAuthorize("isAuthenticated()")
     public JobResponse getDetail(Long id){
         Job job=jobRepository.findById(id)
                 .orElseThrow(()->new AppException(ErrorCode.JOB_NOT_FOUND));
