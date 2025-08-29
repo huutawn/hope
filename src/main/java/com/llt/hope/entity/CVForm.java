@@ -27,12 +27,16 @@ public class CVForm {
     String name;
     String phone;
     String email;
+    @Column(columnDefinition = "TEXT")
     String address;
     LocalDate dob;
+    @Column(columnDefinition = "TEXT")
     String skill;
+    @Column(columnDefinition = "TEXT")
     String exp; //kinh nghiệm
     String education;
-    String typeOfDisability; //loại khuyết tật
+    String typeOfDisability;
+    @Column(columnDefinition = "TEXT")//loại khuyết tật
     String typeOfJob; //loại công việc mong muốn
     LocalDateTime createdAt;
 

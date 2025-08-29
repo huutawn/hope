@@ -38,6 +38,7 @@ public class Job {
     @Column(columnDefinition = "TEXT")
     private String benefits;
 
+    @Column(columnDefinition = "TEXT")
     private String suitableForDisability;
 
     @ManyToOne

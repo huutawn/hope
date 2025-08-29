@@ -29,6 +29,7 @@ public class Profile {
 
     private String fullName;
     private String disabilityType;
+    @Column(columnDefinition = "TEXT")
     private String disabilityDescription;
     private String address;
     private String city;

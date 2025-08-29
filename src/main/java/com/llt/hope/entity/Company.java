@@ -23,7 +23,9 @@ public class Company {
 
     private String name; // Tên công ty
 
+    @Column(columnDefinition = "TEXT")
     private String description; // Giới thiệu công ty
+
 
     private String industry; // Ngành nghề chính
 

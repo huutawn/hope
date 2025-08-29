@@ -22,7 +22,8 @@ public class Notification {
     private User user;
 
     private String title;
-    
+
+    @Column(columnDefinition = "TEXT")
     private String message;
     
     private String type;
