@@ -63,7 +63,6 @@ public class MessageController {
      * Handle direct message sending via WebSocket
      */
     @MessageMapping("/message.send")
-    @SendToUser("/queue/messages")
     public MessageResponse handleMessage(SendMessageRequest request, Principal principal) {
         log.info("Received WebSocket message from: {} to: {}", request.getSenderEmail(), request.getReceiverEmail());
         

@@ -16,6 +16,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -62,20 +63,23 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(@Nonnull Message<?> message, @Nonnull MessageChannel channel) {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-                // set auth for websocket session
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    String token = accessor.getLogin();
-                    if (token != null) {
+                    // SỬA LỖI: Đọc token từ header "Authorization"
+                    String authHeader = accessor.getFirstNativeHeader("Authorization");
+
+                    if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+                        String token = authHeader.substring(7); // Bỏ "Bearer "
                         String userEmail = jwtDecoder.decode(token).getSubject();
-                        log.info(userEmail);
+                        log.info("Authenticated WebSocket user: {}", userEmail);
+
                         Authentication authentication =
                                 new PreAuthenticatedAuthenticationToken(userEmail, null, List.of());
                         accessor.setUser(authentication);
                     }
                 }
-
                 return message;
             }
         });
     }
+
 }

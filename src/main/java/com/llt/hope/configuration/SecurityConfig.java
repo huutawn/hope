@@ -39,7 +39,6 @@ public class SecurityConfig {
         "/api/job/getAll",
             "/api/job/**",
             "/api/comments/**",
-
         "/api/post/getAll",
         "/api/job/filter",
             "/ws",
@@ -62,7 +61,9 @@ public class SecurityConfig {
         "/api/product/searchProduct",
             "/api/jobCategory",
             "/api/company/**",
-            "/api/search/**"
+            "/api/search/**",
+            "/api/comments",
+            "/api/comments/**"
 
     };
 

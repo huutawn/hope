@@ -156,10 +156,9 @@ public class UserService {
         UserResponse userResponse=userMapper.toUserResponse(user);
         repository.save(user);
         return userResponse;
-
     }
 
-    @Transactional
+
     public void resetPassword(PasswordCreationRequest request) {
         User user = repository
                 .findByEmail(request.getEmail())
