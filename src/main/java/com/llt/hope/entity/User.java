@@ -62,6 +62,9 @@ public class User {
     @JsonManagedReference
     private Set<Report> reports;
 
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL)
+    private MessageContainer messageContainer;
+
     private Double point;
 
     private BigDecimal fund;

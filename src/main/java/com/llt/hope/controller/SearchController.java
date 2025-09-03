@@ -10,17 +10,22 @@ import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.dto.response.PostVolunteerResponse;
+import com.llt.hope.dto.response.SearchResponse;
+import com.llt.hope.dto.request.SearchRequest;
 import com.llt.hope.service.SearchService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/search")
 @ConditionalOnProperty(value = "spring.elasticsearch.enabled", havingValue = "true", matchIfMissing = false)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class SearchController {
     SearchService searchService;
 
@@ -77,5 +82,47 @@ public class SearchController {
         return ApiResponse.<PageResponse<Object>>builder()
                 .result(searchService.searchAll(keyword, page, size))
                 .build();
+    }
+    
+    /**
+     * Unified search endpoint that searches across Job, Post, and PostVolunteer entities
+     * Frontend just sends a keyword and gets results from all three entity types
+     */
+    @PostMapping("/unified")
+    public ApiResponse<SearchResponse> searchUnified(@Valid @RequestBody SearchRequest request) {
+        log.info("Unified search request received for keyword: {}", request.getKeyword());
+        
+        try {
+            SearchResponse searchResponse = searchService.searchAllUnified(request);
+            
+            log.info("Unified search completed. Found {} total results for keyword: {}", 
+                searchResponse.getTotalResults(), request.getKeyword());
+            
+            return ApiResponse.<SearchResponse>builder()
+                    .result(searchResponse)
+                    .build();
+                    
+        } catch (Exception e) {
+            log.error("Error occurred during unified search for keyword: {}", request.getKeyword(), e);
+            throw new RuntimeException("Search failed: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Simple GET endpoint for unified search
+     */
+    @GetMapping("/unified")
+    public ApiResponse<SearchResponse> searchUnifiedByKeyword(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer size) {
+        
+        SearchRequest request = SearchRequest.builder()
+            .keyword(keyword)
+            .page(page)
+            .size(size)
+            .build();
+            
+        return searchUnified(request);
     }
 }

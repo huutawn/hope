@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import com.llt.hope.entity.*;
+import com.llt.hope.repository.jpa.MessageContainerRepository;
 import jakarta.mail.MessagingException;
 
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -19,9 +21,6 @@ import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.*;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.dto.response.VerifiOTPResponse;
-import com.llt.hope.entity.Profile;
-import com.llt.hope.entity.Role;
-import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.UserMapper;
@@ -68,6 +67,25 @@ public class UserService {
         Profile profile =
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
+        User admin=repository.findByEmail("admin")
+                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        MessageContainer messageContainer=MessageContainer.builder()
+                .user(user)
+                .messageBoxes(List.of(MessageBox.builder()
+                                .messages(List.of(Message.builder()
+                                                .sentAt(LocalDateTime.now())
+                                                .isRead(false)
+                                                .content("chào mừng bạn đến với Ourhope nền tảng hỗ trợ người khó khăn!")
+                                                .sender(admin)
+                                                .receiver(user)
+                                        .build()))
+                        .build()))
+                .build();
+        List<MessageBox> messageBoxes=messageContainer.getMessageBoxes();
+        messageBoxes.get(0).setContainer(messageContainer);
+        List<Message> messages=messageBoxes.get(0).getMessages();
+        messages.get(0).setMessageBox(messageBoxes.get(0));
+        user.setMessageContainer(messageContainer);
         user.setAccepted(true);
         log.info(user.isAccepted()+"");
         log.info("user {}",user);

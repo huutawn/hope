@@ -1,6 +1,7 @@
 package com.llt.hope.service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.dto.response.PostVolunteerResponse;
+import com.llt.hope.dto.response.SearchResponse;
+import com.llt.hope.dto.request.SearchRequest;
 import com.llt.hope.entity.Job;
 import com.llt.hope.entity.Post;
 import com.llt.hope.entity.PostVolunteer;
@@ -33,11 +36,13 @@ import com.llt.hope.repository.jpa.PostVolunteerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @ConditionalOnProperty(value = "spring.elasticsearch.enabled", havingValue = "true", matchIfMissing = false)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class SearchService {
     JobDocumentRepository jobDocumentRepository;
     PostDocumentRepository postDocumentRepository;
@@ -154,7 +159,7 @@ public class SearchService {
         PageResponse<PostResponse> posts = searchPosts(keyword, page, size);
         PageResponse<PostVolunteerResponse> volunteers = searchPostVolunteers(keyword, page, size);
         
-        // Simple combination - in practice you'd want better ranking/merging
+        // Simple combination - in practice you'd want better ranking/mergingd
         List<Object> combinedResults = jobs.getData().stream()
             .map(Object.class::cast)
             .collect(Collectors.toList());
@@ -177,5 +182,92 @@ public class SearchService {
                 .totalPages((int) Math.ceil((double) combinedResults.size() / size))
                 .data(pageData)
                 .build();
+    }
+    
+    /**
+     * Unified search across all entity types (Job, Post, PostVolunteer) by keyword
+     */
+    public SearchResponse searchAllUnified(SearchRequest request) {
+        log.info("Unified search for keyword: {}", request.getKeyword());
+        
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        
+        try {
+            // Execute all searches concurrently
+            CompletableFuture<Page<JobDocument>> jobsFuture = CompletableFuture.supplyAsync(() -> 
+                jobDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+            );
+            
+            CompletableFuture<Page<PostDocument>> postsFuture = CompletableFuture.supplyAsync(() -> 
+                postDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+            );
+            
+            CompletableFuture<Page<PostVolunteerDocument>> postVolunteersFuture = CompletableFuture.supplyAsync(() -> 
+                postVolunteerDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+            );
+            
+            // Wait for all searches to complete
+            CompletableFuture.allOf(jobsFuture, postsFuture, postVolunteersFuture).join();
+            
+            Page<JobDocument> jobDocuments = jobsFuture.get();
+            Page<PostDocument> postDocuments = postsFuture.get();
+            Page<PostVolunteerDocument> postVolunteerDocuments = postVolunteersFuture.get();
+            
+            // Convert documents to response DTOs
+            List<JobResponse> jobResponses = jobDocuments.getContent().stream()
+                .map(jobDoc -> {
+                    Job job = jobRepository.findById(jobDoc.getEntityId()).orElse(null);
+                    if (job != null) {
+                        return jobHandlerMapper.toJobResponse(job);
+                    }
+                    return null;
+                })
+                .filter(response -> response != null)
+                .toList();
+                
+            List<PostResponse> postResponses = postDocuments.getContent().stream()
+                .map(postDoc -> {
+                    Post post = postRepository.findById(postDoc.getEntityId()).orElse(null);
+                    if (post != null) {
+                        return postMapper.toPostResponse(post);
+                    }
+                    return null;
+                })
+                .filter(response -> response != null)
+                .toList();
+                
+            List<PostVolunteerResponse> postVolunteerResponses = postVolunteerDocuments.getContent().stream()
+                .map(postDoc -> {
+                    PostVolunteer postVolunteer = postVolunteerRepository.findById(postDoc.getEntityId()).orElse(null);
+                    if (postVolunteer != null) {
+                        return postVolunteerMapper.toPostVolunteerResponse(postVolunteer);
+                    }
+                    return null;
+                })
+                .filter(response -> response != null)
+                .toList();
+            
+            int totalResults = jobResponses.size() + postResponses.size() + postVolunteerResponses.size();
+            int maxTotalPages = Math.max(Math.max(jobDocuments.getTotalPages(), postDocuments.getTotalPages()), 
+                                        postVolunteerDocuments.getTotalPages());
+            
+            return SearchResponse.builder()
+                .keyword(request.getKeyword())
+                .totalResults(totalResults)
+                .currentPage(request.getPage())
+                .totalPages(maxTotalPages)
+                .pageSize(request.getSize())
+                .jobs(jobResponses)
+                .posts(postResponses)
+                .postVolunteers(postVolunteerResponses)
+                .jobCount(jobResponses.size())
+                .postCount(postResponses.size())
+                .postVolunteerCount(postVolunteerResponses.size())
+                .build();
+                
+        } catch (Exception e) {
+            log.error("Error occurred during unified search for keyword: {}", request.getKeyword(), e);
+            throw new RuntimeException("Search failed: " + e.getMessage(), e);
+        }
     }
 }
