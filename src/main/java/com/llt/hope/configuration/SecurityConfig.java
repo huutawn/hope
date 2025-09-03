@@ -63,8 +63,8 @@ public class SecurityConfig {
             "/api/company/**",
             "/api/search/**",
             "/api/comments",
-            "/api/comments/**"
-
+            "/api/comments/**",
+            "/api/profile/**"
     };
 
     @Autowired

@@ -77,7 +77,7 @@ public class CompanyService {
                 .industry(request.getIndustry())
                 .size(request.getSize())
                 .name(request.getName())
-                .email(request.getEmail())
+                .email(user.getEmail())
                 .description(request.getDescription())
                 .logo(mediaFile)
                 .phoneNumber(request.getPhoneNumber())

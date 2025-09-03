@@ -27,7 +27,12 @@ public class ProfileController {
                 .result(profileService.updateMyProfile(request))
                 .build();
     }
-
+    @GetMapping("/{id}")
+    public ApiResponse<UserResponse> getUserProfile(@PathVariable String id) {
+        return ApiResponse.<UserResponse>builder()
+                .result(profileService.getUserProfile(id))
+                .build();
+    }
     @GetMapping
     public ApiResponse<UserResponse> getMyProfile() {
         return ApiResponse.<UserResponse>builder()
