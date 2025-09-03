@@ -2,8 +2,6 @@ package com.llt.hope.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.llt.hope.entity.User;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,9 +13,9 @@ import lombok.experimental.FieldDefaults;
 public class MessageResponse {
     private Long id;
 
-    private User sender;
+    private UserResponse sender;
 
-    private User receiver;
+    private UserResponse receiver;
 
     private String content;
 

@@ -25,6 +25,9 @@ public class Message {
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
+    @ManyToOne
+    MessageBox messageBox;
+
     @Column(length = 5000)
     private String content;
 
