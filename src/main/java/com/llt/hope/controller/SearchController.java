@@ -88,7 +88,7 @@ public class SearchController {
      * Unified search endpoint that searches across Job, Post, and PostVolunteer entities
      * Frontend just sends a keyword and gets results from all three entity types
      */
-    @PostMapping("/unified")
+    @GetMapping("/unified")
     public ApiResponse<SearchResponse> searchUnified(
             @RequestParam(value = "keyword") String keyword,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
