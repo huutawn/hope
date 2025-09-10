@@ -108,21 +108,5 @@ public class SearchController {
         }
     }
     
-    /**
-     * Simple GET endpoint for unified search
-     */
-    @GetMapping("/unified")
-    public ApiResponse<SearchResponse> searchUnifiedByKeyword(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "20") Integer size) {
-        
-        SearchRequest request = SearchRequest.builder()
-            .keyword(keyword)
-            .page(page)
-            .size(size)
-            .build();
-            
-        return searchUnified(request);
-    }
+
 }
