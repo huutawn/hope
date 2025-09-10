@@ -89,21 +89,23 @@ public class SearchController {
      * Frontend just sends a keyword and gets results from all three entity types
      */
     @PostMapping("/unified")
-    public ApiResponse<SearchResponse> searchUnified(@Valid @RequestBody SearchRequest request) {
-        log.info("Unified search request received for keyword: {}", request.getKeyword());
+    public ApiResponse<SearchResponse> searchUnified(
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         
         try {
-            SearchResponse searchResponse = searchService.searchAllUnified(request);
+            SearchResponse searchResponse = searchService.searchAllUnified(keyword, page, size);
             
             log.info("Unified search completed. Found {} total results for keyword: {}", 
-                searchResponse.getTotalResults(), request.getKeyword());
+                searchResponse.getTotalResults(), keyword);
             
             return ApiResponse.<SearchResponse>builder()
                     .result(searchResponse)
                     .build();
                     
         } catch (Exception e) {
-            log.error("Error occurred during unified search for keyword: {}", request.getKeyword(), e);
+            log.error("Error occurred during unified search for keyword: {}", keyword, e);
             throw new RuntimeException("Search failed: " + e.getMessage(), e);
         }
     }

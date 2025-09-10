@@ -187,23 +187,23 @@ public class SearchService {
     /**
      * Unified search across all entity types (Job, Post, PostVolunteer) by keyword
      */
-    public SearchResponse searchAllUnified(SearchRequest request) {
-        log.info("Unified search for keyword: {}", request.getKeyword());
+    public SearchResponse searchAllUnified(String keyword, int page, int size) {
+        log.info("Unified search for keyword: {}", keyword);
         
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Pageable pageable = PageRequest.of(page, size);
         
         try {
             // Execute all searches concurrently
             CompletableFuture<Page<JobDocument>> jobsFuture = CompletableFuture.supplyAsync(() -> 
-                jobDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+                jobDocumentRepository.findByKeyword(keyword, pageable)
             );
             
             CompletableFuture<Page<PostDocument>> postsFuture = CompletableFuture.supplyAsync(() -> 
-                postDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+                postDocumentRepository.findByKeyword(keyword, pageable)
             );
             
             CompletableFuture<Page<PostVolunteerDocument>> postVolunteersFuture = CompletableFuture.supplyAsync(() -> 
-                postVolunteerDocumentRepository.findByKeyword(request.getKeyword(), pageable)
+                postVolunteerDocumentRepository.findByKeyword(keyword, pageable)
             );
             
             // Wait for all searches to complete
@@ -252,11 +252,11 @@ public class SearchService {
                                         postVolunteerDocuments.getTotalPages());
             
             return SearchResponse.builder()
-                .keyword(request.getKeyword())
+                .keyword(keyword)
                 .totalResults(totalResults)
-                .currentPage(request.getPage())
+                .currentPage(page)
                 .totalPages(maxTotalPages)
-                .pageSize(request.getSize())
+                .pageSize(size)
                 .jobs(jobResponses)
                 .posts(postResponses)
                 .postVolunteers(postVolunteerResponses)
@@ -266,7 +266,7 @@ public class SearchService {
                 .build();
                 
         } catch (Exception e) {
-            log.error("Error occurred during unified search for keyword: {}", request.getKeyword(), e);
+            log.error("Error occurred during unified search for keyword: {}", keyword, e);
             throw new RuntimeException("Search failed: " + e.getMessage(), e);
         }
     }
