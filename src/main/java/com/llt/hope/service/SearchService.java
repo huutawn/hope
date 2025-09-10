@@ -189,8 +189,8 @@ public class SearchService {
      */
     public SearchResponse searchAllUnified(String keyword, int page, int size) {
         log.info("Unified search for keyword: {}", keyword);
-        
-        Pageable pageable = PageRequest.of(page, size);
+
+        Pageable pageable = PageRequest.of(page - 1, size);
         
         try {
             // Execute all searches concurrently
