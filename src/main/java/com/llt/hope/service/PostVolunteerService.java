@@ -96,6 +96,14 @@ public class PostVolunteerService {
         return donationResponse;
     }
 
+    public String reIndex(){
+        List<PostVolunteer> postVolunteers=postVolunteerRepository.findAll();
+        for(PostVolunteer postVolunteer:postVolunteers){
+            documentIndexingService.indexPostVolunteer(postVolunteer);
+        }
+        return "heheh";
+    }
+
     public PostVolunteerResponse createPost(PostVolunteerCreationRequest request) {
         String email =
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

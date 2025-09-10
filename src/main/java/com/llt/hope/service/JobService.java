@@ -92,6 +92,13 @@ public class JobService {
 
         return jobHandlerMapper.toJobResponse(savedJob);
     }
+    public String reIndex(){
+        List<Job> jobs=jobRepository.findAll();
+        for(Job job:jobs){
+            documentIndexingService.indexJob(job);
+        }
+        return "hehe";
+    }
 
     public PageResponse<JobResponse> getAllJobRecruitments(Specification<Job> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");

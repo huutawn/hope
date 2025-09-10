@@ -36,6 +36,10 @@ public class JobController {
                 .result(jobService.getDetail(jobId))
                 .build();
     }
+    @PostMapping("/re-index")
+    public String reIndex(){
+        return jobService.reIndex();
+    }
     @GetMapping("/getAll")
     public ApiResponse<PageResponse<JobResponse>> getAllJobRecruitments(
             @Filter Specification<Job> spec,

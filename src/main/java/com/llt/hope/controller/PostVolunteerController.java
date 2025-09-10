@@ -30,6 +30,10 @@ public class PostVolunteerController {
                 .result(postVolunteerService.createPost(request))
                 .build();
     }
+    @PostMapping("/re-index")
+    public String reIndex(){
+        return postVolunteerService.reIndex();
+    }
 
     @GetMapping("/getAll")
     public ApiResponse<PageResponse<PostVolunteerResponse>> getAllPost(

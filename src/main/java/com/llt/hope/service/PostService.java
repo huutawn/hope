@@ -92,6 +92,13 @@ public class PostService {
         PostResponse postResponse =postMapper.toPostResponse(post);
         return postResponse;
     }
+    public String reIndex(){
+        List<Post> posts=postRepository.findAll();
+        for(Post post:posts){
+            documentIndexingService.indexPost(post);
+        }
+        return "hehe";
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<PostResponse> getAllPostNotActive(Specification<Post> spec, int page, int size) {

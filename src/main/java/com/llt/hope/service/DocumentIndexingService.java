@@ -53,7 +53,6 @@ public class DocumentIndexingService {
                     .isActive(job.getIsActive())
                     .jobType(job.getJobType())
                     .createdAt(job.getCreatedAt().toLocalDate())
-                    .updatedAt(job.getUpdatedAt().toLocalDate())
                     .views(job.getViews())
                     // Company information
                     .companyId(job.getCompany() != null ? job.getCompany().getId() : null)
@@ -97,7 +96,6 @@ public class DocumentIndexingService {
                     .isPinned(post.isPinned())
                     .isActive(post.isActive())
                     .createdAt(post.getCreatedAt().toLocalDate())
-                    .updatedAt(post.getUpdatedAt().toLocalDate())
                     .type(post.getType())
                     .capital(post.getCapital())
                     .likes(post.getLikes())
@@ -138,7 +136,6 @@ public class DocumentIndexingService {
                     .fund(postVolunteer.getFund())
                     .totalAmount(postVolunteer.getTotalAmount())
                     .createAt(postVolunteer.getCreateAt().toLocalDate())
-                    .updateAt(postVolunteer.getUpdateAt().toLocalDate())
                     .status(postVolunteer.getStatus())
                     .isActive(postVolunteer.isActive())
                     // User information

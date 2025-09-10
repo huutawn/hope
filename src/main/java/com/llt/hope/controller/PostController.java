@@ -26,6 +26,10 @@ public class PostController {
                 .result(postService.createPost(request))
                 .build();
     }
+    @PostMapping("/re-index")
+    public String reIndex(){
+        return postService.reIndex();
+    }
 
     @GetMapping("/getAll")
     public ApiResponse<PageResponse<PostResponse>> getAllPost(
