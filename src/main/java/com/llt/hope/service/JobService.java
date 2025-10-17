@@ -88,9 +88,10 @@ public class JobService {
 
         return jobHandlerMapper.toJobResponse(savedJob);
     }
-    public String reIndex(){
-        List<Job> jobs=jobRepository.findAll();
-        for(Job job:jobs){
+
+    public String reIndex() {
+        List<Job> jobs = jobRepository.findAll();
+        for (Job job : jobs) {
             documentIndexingService.indexJob(job);
         }
         return "hehe";

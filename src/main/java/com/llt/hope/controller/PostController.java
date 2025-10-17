@@ -26,8 +26,9 @@ public class PostController {
                 .result(postService.createPost(request))
                 .build();
     }
+
     @PostMapping("/re-index")
-    public String reIndex(){
+    public String reIndex() {
         return postService.reIndex();
     }
 

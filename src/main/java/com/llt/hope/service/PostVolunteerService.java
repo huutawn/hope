@@ -242,9 +242,9 @@ public class PostVolunteerService {
                 .build();
     }
 
-    public String reIndex(){
-        List<PostVolunteer> postVolunteers=postVolunteerRepository.findAll();
-        for(PostVolunteer postVolunteer:postVolunteers){
+    public String reIndex() {
+        List<PostVolunteer> postVolunteers = postVolunteerRepository.findAll();
+        for (PostVolunteer postVolunteer : postVolunteers) {
             documentIndexingService.indexPostVolunteer(postVolunteer);
         }
         return "heheh";

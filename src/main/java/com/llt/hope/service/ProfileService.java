@@ -89,9 +89,9 @@ public class ProfileService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
         return userMapper.toUserResponse(user);
     }
+
     public UserResponse getUserProfile(String id) {
-        User user =
-               userRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Profile profile = user.getProfile();
         return userMapper.toUserResponse(user);
     }

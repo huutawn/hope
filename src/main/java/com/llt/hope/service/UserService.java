@@ -176,7 +176,6 @@ public class UserService {
         return userResponse;
     }
 
-
     public void resetPassword(PasswordCreationRequest request) {
         User user = repository
                 .findByEmail(request.getEmail())
