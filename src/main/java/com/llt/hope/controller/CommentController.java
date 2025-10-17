@@ -20,25 +20,24 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentController {
-    
+
     CommentService commentService;
-    
+
     @PostMapping
     public ApiResponse<CommentResponse> createComment(@RequestBody @Valid CommentCreationRequest request) {
         return ApiResponse.<CommentResponse>builder()
                 .result(commentService.createComment(request))
                 .build();
     }
-    
+
     @PutMapping("/{commentId}")
     public ApiResponse<CommentResponse> updateComment(
-            @PathVariable Long commentId,
-            @RequestBody @Valid CommentUpdateRequest request) {
+            @PathVariable Long commentId, @RequestBody @Valid CommentUpdateRequest request) {
         return ApiResponse.<CommentResponse>builder()
                 .result(commentService.updateComment(commentId, request))
                 .build();
     }
-    
+
     @DeleteMapping("/{commentId}")
     public ApiResponse<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
@@ -46,14 +45,14 @@ public class CommentController {
                 .message("Comment deleted successfully")
                 .build();
     }
-    
+
     @GetMapping("/{commentId}")
     public ApiResponse<CommentResponse> getComment(@PathVariable Long commentId) {
         return ApiResponse.<CommentResponse>builder()
                 .result(commentService.getCommentById(commentId))
                 .build();
     }
-    
+
     @GetMapping("/post/{postId}")
     public ApiResponse<PageResponse<CommentResponse>> getCommentsByPost(
             @PathVariable Long postId,
@@ -63,7 +62,7 @@ public class CommentController {
                 .result(commentService.getCommentsByPostId(postId, page, size))
                 .build();
     }
-    
+
     @GetMapping("/post-volunteer/{postVolunteerId}")
     public ApiResponse<PageResponse<CommentResponse>> getCommentsByPostVolunteer(
             @PathVariable Long postVolunteerId,
@@ -73,7 +72,7 @@ public class CommentController {
                 .result(commentService.getCommentsByPostVolunteerId(postVolunteerId, page, size))
                 .build();
     }
-    
+
     @GetMapping("/my-comments")
     public ApiResponse<PageResponse<CommentResponse>> getMyComments(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -82,14 +81,14 @@ public class CommentController {
                 .result(commentService.getMyComments(page, size))
                 .build();
     }
-    
+
     @GetMapping("/post/{postId}/count")
     public ApiResponse<Long> getCommentCountByPost(@PathVariable Long postId) {
         return ApiResponse.<Long>builder()
                 .result(commentService.countCommentsByPostId(postId))
                 .build();
     }
-    
+
     @GetMapping("/post-volunteer/{postVolunteerId}/count")
     public ApiResponse<Long> getCommentCountByPostVolunteer(@PathVariable Long postVolunteerId) {
         return ApiResponse.<Long>builder()

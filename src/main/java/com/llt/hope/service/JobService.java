@@ -4,10 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.llt.hope.entity.JobCategory;
-import com.llt.hope.entity.User;
-import com.llt.hope.repository.jpa.JobCategoryRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +18,21 @@ import com.llt.hope.dto.request.RecruitmentCreationRequest;
 import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.entity.Job;
+import com.llt.hope.entity.JobCategory;
+import com.llt.hope.entity.User;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.JobHandlerMapper;
+import com.llt.hope.repository.jpa.JobCategoryRepository;
 import com.llt.hope.repository.jpa.JobRepository;
 import com.llt.hope.repository.jpa.UserRepository;
 import com.llt.hope.specification.JobSpecification;
 import com.llt.hope.utils.SecurityUtils;
 
 import lombok.AccessLevel;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -47,7 +44,6 @@ public class JobService {
     JobHandlerMapper jobHandlerMapper;
     JobCategoryRepository jobCategoryRepository;
     DocumentIndexingService documentIndexingService;
-
 
     @PreAuthorize("isAuthenticated()")
     public JobResponse createRecruitmentNews(RecruitmentCreationRequest request) {
@@ -61,10 +57,10 @@ public class JobService {
         if (!employer.getProfile().getCompany().isActive()) {
             throw new AppException(ErrorCode.COMPANY_IS_NOT_ACTIVE);
         }
-        JobCategory jobCategory =jobCategoryRepository.findById(request.getCategoryId())
-                .orElseGet(()->jobCategoryRepository.save(JobCategory.builder()
-                                .name("khác")
-                        .build()));
+        JobCategory jobCategory = jobCategoryRepository
+                .findById(request.getCategoryId())
+                .orElseGet(() -> jobCategoryRepository.save(
+                        JobCategory.builder().name("khác").build()));
 
         if (request.getTitle().isEmpty()) throw new AppException((ErrorCode.TITLE_INVALID));
         Job job = Job.builder()
@@ -86,7 +82,7 @@ public class JobService {
                 .responsibilities(request.getResponsibilities())
                 .build();
         Job savedJob = jobRepository.save(job);
-        
+
         // Index job in Elasticsearch if available
         documentIndexingService.indexJob(job);
 
@@ -115,11 +111,13 @@ public class JobService {
                 .data(jobResponses)
                 .build();
     }
+
     public PageResponse<JobResponse> getAllJobByCompany(Specification<Job> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
-        User user=userRepository.findByEmail(SecurityUtils.getCurrentUserLogin().get())
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository
+                .findByEmail(SecurityUtils.getCurrentUserLogin().get())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Page<Job> jobs = jobRepository.findAllByCompany(user.getProfile().getCompany(), pageable);
         List<JobResponse> jobResponses =
@@ -133,19 +131,14 @@ public class JobService {
                 .build();
     }
 
-
-
-    public JobResponse getDetail(Long id){
-        Job job=jobRepository.findById(id)
-                .orElseThrow(()->new AppException(ErrorCode.JOB_NOT_FOUND));
-        Integer view= job.getViews();
-        if(view==null)
-            view=0;
-        job.setViews(view+1);
-        job=jobRepository.save(job);
+    public JobResponse getDetail(Long id) {
+        Job job = jobRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_FOUND));
+        Integer view = job.getViews();
+        if (view == null) view = 0;
+        job.setViews(view + 1);
+        job = jobRepository.save(job);
         return jobHandlerMapper.toJobResponse(job);
     }
-
 
     public PageResponse<JobResponse> filterJobs(
             String categoryName, String requirement, BigDecimal minSalary, BigDecimal maxSalary, int page, int size) {

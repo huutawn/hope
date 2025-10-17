@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 @RequestMapping("/api/report")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class   ReportController {
+public class ReportController {
     ReportService reportService;
 
     @PostMapping
@@ -26,7 +26,6 @@ public class   ReportController {
                 .result(reportService.report(request))
                 .build();
     }
-
 
     @GetMapping("/{postId}")
     public ApiResponse<List<ReportByPostResponse>> getReportByPost(@PathVariable long postId) {

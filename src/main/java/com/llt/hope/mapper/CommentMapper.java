@@ -24,19 +24,17 @@ public class CommentMapper {
             responseBuilder
                     .userId(comment.getUser().getId())
                     .userEmail(comment.getUser().getEmail());
-            
+
             // Add user name and profile picture if profile exists
             if (comment.getUser().getProfile() != null) {
                 responseBuilder.userName(
-                    comment.getUser().getProfile().getFullName() != null 
-                        ? comment.getUser().getProfile().getFullName() 
-                        : comment.getUser().getEmail()
-                );
-                
+                        comment.getUser().getProfile().getFullName() != null
+                                ? comment.getUser().getProfile().getFullName()
+                                : comment.getUser().getEmail());
+
                 if (comment.getUser().getProfile().getProfilePicture() != null) {
                     responseBuilder.userProfilePicture(
-                        comment.getUser().getProfile().getProfilePicture().getUrl()
-                    );
+                            comment.getUser().getProfile().getProfilePicture().getUrl());
                 }
             } else {
                 responseBuilder.userName(comment.getUser().getEmail());

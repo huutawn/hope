@@ -3,7 +3,6 @@ package com.llt.hope.dto.response;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import com.llt.hope.entity.Profile;
 import com.llt.hope.entity.Role;
 
 import lombok.*;

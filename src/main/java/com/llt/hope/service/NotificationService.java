@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class NotificationService {
-    
+
     UserRepository userRepository;
     NotificationRepository notificationRepository;
     SimpMessagingTemplate messagingTemplate;
@@ -35,8 +35,8 @@ public class NotificationService {
 
     @Transactional
     public NotificationResponse createNotification(String userEmail, String title, String message, String type) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Notification notification = Notification.builder()
                 .user(user)
@@ -62,7 +62,7 @@ public class NotificationService {
     public void sendNotificationToUser(String userEmail, NotificationResponse notification) {
         log.info("Sending notification to user: {} - Title: {}", userEmail, notification.getTitle());
         messagingTemplate.convertAndSendToUser(userEmail, "/queue/notifications", notification);
-        
+
         // Also send to topic for general notification updates
         messagingTemplate.convertAndSend("/topic/notifications/" + userEmail, notification);
     }
@@ -103,7 +103,7 @@ public class NotificationService {
      */
     public void sendNotificationToRole(String roleName, String title, String message, String type) {
         List<User> users = userRepository.findByRoleName(roleName);
-        
+
         NotificationResponse notification = NotificationResponse.builder()
                 .title(title)
                 .message(message)
@@ -117,7 +117,7 @@ public class NotificationService {
             // Optionally save to database
             createNotification(user.getEmail(), title, message, type);
         });
-        
+
         log.info("Sent notification to {} users with role: {}", users.size(), roleName);
     }
 
@@ -125,8 +125,8 @@ public class NotificationService {
      * Get all notifications for a user
      */
     public List<NotificationResponse> getUserNotifications(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         List<Notification> notifications = notificationRepository.findByUserOrderByCreatedAtDesc(user);
         return notifications.stream()
@@ -138,9 +138,9 @@ public class NotificationService {
      * Get unread notifications count
      */
     public long getUnreadNotificationsCount(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         return notificationRepository.countByUserAndIsReadFalse(user);
     }
 
@@ -149,12 +149,13 @@ public class NotificationService {
      */
     @Transactional
     public void markAsRead(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
+        Notification notification = notificationRepository
+                .findById(notificationId)
                 .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
-        
+
         notification.setRead(true);
         notificationRepository.save(notification);
-        
+
         // Send update via WebSocket
         NotificationResponse response = notificationMapper.toNotificationResponse(notification);
         sendNotificationToUser(notification.getUser().getEmail(), response);
@@ -165,15 +166,16 @@ public class NotificationService {
      */
     @Transactional
     public void markAllAsRead(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         List<Notification> unreadNotifications = notificationRepository.findByUserAndIsReadFalse(user);
         unreadNotifications.forEach(notification -> notification.setRead(true));
         notificationRepository.saveAll(unreadNotifications);
-        
+
         // Send update via WebSocket
-        messagingTemplate.convertAndSendToUser(userEmail, "/queue/notifications/read-all", "All notifications marked as read");
+        messagingTemplate.convertAndSendToUser(
+                userEmail, "/queue/notifications/read-all", "All notifications marked as read");
     }
 
     /**
@@ -181,12 +183,13 @@ public class NotificationService {
      */
     @Transactional
     public void deleteNotification(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
+        Notification notification = notificationRepository
+                .findById(notificationId)
                 .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
-        
+
         String userEmail = notification.getUser().getEmail();
         notificationRepository.delete(notification);
-        
+
         // Send delete update via WebSocket
         messagingTemplate.convertAndSendToUser(userEmail, "/queue/notifications/deleted", notificationId);
     }

@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
-import com.llt.hope.dto.request.ActivePostVolunteerRequest;
 import com.llt.hope.dto.request.DonationRequest;
 import com.llt.hope.dto.request.PostVolunteerCreationRequest;
+import com.llt.hope.dto.request.WithdrawalRequestDto;
 import com.llt.hope.dto.response.*;
 import com.llt.hope.entity.PostVolunteer;
 import com.llt.hope.service.PostVolunteerService;
@@ -56,23 +56,42 @@ public class PostVolunteerController {
                 .build();
     }
 
-    @PatchMapping
-    public ApiResponse<ActivePostResponse> activePost(@RequestBody ActivePostVolunteerRequest request) {
+    @PatchMapping("/{postVolunteerId}/active")
+    public ApiResponse<ActivePostResponse> activePost(@PathVariable Long postVolunteerId) {
         return ApiResponse.<ActivePostResponse>builder()
-                .result(postVolunteerService.activatePost(request))
+                .result(postVolunteerService.activatePost(postVolunteerId))
                 .build();
     }
+
     @PatchMapping("/like")
-    public ApiResponse<PostVolunteerResponse> likePost(@RequestParam(value = "postId")Long id) {
+    public ApiResponse<PostVolunteerResponse> likePost(@RequestParam(value = "postId") Long id) {
         return ApiResponse.<PostVolunteerResponse>builder()
                 .result(postVolunteerService.likePost(id))
                 .build();
     }
 
     @PatchMapping("/donate")
-    public ApiResponse<DonationResponse> donate(@RequestBody DonationRequest request) {
-        return ApiResponse.<DonationResponse>builder()
+    public ApiResponse<DonationQRResponse> donate(@RequestBody DonationRequest request) {
+        return ApiResponse.<DonationQRResponse>builder()
                 .result(postVolunteerService.donate(request))
+                .build();
+    }
+
+    @PostMapping("/withdrawal")
+    public ApiResponse<WithdrawalResponse> requestWithdrawal(@RequestBody WithdrawalRequestDto request) {
+        return ApiResponse.<WithdrawalResponse>builder()
+                .result(postVolunteerService.requestWithdrawal(request))
+                .message("Withdrawal request submitted successfully")
+                .build();
+    }
+
+    @GetMapping("/{postId}/withdrawals")
+    public ApiResponse<PageResponse<WithdrawalResponse>> getWithdrawalsByPost(
+            @PathVariable Long postId,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        return ApiResponse.<PageResponse<WithdrawalResponse>>builder()
+                .result(postVolunteerService.getWithdrawalsByPost(postId, page, size))
                 .build();
     }
 

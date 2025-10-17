@@ -3,9 +3,9 @@ package com.llt.hope.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.google.zxing.WriterException;
 import org.springframework.web.bind.annotation.*;
 
+import com.google.zxing.WriterException;
 import com.llt.hope.dto.request.SePayWebhookRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.StartTransactionResponse;
@@ -43,7 +43,8 @@ public class SePayWebController {
     }
 
     @GetMapping("/qr")
-    public ApiResponse<StartTransactionResponse> startTransaction(@RequestParam(value = "amount")Double amount) throws IOException, WriterException {
+    public ApiResponse<StartTransactionResponse> startTransaction(@RequestParam(value = "amount") Double amount)
+            throws IOException, WriterException {
         return ApiResponse.<StartTransactionResponse>builder()
                 .result(sePayWebhookService.startTransaction(amount))
                 .build();

@@ -1,12 +1,10 @@
 package com.llt.hope.dto.response;
 
-import com.llt.hope.entity.User;
-import jakarta.persistence.ManyToOne;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -24,9 +22,9 @@ public class CVFormResponse {
     String address;
     LocalDate dob;
     String skill;
-    String exp; //kinh nghiệm
+    String exp; // kinh nghiệm
     String education;
-    String typeOfDisability; //loại khuyết tật
-    String typeOfJob; //loại công việc mong muốn
+    String typeOfDisability; // loại khuyết tật
+    String typeOfJob; // loại công việc mong muốn
     LocalDateTime createdAt;
 }

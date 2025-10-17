@@ -1,9 +1,9 @@
 package com.llt.hope.dto.response;
 
+import java.time.LocalDate;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -20,8 +20,8 @@ public class CVResponse {
     String address;
     LocalDate dob;
     String skill;
-    String exp; //kinh nghiệm
+    String exp; // kinh nghiệm
     String education;
-    String typeOfDisability; //loại khuyết tật
-    String typeOfJob; //loại công việc mong muốn
+    String typeOfDisability; // loại khuyết tật
+    String typeOfJob; // loại công việc mong muốn
 }

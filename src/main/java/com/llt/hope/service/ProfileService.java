@@ -43,7 +43,7 @@ public class ProfileService {
                 SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         MediaFile mediaFile = null;
-        Profile oldPr=user.getProfile();
+        Profile oldPr = user.getProfile();
         if (request.getProfilePicture() != null) {
             try {
 
@@ -65,17 +65,17 @@ public class ProfileService {
         oldPr.setFullName(request.getFullName());
         oldPr.setDisabilityDescription(request.getDisabilityDescription());
         oldPr.setGender(request.getGender());
-//         oldPr = Profile.builder()
-//                .city(request.getCity())
-//                .bio(request.getBio())
-//                .address(request.getAddress())
-//                .dob(request.getDob())
-//                .disabilityType(request.getDisabilityType())
-//                .disabilityDescription(request.getDisabilityDescription())
-//                .fullName(request.getFullName())
-//                .gender(request.getGender())
-//                .profilePicture(mediaFile)
-//                .build();
+        //         oldPr = Profile.builder()
+        //                .city(request.getCity())
+        //                .bio(request.getBio())
+        //                .address(request.getAddress())
+        //                .dob(request.getDob())
+        //                .disabilityType(request.getDisabilityType())
+        //                .disabilityDescription(request.getDisabilityDescription())
+        //                .fullName(request.getFullName())
+        //                .gender(request.getGender())
+        //                .profilePicture(mediaFile)
+        //                .build();
         return profileMapper.toProfileResponse(profileRepository.save(oldPr));
     }
 

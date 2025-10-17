@@ -1,5 +1,8 @@
 package com.llt.hope.configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -35,20 +35,21 @@ public class SecurityConfig {
         "/api/v3/api-docs/**",
         "/api/swagger-ui/**",
         "/api/swagger-ui.html",
-            "/api/users/**",
+        "/api/users/**",
         "/api/job/getAll",
-            "/api/job/**",
-            "/api/comments/**",
+        "/api/job/**",
+        "/api/comments/**",
         "/api/post/getAll",
+        "/api/postVolunteer/**",
         "/api/job/filter",
-            "/ws",
-            "/ws/**",
+        "/ws",
+        "/ws/**",
         "/api/job/search",
-            "/api/auth/**",
-            "/api/auth/outbound/authentication",
+        "/api/auth/**",
+        "/api/auth/outbound/authentication",
         "/api/",
         "/api/postVolunteer/getAll",
-            "/api/support/post/**",
+        "/api/support/post/**",
         "/api/hooks/sepay-payment",
         "/api/users/send-otp",
         "/api/users/verify-otp",
@@ -59,13 +60,9 @@ public class SecurityConfig {
         "/api/payment/vn-pay-callback",
         "/api/product/getAll",
         "/api/product/searchProduct",
-            "/api/jobCategory",
-            "/api/company/**",
-            "/api/search/**",
-            "/api/comments",
-            "/api/comments/**",
-            "/api/profile/**",
-            "/api/search/**"
+        "/api/jobCategory",
+        "/api/company/**",
+        "/api/search/**"
     };
 
     @Autowired
@@ -97,8 +94,11 @@ public class SecurityConfig {
         // Cho phép các origin cụ thể cho API HTTP (KHÔNG dùng *)
         // Hoặc chỉ cho phép * nếu bạn chắc chắn API đó không gửi/nhận credentials
         // Nhưng nếu bạn gửi JWT, bạn nên liệt kê rõ ràng
-        config.setAllowedOrigins(List.of("http://localhost:3000","https://ourhope.io.vn","https://fe-hope-vn-version.vercel.app")); // Mở cho dev
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "https://ourhope.io.vn",
+                "https://fe-hope-vn-version.vercel.app")); // Mở cho dev
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*")); // Cho phép tất cả headers
         config.setAllowCredentials(true); // Rất quan trọng nếu bạn gửi cookie/auth header
         config.setMaxAge(3600L); // Thời gian cache preflight request

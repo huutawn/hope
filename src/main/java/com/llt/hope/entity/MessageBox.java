@@ -1,11 +1,11 @@
 package com.llt.hope.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -25,16 +25,16 @@ public class MessageBox {
     @ManyToOne
     @JoinColumn(name = "container_id")
     MessageContainer container;
-    
+
     @OneToMany(mappedBy = "messageBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Message> messages;
-    
+
     private LocalDateTime lastMessageTime;
-    
+
     private int unreadCount;
-    
+
     private LocalDateTime createdAt;
-    
+
     private LocalDateTime updatedAt;
 
     @PrePersist

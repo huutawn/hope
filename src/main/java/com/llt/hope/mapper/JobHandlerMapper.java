@@ -1,14 +1,13 @@
 package com.llt.hope.mapper;
 
-import com.llt.hope.dto.response.CVFormResponse;
-import com.llt.hope.dto.response.JobCategoryResponse;
-import com.llt.hope.entity.CVForm;
-import com.llt.hope.entity.JobCategory;
-import jdk.jfr.Category;
 import org.springframework.stereotype.Component;
 
+import com.llt.hope.dto.response.CVFormResponse;
+import com.llt.hope.dto.response.JobCategoryResponse;
 import com.llt.hope.dto.response.JobResponse;
+import com.llt.hope.entity.CVForm;
 import com.llt.hope.entity.Job;
+import com.llt.hope.entity.JobCategory;
 
 @Component
 public class JobHandlerMapper {
@@ -24,7 +23,10 @@ public class JobHandlerMapper {
                 .employerId(job.getEmployer().getId())
                 .companyId(job.getCompany().getId())
                 .companyName(job.getCompany().getName())
-                .companyPicture(job.getCompany().getLogo()!=null?job.getCompany().getLogo().getUrl():null)
+                .companyPicture(
+                        job.getCompany().getLogo() != null
+                                ? job.getCompany().getLogo().getUrl()
+                                : null)
                 .description(job.getDescription())
                 .requirements(job.getRequirements())
                 .responsibilities(job.getResponsibilities())
@@ -42,7 +44,7 @@ public class JobHandlerMapper {
                 .build();
     }
 
-    public CVFormResponse toCVFormResponse(CVForm cvForm){
+    public CVFormResponse toCVFormResponse(CVForm cvForm) {
         return CVFormResponse.builder()
                 .id(cvForm.getId())
                 .exp(cvForm.getExp())
@@ -58,7 +60,8 @@ public class JobHandlerMapper {
                 .userName(cvForm.getName())
                 .build();
     }
-    private JobCategoryResponse toJobCategoryResponse(JobCategory jobCategory){
+
+    private JobCategoryResponse toJobCategoryResponse(JobCategory jobCategory) {
         return JobCategoryResponse.builder()
                 .name(jobCategory.getName())
                 .id(jobCategory.getId())

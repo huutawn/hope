@@ -2,10 +2,6 @@ package com.llt.hope.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import com.llt.hope.entity.MediaFile;
-import com.llt.hope.entity.User;
 
 import lombok.*;
 

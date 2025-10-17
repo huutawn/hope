@@ -42,7 +42,7 @@ public class PostController {
     }
 
     @PatchMapping("/like")
-    public ApiResponse<PostResponse> likePost(@RequestParam(value = "postId")Long id) {
+    public ApiResponse<PostResponse> likePost(@RequestParam(value = "postId") Long id) {
         return ApiResponse.<PostResponse>builder()
                 .result(postService.likePost(id))
                 .build();

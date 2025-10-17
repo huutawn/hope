@@ -1,8 +1,16 @@
 package com.llt.hope.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.llt.hope.dto.response.MessageBoxResponse;
 import com.llt.hope.dto.response.MessageBoxUpdateNotification;
-import com.llt.hope.dto.response.MessageResponse;
 import com.llt.hope.entity.Message;
 import com.llt.hope.entity.MessageBox;
 import com.llt.hope.entity.MessageContainer;
@@ -15,19 +23,11 @@ import com.llt.hope.repository.jpa.MessageBoxRepository;
 import com.llt.hope.repository.jpa.MessageContainerRepository;
 import com.llt.hope.repository.jpa.MessageRepository;
 import com.llt.hope.repository.jpa.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,9 +46,9 @@ public class MessageBoxService {
      * Get all message boxes for a user, ordered by last message time
      */
     public List<MessageBoxResponse> getAllMessageBox(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         List<MessageBox> messageBoxes = messageBoxRepository.findAllByUserOrderByLastMessageTimeDesc(user);
         return messageBoxMapper.toMessageBoxResponseList(messageBoxes);
     }
@@ -58,20 +58,22 @@ public class MessageBoxService {
      */
     @Transactional
     public MessageBoxResponse getOrCreateMessageBox(String currentUserEmail, String receiverEmail) {
-        User currentUser = userRepository.findByEmail(currentUserEmail)
+        User currentUser = userRepository
+                .findByEmail(currentUserEmail)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User receiver = userRepository.findByEmail(receiverEmail)
+        User receiver = userRepository
+                .findByEmail(receiverEmail)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Optional<MessageBox> existingBox = messageBoxRepository.findMessageBoxByReceiver(receiver, currentUser);
-        
+
         if (existingBox.isPresent()) {
             return messageBoxMapper.toMessageBoxResponse(existingBox.get());
         }
 
         // Create new message box
         MessageContainer container = getOrCreateMessageContainer(currentUser);
-        
+
         MessageBox newMessageBox = MessageBox.builder()
                 .receiver(receiver)
                 .container(container)
@@ -90,11 +92,11 @@ public class MessageBoxService {
     public void updateMessageBoxOnNewMessage(Message message) {
         User receiver = message.getReceiver();
         User sender = message.getSender();
-        
+
         // Update receiver's message box
         MessageContainer receiverContainer = getOrCreateMessageContainer(receiver);
         Optional<MessageBox> receiverBox = messageBoxRepository.findMessageBoxByReceiver(sender, receiver);
-        
+
         if (receiverBox.isEmpty()) {
             // Create new message box for receiver
             MessageBox newBox = MessageBox.builder()
@@ -112,7 +114,7 @@ public class MessageBoxService {
             box.setLastMessageTime(message.getSentAt());
             messageBoxRepository.save(box);
         }
-        
+
         // Send real-time notification to receiver about message box update
         notifyMessageBoxUpdate(receiver.getEmail());
     }
@@ -122,18 +124,19 @@ public class MessageBoxService {
      */
     @Transactional
     public void markMessagesAsRead(String currentUserEmail, String senderEmail) {
-        User currentUser = userRepository.findByEmail(currentUserEmail)
+        User currentUser = userRepository
+                .findByEmail(currentUserEmail)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User sender = userRepository.findByEmail(senderEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User sender =
+                userRepository.findByEmail(senderEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         Optional<MessageBox> messageBox = messageBoxRepository.findMessageBoxByReceiver(sender, currentUser);
-        
+
         if (messageBox.isPresent()) {
             MessageBox box = messageBox.get();
             box.setUnreadCount(0);
             messageBoxRepository.save(box);
-            
+
             // Notify real-time update
             notifyMessageBoxUpdate(currentUserEmail);
         }
@@ -143,9 +146,9 @@ public class MessageBoxService {
      * Get total unread message count for a user
      */
     public long getTotalUnreadCount(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         Long count = messageBoxRepository.getTotalUnreadCountByUser(user);
         return count != null ? count : 0;
     }
@@ -154,9 +157,9 @@ public class MessageBoxService {
      * Get count of message boxes with unread messages
      */
     public long getUnreadMessageBoxCount(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+        User user =
+                userRepository.findByEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         return messageBoxRepository.countUnreadMessageBoxesByUser(user);
     }
 
@@ -167,16 +170,16 @@ public class MessageBoxService {
         try {
             List<MessageBoxResponse> messageBoxes = getAllMessageBox(userEmail);
             long totalUnread = getTotalUnreadCount(userEmail);
-            
+
             MessageBoxUpdateNotification notification = MessageBoxUpdateNotification.builder()
                     .messageBoxes(messageBoxes)
                     .totalUnreadCount(totalUnread)
                     .timestamp(LocalDateTime.now())
                     .build();
-            
+
             // Send to user's private queue for message box updates
             messagingTemplate.convertAndSendToUser(userEmail, "/queue/messagebox-updates", notification);
-            
+
             log.info("Message box update notification sent to user: {}", userEmail);
         } catch (Exception e) {
             log.error("Error sending message box update notification to user: {}", userEmail, e);

@@ -3,14 +3,14 @@ package com.llt.hope.configuration;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-import com.llt.hope.entity.*;
-import com.llt.hope.repository.jpa.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.llt.hope.constant.PredefindRole;
+import com.llt.hope.entity.*;
+import com.llt.hope.repository.jpa.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,7 @@ public class ApplicationInitConfig {
             UserRepository userRepository,
             RoleRepository roleRepository,
             ProfileRepository profileRepository,
-            FundBalanceRepository fundBalanceRepository
-            ) {
+            FundBalanceRepository fundBalanceRepository) {
         return args -> {
             if (userRepository.findByEmail(ADMIN_USER_NAME).isEmpty()) {
                 roleRepository.save(Role.builder()
@@ -86,7 +85,6 @@ public class ApplicationInitConfig {
                 fundBalance.setBalance(BigDecimal.valueOf(0.0));
                 fundBalanceRepository.save(fundBalance);
             }
-
         };
     }
 }

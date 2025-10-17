@@ -1,9 +1,10 @@
 package com.llt.hope.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.List;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -21,7 +22,4 @@ public class MessageContainer {
 
     @OneToMany(mappedBy = "container", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<MessageBox> messageBoxes;
-
-
-
 }

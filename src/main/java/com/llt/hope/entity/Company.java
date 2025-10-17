@@ -26,7 +26,6 @@ public class Company {
     @Column(columnDefinition = "TEXT")
     private String description; // Giới thiệu công ty
 
-
     private String industry; // Ngành nghề chính
 
     private String website; // Trang web công ty

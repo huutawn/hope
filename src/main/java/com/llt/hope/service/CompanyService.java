@@ -139,24 +139,30 @@ public class CompanyService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setRoles(roles);
         user = userRepository.save(user);
-//        String subject = " Your company completely accepted";
-//        String content = String.format(
-//                "<p><strong>Xin chào %s,</strong></p>"
-//                        + "<p>Chúng tôi rất vui mừng thông báo rằng công ty của bạn đã chính thức được phê duyệt trên nền tảng <strong>Hope</strong>!</p>"
-//                        + "<p>Giờ đây, bạn có toàn quyền truy cập vào bảng điều khiển nhà tuyển dụng, nơi bạn có thể:</p>"
-//                        + "<ul>"
-//                        + "<li>🎯 Đăng tin tuyển dụng nhanh chóng và tiếp cận hàng ngàn ứng viên tài năng.</li>"
-//                        + "<li>🔍 Quản lý hồ sơ ứng viên dễ dàng với công cụ lọc và sàng lọc thông minh.</li>"
-//                        + "<li>📊 Theo dõi hiệu quả tuyển dụng với các thống kê chi tiết.</li>"
-//                        + "</ul>"
-//                        + "<p>Hãy bắt đầu ngay bằng cách truy cập vào trang quản lý của bạn:</p>"
-//                        + "<h2><a href='%s' style='color: #007bff; text-decoration: none;'>👉 Đăng nhập & Quản lý tuyển dụng</a></h2>"
-//                        + "<p>Chúng tôi cam kết mang lại trải nghiệm tốt nhất cho doanh nghiệp của bạn, giúp bạn tìm kiếm và kết nối với những ứng viên phù hợp nhất.</p>"
-//                        + "<p>Nếu có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với đội ngũ hỗ trợ của chúng tôi.</p>"
-//                        + "<p>Chúc bạn thành công và xây dựng một đội ngũ xuất sắc!</p>"
-//                        + "<p><strong>Trân trọng,</strong><br/>Đội ngũ Hope</p>",
-//                company1.getName(), website);
-//        emailService.sendEmail(user.getEmail(), subject, content);
+        //        String subject = " Your company completely accepted";
+        //        String content = String.format(
+        //                "<p><strong>Xin chào %s,</strong></p>"
+        //                        + "<p>Chúng tôi rất vui mừng thông báo rằng công ty của bạn đã chính thức được phê
+        // duyệt trên nền tảng <strong>Hope</strong>!</p>"
+        //                        + "<p>Giờ đây, bạn có toàn quyền truy cập vào bảng điều khiển nhà tuyển dụng, nơi bạn
+        // có thể:</p>"
+        //                        + "<ul>"
+        //                        + "<li>🎯 Đăng tin tuyển dụng nhanh chóng và tiếp cận hàng ngàn ứng viên tài
+        // năng.</li>"
+        //                        + "<li>🔍 Quản lý hồ sơ ứng viên dễ dàng với công cụ lọc và sàng lọc thông minh.</li>"
+        //                        + "<li>📊 Theo dõi hiệu quả tuyển dụng với các thống kê chi tiết.</li>"
+        //                        + "</ul>"
+        //                        + "<p>Hãy bắt đầu ngay bằng cách truy cập vào trang quản lý của bạn:</p>"
+        //                        + "<h2><a href='%s' style='color: #007bff; text-decoration: none;'>👉 Đăng nhập & Quản
+        // lý tuyển dụng</a></h2>"
+        //                        + "<p>Chúng tôi cam kết mang lại trải nghiệm tốt nhất cho doanh nghiệp của bạn, giúp
+        // bạn tìm kiếm và kết nối với những ứng viên phù hợp nhất.</p>"
+        //                        + "<p>Nếu có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với đội ngũ hỗ trợ của chúng
+        // tôi.</p>"
+        //                        + "<p>Chúc bạn thành công và xây dựng một đội ngũ xuất sắc!</p>"
+        //                        + "<p><strong>Trân trọng,</strong><br/>Đội ngũ Hope</p>",
+        //                company1.getName(), website);
+        //        emailService.sendEmail(user.getEmail(), subject, content);
         ActiveCompanyResponse activeCompanyResponse = ActiveCompanyResponse.builder()
                 .id(company1.getId())
                 .isActive(company1.isActive())
@@ -164,6 +170,7 @@ public class CompanyService {
                 .build();
         return activeCompanyResponse;
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteCompany(Long companyId) {
         Company company =
@@ -186,9 +193,10 @@ public class CompanyService {
 
         companyRepository.deleteById(companyId);
     }
-    public CompanyResponse getDetail(Long id){
-        Company company=companyRepository.findById(id)
-                .orElseThrow(()->new AppException(ErrorCode.COMPANY_NOT_FOUND));
+
+    public CompanyResponse getDetail(Long id) {
+        Company company =
+                companyRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
         return companyMapper.toCompanyResponse(company);
     }
 }

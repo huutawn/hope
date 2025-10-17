@@ -36,11 +36,12 @@ public class UserController {
     }
 
     @PatchMapping("/ban")
-    ApiResponse<UserResponse> banUser(@RequestBody BannedReq req ) {
+    ApiResponse<UserResponse> banUser(@RequestBody BannedReq req) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.banUser(req))
                 .build();
     }
+
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();

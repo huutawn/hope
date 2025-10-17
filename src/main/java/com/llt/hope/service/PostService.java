@@ -84,12 +84,11 @@ public class PostService {
                 .build();
 
         post = postRepository.save(post);
-        
-        // Index post in Elasticsearch (only if it's published)
-            documentIndexingService.indexPost(post);
 
-        
-        PostResponse postResponse =postMapper.toPostResponse(post);
+        // Index post in Elasticsearch (only if it's published)
+        documentIndexingService.indexPost(post);
+
+        PostResponse postResponse = postMapper.toPostResponse(post);
         return postResponse;
     }
     public String reIndex(){
@@ -116,18 +115,16 @@ public class PostService {
                 .data(postResponses)
                 .build();
     }
+
     @PreAuthorize("isAuthenticated()")
-    public PostResponse likePost(Long id){
-        Post post=postRepository.findById(id)
-                .orElseThrow(()->new AppException(ErrorCode.POST_NOT_EXISTED));
-        Integer currentLike=post.getLikes();
-        if(post.getLikes()==null)
-            currentLike=0;
-        post.setLikes(currentLike+1);
-        post=postRepository.save(post);
+    public PostResponse likePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
+        Integer currentLike = post.getLikes();
+        if (post.getLikes() == null) currentLike = 0;
+        post.setLikes(currentLike + 1);
+        post = postRepository.save(post);
         return postMapper.toPostResponse(post);
     }
-
 
     public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
@@ -144,6 +141,7 @@ public class PostService {
                 .data(postResponses)
                 .build();
     }
+
     public PageResponse<PostResponse> getAllByType(String type, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
@@ -165,10 +163,10 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         post.setActive(true);
         post = postRepository.save(post);
-        
+
         // Index post in Elasticsearch when activated
         documentIndexingService.indexPost(post);
-        
+
         return ActivePostResponse.builder()
                 .id(post.getId())
                 .isActive(post.isActive())

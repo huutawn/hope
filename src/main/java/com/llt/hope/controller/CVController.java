@@ -1,18 +1,18 @@
 package com.llt.hope.controller;
 
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.*;
+
 import com.llt.hope.dto.request.CVCreateReq;
 import com.llt.hope.dto.request.CVUpdateReq;
-import com.llt.hope.dto.request.CompanyCreationRequest;
 import com.llt.hope.dto.response.*;
 import com.llt.hope.entity.Company;
 import com.llt.hope.service.CVService;
-import com.llt.hope.service.CompanyService;
 import com.turkraft.springfilter.boot.Filter;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cv")
@@ -23,9 +23,7 @@ public class CVController {
 
     @PostMapping
     public ApiResponse<CVResponse> create(@RequestBody CVCreateReq req) {
-        return ApiResponse.<CVResponse>builder()
-                .result(cvService.create(req))
-                .build();
+        return ApiResponse.<CVResponse>builder().result(cvService.create(req)).build();
     }
 
     @GetMapping("/all")
@@ -35,24 +33,17 @@ public class CVController {
             @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
 
         return ApiResponse.<PageResponse>builder()
-                .result(cvService.getAll(page,size))
-                .build();
-    }
-    @GetMapping("/{id}")
-    public ApiResponse<CVResponse> getDetail(
-            @PathVariable Long id
-          ) {
-        return ApiResponse.<CVResponse>builder()
-                .result(cvService.get(id))
+                .result(cvService.getAll(page, size))
                 .build();
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<CVResponse> getDetail(@PathVariable Long id) {
+        return ApiResponse.<CVResponse>builder().result(cvService.get(id)).build();
+    }
+
     @PutMapping
-    public ApiResponse<CVResponse> update(
-            @RequestBody CVUpdateReq req
-    ) {
-        return ApiResponse.<CVResponse>builder()
-                .result(cvService.update(req))
-                .build();
+    public ApiResponse<CVResponse> update(@RequestBody CVUpdateReq req) {
+        return ApiResponse.<CVResponse>builder().result(cvService.update(req)).build();
     }
 }
