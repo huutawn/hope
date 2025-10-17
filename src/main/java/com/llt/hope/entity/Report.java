@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,7 +21,6 @@ public class Report {
     private Long id;
 
     @ManyToOne
-
     @JoinColumn(name = "post_volunteer_id", nullable = false)
     private PostVolunteer postVolunteer;
 

@@ -1,9 +1,5 @@
 package com.llt.hope.dto.response;
 
-import com.llt.hope.entity.CVForm;
-import com.llt.hope.entity.Job;
-import com.llt.hope.entity.User;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

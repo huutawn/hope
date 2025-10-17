@@ -1,7 +1,6 @@
 package com.llt.hope.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,19 +13,29 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCode {
+    UNCATEGORIZED_EXCEPTION(9999, "Lỗi không xác định", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(1001, "Khóa không hợp lệ", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1002, "Người dùng đã tồn tại", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1003, "Tên người dùng phải có ít nhất 3 ký tự", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1004, "Mật khẩu phải có ít nhất 8 ký tự", HttpStatus.BAD_REQUEST),
+    USER_NOT_EXISTED(1005, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1007, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
+    INVALID_DOB(1008, "Ngày sinh không hợp lệ", HttpStatus.BAD_REQUEST),
+    INVALID_POST(1009, "Bài đăng không hợp lệ", HttpStatus.BAD_REQUEST),
+    POST_NOT_EXISTED(1010, "Bài đăng không tồn tại", HttpStatus.NOT_FOUND),
+    UPLOAD_FILE_ERROR(1011, "Lỗi tải file", HttpStatus.INTERNAL_SERVER_ERROR),
+    INSUFFICIENT_FUND(1012, "Không đủ tiền trong quỹ", HttpStatus.BAD_REQUEST),
+    INVALID_STATE(1013, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
+    INVALID_PARAMETER(1014, "Tham số không hợp lệ", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(404, "User not found", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(406, "User not existed", HttpStatus.NOT_FOUND),
-    USERNAME_INVALID(407, "User name must have at least 3 characters", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(408, "Password must have at least 8 characters", HttpStatus.BAD_REQUEST),
-    UNAUTHENTICATED(409, "User is not authenticated", HttpStatus.FORBIDDEN),
-    UNCATEGORIZED_EXCEPTION(410, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHORIZED_(411, "You do not has permission", HttpStatus.UNAUTHORIZED),
     USER_ALREADY_EXISTED(412, "User already exists", HttpStatus.CONFLICT),
     EMAIL_INVALID(414, "Email is invalid", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(415, "Email already exists", HttpStatus.CONFLICT),
     TITLE_INVALID(416, "Title is invalid", HttpStatus.BAD_REQUEST),
     CONTENT_INVALID(417, "Content is invalid", HttpStatus.BAD_REQUEST),
-    UPLOAD_FILE_ERROR(418, "Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR),
     REQUEST_INVALID(422, "Request is invalid", HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_FOUND(423, "Category not found", HttpStatus.BAD_REQUEST),
     PROFILE_NOT_FOUND(424, "Profile not found", HttpStatus.BAD_REQUEST),
@@ -36,7 +45,6 @@ public enum ErrorCode {
     PRODUCT_HAS_EXISTED(429, "Product has already existed", HttpStatus.CONFLICT),
     COMPANY_IS_NOT_ACTIVE(430, "company is not active", HttpStatus.FORBIDDEN),
     PRODUCT_NOT_EXISTED(431, "Product not existed", HttpStatus.NOT_FOUND),
-    POST_NOT_EXISTED(432, "Post not found", HttpStatus.BAD_REQUEST),
     SELLER_PROFILE_ALREADY_EXISTS(433, "Seller Profile already existed", HttpStatus.CONFLICT),
     COMPANY_HAS_EXISTED(434, "Company has already existed", HttpStatus.CONFLICT),
     USER_HAS_EXISTED(435, "User has already existed", HttpStatus.CONFLICT),
@@ -58,16 +66,20 @@ public enum ErrorCode {
     ORDER_EMPTY(447, "EMTY", HttpStatus.BAD_REQUEST),
     INVALID_REQUEST(448, "", HttpStatus.BAD_REQUEST),
     POST_NOT_EXITED(500, "Post not exist", HttpStatus.NOT_FOUND),
-    INSUFFICIENT_FUND(501, "INSUFFICIENT fund", HttpStatus.BAD_REQUEST),
     ENOUGH_CAPITAL(502, "vốn đã đủ", HttpStatus.BAD_REQUEST),
-    INVALID_POST(503, "bài đăng đã bị vô hiệu do đã đủ vốn hoặc quá hạn", HttpStatus.BAD_REQUEST),
-    ROLE_NOT_EXISTED(504,"KHÔNG CÓ VAI TRÒ NÀY",HttpStatus.NOT_FOUND),
-    CV_NOT_FOUND(505,"không tìm thấy cv",HttpStatus.NOT_FOUND),
+    ROLE_NOT_EXISTED(504, "KHÔNG CÓ VAI TRÒ NÀY", HttpStatus.NOT_FOUND),
+    CV_NOT_FOUND(505, "không tìm thấy cv", HttpStatus.NOT_FOUND),
     NOTIFICATION_NOT_FOUND(506, "Notification not found", HttpStatus.NOT_FOUND),
     COMMENT_NOT_EXISTED(507, "Comment not found", HttpStatus.NOT_FOUND),
-    UNAUTHORIZED(508, "You are not authorized to perform this action", HttpStatus.FORBIDDEN);
+
+    // Withdrawal and Proof related
+    WITHDRAWAL_REQUEST_NOT_FOUND(2001, "Không tìm thấy yêu cầu rút tiền", HttpStatus.NOT_FOUND),
+    PROOF_OF_SPENDING_REQUIRED(
+            2002, "Yêu cầu bằng chứng chi tiêu đã được duyệt cho lần rút tiền trước", HttpStatus.BAD_REQUEST);
+
+    // Company related
 
     int code;
     String message;
-    HttpStatusCode httpStatusCode;
+    HttpStatus httpStatusCode;
 }

@@ -20,10 +20,10 @@ public class JobApplicationController {
     ApplicationService applicationService;
 
     @PostMapping()
-    public ApiResponse<JobApplicationResponse> applyJob(@RequestParam(value = "jobId")Long jobId,
-                                                        @RequestParam(value = "cvId")Long cvId) {
+    public ApiResponse<JobApplicationResponse> applyJob(
+            @RequestParam(value = "jobId") Long jobId, @RequestParam(value = "cvId") Long cvId) {
         return ApiResponse.<JobApplicationResponse>builder()
-                .result(applicationService.applyJob(jobId,cvId))
+                .result(applicationService.applyJob(jobId, cvId))
                 .build();
     }
 

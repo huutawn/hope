@@ -4,19 +4,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 @Builder
 public class PostVolunteer {
     @Id
@@ -29,32 +28,37 @@ public class PostVolunteer {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private String status;
     private String stk;
     private String bankName;
-
-    private BigDecimal fund;
-    private BigDecimal totalAmount;
     private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-    private String status;
+    private LocalDate expiryDate;
     private boolean isActive;
     private Integer likes;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MediaFile> files;
+    @Builder.Default
+    private BigDecimal fund = BigDecimal.ZERO; // Số tiền mục tiêu
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Builder.Default
+    private BigDecimal totalAmount = BigDecimal.ZERO; // Số tiền đã quyên góp được
+
+    @Builder.Default
+    private BigDecimal usedAmount = BigDecimal.ZERO; // Số tiền đã rút
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "postVolunteer", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<Report> reports;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_volunteer_id")
+    private List<MediaFile> files;
 
-    @OneToMany(mappedBy = "postVolunteer")
+    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Support> supports;
 
-    private LocalDate expiryDate;
+    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Proof> proofs;
 
-    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    @OneToMany(mappedBy = "postVolunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WithdrawalRequest> withdrawalRequests;
 }

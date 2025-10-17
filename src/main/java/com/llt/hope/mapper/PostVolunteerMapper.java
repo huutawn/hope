@@ -17,11 +17,22 @@ public class PostVolunteerMapper {
         return PostVolunteerResponse.builder()
                 .id(postVolunteer.getId())
                 .userId(postVolunteer.getUser().getId())
-                .userPic(postVolunteer.getUser().getProfile().getProfilePicture()!=null?postVolunteer.getUser().getProfile().getProfilePicture().getUrl():null)
-                .name(postVolunteer.getUser().getProfile().getFullName()==null?postVolunteer.getUser().getEmail():postVolunteer.getUser().getProfile().getFullName())
+                .userPic(
+                        postVolunteer.getUser().getProfile().getProfilePicture() != null
+                                ? postVolunteer
+                                        .getUser()
+                                        .getProfile()
+                                        .getProfilePicture()
+                                        .getUrl()
+                                : null)
+                .name(
+                        postVolunteer.getUser().getProfile().getFullName() == null
+                                ? postVolunteer.getUser().getEmail()
+                                : postVolunteer.getUser().getProfile().getFullName())
                 .title(postVolunteer.getTitle())
                 .files(postVolunteer.getFiles())
                 .fund(postVolunteer.getFund())
+                .usedAmount(postVolunteer.getUsedAmount())
                 .status(postVolunteer.getStatus())
                 .stk(postVolunteer.getStk())
                 .bankName(postVolunteer.getBankName())

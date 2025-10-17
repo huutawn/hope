@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import com.llt.hope.dto.request.JobCategoryCreationRequest;
 import com.llt.hope.dto.response.JobCategoryResponse;
 import com.llt.hope.entity.JobCategory;
-import com.llt.hope.exception.AppException;
-import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.JobCategoryMapper;
 import com.llt.hope.repository.jpa.JobCategoryRepository;
 
@@ -29,18 +27,17 @@ public class JobCategoryService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public String createJobCategory(List<JobCategoryCreationRequest> request) {
-      List<JobCategory> jobCategory=new ArrayList<>();
-      for(JobCategoryCreationRequest jobCategory1:request){
-          JobCategory jobCategory2=JobCategory.builder()
-                  .name(jobCategory1.getName())
-                  .description(jobCategory1.getDescription())
-                  .build();
-          jobCategory.add(jobCategory2);
-      }
+        List<JobCategory> jobCategory = new ArrayList<>();
+        for (JobCategoryCreationRequest jobCategory1 : request) {
+            JobCategory jobCategory2 = JobCategory.builder()
+                    .name(jobCategory1.getName())
+                    .description(jobCategory1.getDescription())
+                    .build();
+            jobCategory.add(jobCategory2);
+        }
         jobCategoryRepository.saveAll(jobCategory);
         return "create jobCategory success";
     }
-
 
     public List<JobCategoryResponse> getAllJobCategory() {
         List<JobCategoryResponse> jobs = new ArrayList<JobCategoryResponse>();

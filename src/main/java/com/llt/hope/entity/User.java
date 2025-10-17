@@ -62,7 +62,7 @@ public class User {
     @JsonManagedReference
     private Set<Report> reports;
 
-    @OneToOne(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private MessageContainer messageContainer;
 
     private Double point;
@@ -70,7 +70,6 @@ public class User {
     private BigDecimal fund;
 
     private String code;
-
 
     @OneToMany(mappedBy = "user")
     private List<Support> supports;

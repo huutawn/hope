@@ -1,24 +1,23 @@
 package com.llt.hope.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.llt.hope.dto.request.SearchRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.JobResponse;
 import com.llt.hope.dto.response.PageResponse;
 import com.llt.hope.dto.response.PostResponse;
 import com.llt.hope.dto.response.PostVolunteerResponse;
 import com.llt.hope.dto.response.SearchResponse;
-import com.llt.hope.dto.request.SearchRequest;
 import com.llt.hope.service.SearchService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/search")
@@ -44,7 +43,7 @@ public class SearchController {
     }
 
     /**
-     * Search posts by keyword  
+     * Search posts by keyword
      * Searches in: title and content
      */
     @GetMapping("/posts")
@@ -83,7 +82,7 @@ public class SearchController {
                 .result(searchService.searchAll(keyword, page, size))
                 .build();
     }
-    
+
     /**
      * Unified search endpoint that searches across Job, Post, and PostVolunteer entities
      * Frontend just sends a keyword and gets results from all three entity types
@@ -91,23 +90,23 @@ public class SearchController {
     @PostMapping("/unified")
     public ApiResponse<SearchResponse> searchUnified(@Valid @RequestBody SearchRequest request) {
         log.info("Unified search request received for keyword: {}", request.getKeyword());
-        
+
         try {
             SearchResponse searchResponse = searchService.searchAllUnified(request);
-            
-            log.info("Unified search completed. Found {} total results for keyword: {}", 
-                searchResponse.getTotalResults(), request.getKeyword());
-            
-            return ApiResponse.<SearchResponse>builder()
-                    .result(searchResponse)
-                    .build();
-                    
+
+            log.info(
+                    "Unified search completed. Found {} total results for keyword: {}",
+                    searchResponse.getTotalResults(),
+                    request.getKeyword());
+
+            return ApiResponse.<SearchResponse>builder().result(searchResponse).build();
+
         } catch (Exception e) {
             log.error("Error occurred during unified search for keyword: {}", request.getKeyword(), e);
             throw new RuntimeException("Search failed: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Simple GET endpoint for unified search
      */
@@ -116,13 +115,10 @@ public class SearchController {
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer size) {
-        
-        SearchRequest request = SearchRequest.builder()
-            .keyword(keyword)
-            .page(page)
-            .size(size)
-            .build();
-            
+
+        SearchRequest request =
+                SearchRequest.builder().keyword(keyword).page(page).size(size).build();
+
         return searchUnified(request);
     }
 }

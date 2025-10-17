@@ -1,8 +1,9 @@
 package com.llt.hope.dto.response;
 
+import java.util.List;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,11 +16,11 @@ public class SearchResponse {
     Integer currentPage;
     Integer totalPages;
     Integer pageSize;
-    
+
     List<JobResponse> jobs;
     List<PostResponse> posts;
     List<PostVolunteerResponse> postVolunteers;
-    
+
     Integer jobCount;
     Integer postCount;
     Integer postVolunteerCount;

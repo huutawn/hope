@@ -1,16 +1,19 @@
 package com.llt.hope.mapper;
 
+import java.util.List;
+
+import org.mapstruct.*;
+
 import com.llt.hope.dto.response.MessageBoxResponse;
 import com.llt.hope.dto.response.MessageResponse;
 import com.llt.hope.entity.Message;
 import com.llt.hope.entity.MessageBox;
-import org.mapstruct.*;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring", uses = {UserMapper.class, MessageMapper.class})
+@Mapper(
+        componentModel = "spring",
+        uses = {UserMapper.class, MessageMapper.class})
 public interface MessageBoxMapper {
-    
+
     @Mapping(target = "receiver", source = "receiver")
     @Mapping(target = "lastMessage", expression = "java(getLastMessageContent(messageBox))")
     @Mapping(target = "recentMessages", expression = "java(getRecentMessages(messageBox))")
@@ -31,13 +34,12 @@ public interface MessageBoxMapper {
         if (messageBox.getMessages() == null || messageBox.getMessages().isEmpty()) {
             return List.of();
         }
-        
+
         List<Message> messages = messageBox.getMessages();
         int size = messages.size();
         int startIndex = Math.max(0, size - 10); // Get last 10 messages
-        
-        return messages.subList(startIndex, size)
-                .stream()
+
+        return messages.subList(startIndex, size).stream()
                 .map(this::toMessageResponse)
                 .toList();
     }

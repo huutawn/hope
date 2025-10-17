@@ -1,16 +1,18 @@
 package com.llt.hope.controller;
 
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.MessageBoxResponse;
 import com.llt.hope.service.MessageBoxService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/message-boxes")
@@ -18,7 +20,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class MessageBoxController {
-    
+
     MessageBoxService messageBoxService;
 
     /**
@@ -28,7 +30,7 @@ public class MessageBoxController {
     public ApiResponse<List<MessageBoxResponse>> getAllMessageBoxes(Authentication authentication) {
         String userEmail = authentication.getName();
         List<MessageBoxResponse> messageBoxes = messageBoxService.getAllMessageBox(userEmail);
-        
+
         return ApiResponse.<List<MessageBoxResponse>>builder()
                 .result(messageBoxes)
                 .build();
@@ -39,31 +41,24 @@ public class MessageBoxController {
      */
     @GetMapping("/with/{receiverEmail}")
     public ApiResponse<MessageBoxResponse> getOrCreateMessageBox(
-            @PathVariable String receiverEmail,
-            Authentication authentication) {
-        
+            @PathVariable String receiverEmail, Authentication authentication) {
+
         String currentUserEmail = authentication.getName();
         MessageBoxResponse messageBox = messageBoxService.getOrCreateMessageBox(currentUserEmail, receiverEmail);
-        
-        return ApiResponse.<MessageBoxResponse>builder()
-                .result(messageBox)
-                .build();
+
+        return ApiResponse.<MessageBoxResponse>builder().result(messageBox).build();
     }
 
     /**
      * Mark messages as read in a specific message box
      */
     @PutMapping("/mark-read/{senderEmail}")
-    public ApiResponse<String> markMessagesAsRead(
-            @PathVariable String senderEmail,
-            Authentication authentication) {
-        
+    public ApiResponse<String> markMessagesAsRead(@PathVariable String senderEmail, Authentication authentication) {
+
         String currentUserEmail = authentication.getName();
         messageBoxService.markMessagesAsRead(currentUserEmail, senderEmail);
-        
-        return ApiResponse.<String>builder()
-                .result("Messages marked as read")
-                .build();
+
+        return ApiResponse.<String>builder().result("Messages marked as read").build();
     }
 
     /**
@@ -73,10 +68,8 @@ public class MessageBoxController {
     public ApiResponse<Long> getTotalUnreadCount(Authentication authentication) {
         String userEmail = authentication.getName();
         long unreadCount = messageBoxService.getTotalUnreadCount(userEmail);
-        
-        return ApiResponse.<Long>builder()
-                .result(unreadCount)
-                .build();
+
+        return ApiResponse.<Long>builder().result(unreadCount).build();
     }
 
     /**
@@ -86,10 +79,8 @@ public class MessageBoxController {
     public ApiResponse<Long> getUnreadMessageBoxCount(Authentication authentication) {
         String userEmail = authentication.getName();
         long unreadBoxCount = messageBoxService.getUnreadMessageBoxCount(userEmail);
-        
-        return ApiResponse.<Long>builder()
-                .result(unreadBoxCount)
-                .build();
+
+        return ApiResponse.<Long>builder().result(unreadBoxCount).build();
     }
 
     /**
@@ -99,7 +90,7 @@ public class MessageBoxController {
     public ApiResponse<String> triggerMessageBoxUpdate(Authentication authentication) {
         String userEmail = authentication.getName();
         messageBoxService.notifyMessageBoxUpdate(userEmail);
-        
+
         return ApiResponse.<String>builder()
                 .result("Message box update notification sent")
                 .build();

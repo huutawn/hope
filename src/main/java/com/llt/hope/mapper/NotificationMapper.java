@@ -8,7 +8,7 @@ import com.llt.hope.entity.Notification;
 
 @Mapper(componentModel = "spring")
 public interface NotificationMapper {
-    
+
     @Mapping(source = "user.email", target = "userEmail")
     NotificationResponse toNotificationResponse(Notification notification);
 }

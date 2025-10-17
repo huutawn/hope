@@ -24,6 +24,7 @@ public class PostVolunteerResponse {
     private String location;
     private String content;
     private BigDecimal fund;
+    private BigDecimal usedAmount;
     private String status;
     private BigDecimal totalAmount;
     private LocalDateTime createAt;
@@ -33,8 +34,7 @@ public class PostVolunteerResponse {
     private boolean isActive;
     private List<MediaFile> files;
     private Integer like;
-    
+
     // Comment information
     private long commentCount;
-
 }

@@ -25,7 +25,7 @@ public class Notification {
 
     @Column(columnDefinition = "TEXT")
     private String message;
-    
+
     private String type;
 
     private boolean isRead;

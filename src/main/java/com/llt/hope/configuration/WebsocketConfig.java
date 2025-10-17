@@ -4,7 +4,6 @@ import java.util.List;
 
 import jakarta.annotation.Nonnull;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -21,29 +20,29 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
-    
+
     private final CustomJwtDecoder jwtDecoder;
-    
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // For SockJS with specific origins (production và local development)
         registry.addEndpoint("/ws")
-            .setAllowedOriginPatterns(
-                "http://localhost:*", // Cho phép mọi port localhost
-                "http://127.0.0.1:*", // Cho phép 127.0.0.1 với mọi port
-                "file://*", // Cho phép file:// protocol cho HTML test files
-                "http://localhost:3000",
-                "https://ourhope.io.vn",
-                "https://fe-hope-vn-version.vercel.app"
-            )
-            .withSockJS();
-            
+                .setAllowedOriginPatterns(
+                        "http://localhost:*", // Cho phép mọi port localhost
+                        "http://127.0.0.1:*", // Cho phép 127.0.0.1 với mọi port
+                        "file://*", // Cho phép file:// protocol cho HTML test files
+                        "http://localhost:3000",
+                        "https://ourhope.io.vn",
+                        "https://fe-hope-vn-version.vercel.app")
+                .withSockJS();
+
         // For native WebSocket connection (cho phép tất cả origins để test)
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
     }

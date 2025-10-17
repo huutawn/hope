@@ -58,7 +58,8 @@ public class DocumentIndexingService {
                     // Company information
                     .companyId(job.getCompany() != null ? job.getCompany().getId() : null)
                     .companyName(job.getCompany() != null ? job.getCompany().getName() : null)
-                    .companyDescription(job.getCompany() != null ? job.getCompany().getDescription() : null)
+                    .companyDescription(
+                            job.getCompany() != null ? job.getCompany().getDescription() : null)
                     .companyIndustry(job.getCompany() != null ? job.getCompany().getIndustry() : null)
                     .companySize(job.getCompany() != null ? job.getCompany().getSize() : null)
                     .companyLocation(job.getCompany() != null ? job.getCompany().getAddress() : null)
@@ -66,8 +67,10 @@ public class DocumentIndexingService {
                     .employerId(job.getEmployer() != null ? job.getEmployer().getId() : null)
                     .employerEmail(job.getEmployer() != null ? job.getEmployer().getEmail() : null)
                     // Job category information
-                    .jobCategoryId(job.getJobCategory() != null ? job.getJobCategory().getId() : null)
-                    .jobCategoryName(job.getJobCategory() != null ? job.getJobCategory().getName() : null)
+                    .jobCategoryId(
+                            job.getJobCategory() != null ? job.getJobCategory().getId() : null)
+                    .jobCategoryName(
+                            job.getJobCategory() != null ? job.getJobCategory().getName() : null)
                     .build();
 
             jobDocumentRepository.save(jobDocument);
@@ -83,10 +86,9 @@ public class DocumentIndexingService {
     public void indexPost(Post post) {
         try {
             // Extract image URLs from MediaFiles
-            List<String> imageUrls = post.getImages() != null ? 
-                post.getImages().stream()
-                    .map(MediaFile::getUrl)
-                    .collect(Collectors.toList()) : null;
+            List<String> imageUrls = post.getImages() != null
+                    ? post.getImages().stream().map(MediaFile::getUrl).collect(Collectors.toList())
+                    : null;
 
             PostDocument postDocument = PostDocument.builder()
                     .id(post.getId().toString())
@@ -104,8 +106,10 @@ public class DocumentIndexingService {
                     // User information
                     .userId(post.getUser() != null ? post.getUser().getId() : null)
                     .userEmail(post.getUser() != null ? post.getUser().getEmail() : null)
-                    .userName(post.getUser() != null && post.getUser().getProfile() != null ? 
-                        post.getUser().getProfile().getFullName() : null)
+                    .userName(
+                            post.getUser() != null && post.getUser().getProfile() != null
+                                    ? post.getUser().getProfile().getFullName()
+                                    : null)
                     .imageUrls(imageUrls)
                     .build();
 
@@ -122,10 +126,9 @@ public class DocumentIndexingService {
     public void indexPostVolunteer(PostVolunteer postVolunteer) {
         try {
             // Extract file URLs from MediaFiles
-            List<String> fileUrls = postVolunteer.getFiles() != null ? 
-                postVolunteer.getFiles().stream()
-                    .map(MediaFile::getUrl)
-                    .collect(Collectors.toList()) : null;
+            List<String> fileUrls = postVolunteer.getFiles() != null
+                    ? postVolunteer.getFiles().stream().map(MediaFile::getUrl).collect(Collectors.toList())
+                    : null;
 
             PostVolunteerDocument postVolunteerDocument = PostVolunteerDocument.builder()
                     .id(postVolunteer.getId().toString())
@@ -138,14 +141,22 @@ public class DocumentIndexingService {
                     .fund(postVolunteer.getFund())
                     .totalAmount(postVolunteer.getTotalAmount())
                     .createAt(postVolunteer.getCreateAt().toLocalDate())
-                    .updateAt(postVolunteer.getUpdateAt().toLocalDate())
                     .status(postVolunteer.getStatus())
                     .isActive(postVolunteer.isActive())
                     // User information
-                    .userId(postVolunteer.getUser() != null ? postVolunteer.getUser().getId() : null)
-                    .userEmail(postVolunteer.getUser() != null ? postVolunteer.getUser().getEmail() : null)
-                    .userName(postVolunteer.getUser() != null && postVolunteer.getUser().getProfile() != null ? 
-                        postVolunteer.getUser().getProfile().getFullName() : null)
+                    .userId(
+                            postVolunteer.getUser() != null
+                                    ? postVolunteer.getUser().getId()
+                                    : null)
+                    .userEmail(
+                            postVolunteer.getUser() != null
+                                    ? postVolunteer.getUser().getEmail()
+                                    : null)
+                    .userName(
+                            postVolunteer.getUser() != null
+                                            && postVolunteer.getUser().getProfile() != null
+                                    ? postVolunteer.getUser().getProfile().getFullName()
+                                    : null)
                     .fileUrls(fileUrls)
                     .build();
 

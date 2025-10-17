@@ -1,7 +1,6 @@
 package com.llt.hope.schedule;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,11 +20,11 @@ public class PostExpiredSchedule {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void expirePost() {
-        List<PostVolunteer> postVolunteers=postVolunteerRepository.findAllByStatus(StatusCons.NORMAL);
-        for(PostVolunteer postVolunteer:postVolunteers){
-            if(postVolunteer.getExpiryDate().isEqual(LocalDate.now())||postVolunteer.getExpiryDate().isAfter(LocalDate.now())
-            || postVolunteer.getTotalAmount().equals(postVolunteer.getFund())
-            ) {
+        List<PostVolunteer> postVolunteers = postVolunteerRepository.findAllByStatus(StatusCons.NORMAL);
+        for (PostVolunteer postVolunteer : postVolunteers) {
+            if (postVolunteer.getExpiryDate().isEqual(LocalDate.now())
+                    || postVolunteer.getExpiryDate().isAfter(LocalDate.now())
+                    || postVolunteer.getTotalAmount().equals(postVolunteer.getFund())) {
                 postVolunteer.setStatus(StatusCons.FULLED);
                 postVolunteerRepository.save(postVolunteer);
             }

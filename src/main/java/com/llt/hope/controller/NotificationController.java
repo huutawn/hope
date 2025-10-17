@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class NotificationController {
-    
+
     NotificationService notificationService;
 
     // REST API endpoints
@@ -33,10 +33,7 @@ public class NotificationController {
     public ApiResponse<NotificationResponse> createNotification(@RequestBody NotificationRequest request) {
         return ApiResponse.<NotificationResponse>builder()
                 .result(notificationService.createNotification(
-                        request.getUserEmail(), 
-                        request.getTitle(), 
-                        request.getMessage(), 
-                        request.getType()))
+                        request.getUserEmail(), request.getTitle(), request.getMessage(), request.getType()))
                 .build();
     }
 
@@ -78,20 +75,14 @@ public class NotificationController {
     @ResponseBody
     public ApiResponse<String> deleteNotification(@PathVariable Long notificationId) {
         notificationService.deleteNotification(notificationId);
-        return ApiResponse.<String>builder()
-                .result("Notification deleted")
-                .build();
+        return ApiResponse.<String>builder().result("Notification deleted").build();
     }
 
     @PostMapping("/api/notifications/send-to-role")
     @ResponseBody
     public ApiResponse<String> sendNotificationToRole(@RequestBody NotificationRequest request) {
         notificationService.sendNotificationToRole(
-                request.getRoleName(), 
-                request.getTitle(), 
-                request.getMessage(), 
-                request.getType()
-        );
+                request.getRoleName(), request.getTitle(), request.getMessage(), request.getType());
         return ApiResponse.<String>builder()
                 .result("Notification sent to all users in role: " + request.getRoleName())
                 .build();
@@ -114,13 +105,9 @@ public class NotificationController {
     @SendToUser("/queue/notifications")
     public NotificationResponse sendNotification(NotificationRequest request, Principal principal) {
         log.info("Sending notification via WebSocket to: {}", request.getUserEmail());
-        
+
         return notificationService.createNotification(
-                request.getUserEmail(), 
-                request.getTitle(), 
-                request.getMessage(), 
-                request.getType()
-        );
+                request.getUserEmail(), request.getTitle(), request.getMessage(), request.getType());
     }
 
     /**
@@ -129,13 +116,9 @@ public class NotificationController {
     @MessageMapping("/notification.realtime")
     public void sendRealTimeNotification(NotificationRequest request, Principal principal) {
         log.info("Sending real-time notification to: {}", request.getUserEmail());
-        
+
         notificationService.sendRealTimeNotification(
-                request.getUserEmail(), 
-                request.getTitle(), 
-                request.getMessage(), 
-                request.getType()
-        );
+                request.getUserEmail(), request.getTitle(), request.getMessage(), request.getType());
     }
 
     /**
@@ -145,9 +128,9 @@ public class NotificationController {
     @SendTo("/topic/notifications/broadcast")
     public NotificationResponse broadcastNotificationWS(NotificationRequest request, Principal principal) {
         log.info("Broadcasting notification: {}", request.getTitle());
-        
+
         notificationService.broadcastNotification(request.getTitle(), request.getMessage(), request.getType());
-        
+
         return NotificationResponse.builder()
                 .title(request.getTitle())
                 .message(request.getMessage())
@@ -163,13 +146,9 @@ public class NotificationController {
     @MessageMapping("/notification.role")
     public void sendNotificationToRoleWS(NotificationRequest request, Principal principal) {
         log.info("Sending notification to role: {}", request.getRoleName());
-        
+
         notificationService.sendNotificationToRole(
-                request.getRoleName(), 
-                request.getTitle(), 
-                request.getMessage(), 
-                request.getType()
-        );
+                request.getRoleName(), request.getTitle(), request.getMessage(), request.getType());
     }
 
     /**

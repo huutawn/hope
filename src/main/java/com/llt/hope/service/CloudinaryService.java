@@ -34,6 +34,7 @@ public class CloudinaryService {
         mediaFile.setFileSize(fileSize);
         return mediaFile;
     }
+
     public String uploadFile(byte[] fileBytes, String relatedName, String relatedId) throws IOException {
         String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
 
@@ -49,14 +50,11 @@ public class CloudinaryService {
         String url = (String) uploadResult.get("url");
         return url;
     }
+
     public MediaFile uploadFile(File file, String relatedName, String relatedId) throws IOException {
         String fileName = relatedName + "_" + relatedId + "_" + System.currentTimeMillis();
-        Map uploadResult = cloudinary
-                .uploader()
-                .upload(file, ObjectUtils.asMap(
-                        "public_id", fileName,
-                        "folder", "hope"
-                ));
+        Map uploadResult =
+                cloudinary.uploader().upload(file, ObjectUtils.asMap("public_id", fileName, "folder", "hope"));
 
         String publicId = (String) uploadResult.get("public_id");
         String url = (String) uploadResult.get("url");

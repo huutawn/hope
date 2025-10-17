@@ -10,7 +10,6 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.llt.hope.dto.request.GetMessageRequest;
 import com.llt.hope.dto.request.SendMessageRequest;
 import com.llt.hope.dto.response.ApiResponse;
 import com.llt.hope.dto.response.MessageResponse;
@@ -41,8 +40,7 @@ public class MessageController {
     @GetMapping("/api/messages")
     @ResponseBody
     public ApiResponse<List<MessageResponse>> getMessages(
-            @RequestParam(value = "email1") String user1Email,
-            @RequestParam(value = "email2") String user2Email) {
+            @RequestParam(value = "email1") String user1Email, @RequestParam(value = "email2") String user2Email) {
 
         return ApiResponse.<List<MessageResponse>>builder()
                 .result(messageService.getMessagesBetweenUsers(user1Email, user2Email))
@@ -51,11 +49,10 @@ public class MessageController {
 
     @PostMapping("/mark-read")
     @ResponseBody
-    public ApiResponse<String> markMessagesAsRead(@RequestParam String senderEmail, @RequestParam String receiverEmail) {
+    public ApiResponse<String> markMessagesAsRead(
+            @RequestParam String senderEmail, @RequestParam String receiverEmail) {
         messageService.markMessagesAsRead(senderEmail, receiverEmail);
-        return ApiResponse.<String>builder()
-                .result("Messages marked as read")
-                .build();
+        return ApiResponse.<String>builder().result("Messages marked as read").build();
     }
 
     // WebSocket endpoints
@@ -66,12 +63,12 @@ public class MessageController {
     @SendToUser("/queue/messages")
     public MessageResponse handleMessage(SendMessageRequest request, Principal principal) {
         log.info("Received WebSocket message from: {} to: {}", request.getSenderEmail(), request.getReceiverEmail());
-        
+
         // Verify the sender is authenticated user
         if (principal != null && !principal.getName().equals(request.getSenderEmail())) {
             throw new SecurityException("Sender email does not match authenticated user");
         }
-        
+
         return messageService.sendMessage(request.getSenderEmail(), request.getReceiverEmail(), request.getContent());
     }
 
@@ -81,11 +78,11 @@ public class MessageController {
     @MessageMapping("/message.private")
     public void handlePrivateMessage(SendMessageRequest request, Principal principal) {
         log.info("Handling private message from: {} to: {}", request.getSenderEmail(), request.getReceiverEmail());
-        
+
         if (principal != null && !principal.getName().equals(request.getSenderEmail())) {
             throw new SecurityException("Sender email does not match authenticated user");
         }
-        
+
         messageService.sendWebSocketMessage(request.getSenderEmail(), request.getReceiverEmail(), request.getContent());
     }
 
@@ -94,15 +91,16 @@ public class MessageController {
      */
     @MessageMapping("/message.room.{roomId}")
     @SendTo("/topic/room/{roomId}")
-    public MessageResponse handleRoomMessage(@DestinationVariable String roomId, SendMessageRequest request, Principal principal) {
+    public MessageResponse handleRoomMessage(
+            @DestinationVariable String roomId, SendMessageRequest request, Principal principal) {
         log.info("Broadcasting message to room: {} from: {}", roomId, request.getSenderEmail());
-        
+
         if (principal != null && !principal.getName().equals(request.getSenderEmail())) {
             throw new SecurityException("Sender email does not match authenticated user");
         }
-        
+
         messageService.broadcastMessage(roomId, request.getSenderEmail(), request.getContent());
-        
+
         return MessageResponse.builder()
                 .content(request.getContent())
                 .sentAt(java.time.LocalDateTime.now())
@@ -114,13 +112,14 @@ public class MessageController {
      * Handle user typing indicator
      */
     @MessageMapping("/message.typing")
-    public void handleTypingIndicator(@RequestParam String senderEmail, @RequestParam String receiverEmail, Principal principal) {
+    public void handleTypingIndicator(
+            @RequestParam String senderEmail, @RequestParam String receiverEmail, Principal principal) {
         log.info("Typing indicator from: {} to: {}", senderEmail, receiverEmail);
-        
+
         if (principal != null && !principal.getName().equals(senderEmail)) {
             throw new SecurityException("Sender email does not match authenticated user");
         }
-        
+
         // Send typing indicator to receiver
         messageService.sendWebSocketMessage(senderEmail, receiverEmail, "__TYPING_INDICATOR__");
     }

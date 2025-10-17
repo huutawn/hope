@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import com.llt.hope.entity.*;
-import com.llt.hope.repository.jpa.MessageContainerRepository;
 import jakarta.mail.MessagingException;
 
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -21,6 +19,7 @@ import com.llt.hope.constant.PredefindRole;
 import com.llt.hope.dto.request.*;
 import com.llt.hope.dto.response.UserResponse;
 import com.llt.hope.dto.response.VerifiOTPResponse;
+import com.llt.hope.entity.*;
 import com.llt.hope.exception.AppException;
 import com.llt.hope.exception.ErrorCode;
 import com.llt.hope.mapper.UserMapper;
@@ -50,14 +49,15 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         HashSet<Role> roles = new HashSet<>();
-        Role role=new Role();
-        if(request.getRole()!=null){
-        role=roleRepository.findById(request.getRole())
-                        .orElseGet(()->roleRepository.findById(PredefindRole.USER_ROLE)
-                                .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED)));}
-        else {
-            role=roleRepository.findById(PredefindRole.USER_ROLE)
-                    .orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        Role role = new Role();
+        if (request.getRole() != null) {
+            role = roleRepository.findById(request.getRole()).orElseGet(() -> roleRepository
+                    .findById(PredefindRole.USER_ROLE)
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED)));
+        } else {
+            role = roleRepository
+                    .findById(PredefindRole.USER_ROLE)
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
         }
         roles.add(role);
         user.setRoles(roles);
@@ -67,32 +67,32 @@ public class UserService {
         Profile profile =
                 profileService.createInitProfile(request.getEmail(), request.getPhone(), request.getFullName());
         user.setProfile(profile);
-        User admin=repository.findByEmail("admin")
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
-        MessageContainer messageContainer=MessageContainer.builder()
+        User admin = repository.findByEmail("admin").orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        MessageContainer messageContainer = MessageContainer.builder()
                 .user(user)
                 .messageBoxes(List.of(MessageBox.builder()
-                                .messages(List.of(Message.builder()
-                                                .sentAt(LocalDateTime.now())
-                                                .isRead(false)
-                                                .content("chào mừng bạn đến với Ourhope nền tảng hỗ trợ người khó khăn!")
-                                                .sender(admin)
-                                                .receiver(user)
-                                        .build()))
+                        .messages(List.of(Message.builder()
+                                .sentAt(LocalDateTime.now())
+                                .isRead(false)
+                                .content("chào mừng bạn đến với Ourhope nền tảng hỗ trợ người khó khăn!")
+                                .sender(admin)
+                                .receiver(user)
+                                .build()))
                         .build()))
                 .build();
-        List<MessageBox> messageBoxes=messageContainer.getMessageBoxes();
+        List<MessageBox> messageBoxes = messageContainer.getMessageBoxes();
         messageBoxes.get(0).setContainer(messageContainer);
-        List<Message> messages=messageBoxes.get(0).getMessages();
+        List<Message> messages = messageBoxes.get(0).getMessages();
         messages.get(0).setMessageBox(messageBoxes.get(0));
         user.setMessageContainer(messageContainer);
         user.setAccepted(true);
-        log.info(user.isAccepted()+"");
-        log.info("user {}",user);
+        log.info(user.isAccepted() + "");
+        log.info("user {}", user);
         return userMapper.toUserResponse(repository.save(user));
         // hjhjhjhj
     }
-    public String generateCode(int length){
+
+    public String generateCode(int length) {
         String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder(length);
@@ -103,10 +103,9 @@ public class UserService {
         return sb.toString();
     }
 
-
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = repository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        user= userMapper.updateUser(user, request);
+        user = userMapper.updateUser(user, request);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -167,14 +166,14 @@ public class UserService {
                 otp);
         resendEmailService.sendEmail(request.getEmail(), subject, content);
     }
-    public UserResponse banUser(BannedReq req){
-        User user=repository.findById(req.getUserId())
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+
+    public UserResponse banUser(BannedReq req) {
+        User user =
+                repository.findById(req.getUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setAccepted(req.getIsBanned());
-        UserResponse userResponse=userMapper.toUserResponse(user);
+        UserResponse userResponse = userMapper.toUserResponse(user);
         repository.save(user);
         return userResponse;
-
     }
 
     @Transactional

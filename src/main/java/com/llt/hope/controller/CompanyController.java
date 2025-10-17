@@ -40,10 +40,9 @@ public class CompanyController {
                 .result(companyService.getAllCompanyNonActive(spec, page, size))
                 .build();
     }
+
     @GetMapping("/{id}")
-    public ApiResponse<CompanyResponse> getDetail(
-            @PathVariable Long id
-          ) {
+    public ApiResponse<CompanyResponse> getDetail(@PathVariable Long id) {
         return ApiResponse.<CompanyResponse>builder()
                 .result(companyService.getDetail(id))
                 .build();
